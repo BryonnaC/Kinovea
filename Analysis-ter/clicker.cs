@@ -22,7 +22,8 @@ namespace SyncRecording
     public struct Target // using TM_SQDIFF
     {
         public Point loc; // minLoc 
-        public double minVal; // minVal for client debugging
+        public double val; // minVal for client debugging
+        public double conf; // (1 - minVal/THRESHOLD) * 100 for perc representation of detection confidence cuz why not
         public bool detected; // minVal < THRESHOLD
     }
 
@@ -82,7 +83,8 @@ namespace SyncRecording
             return new Target() // the "detected target"
             {
                 loc = new Point(screenOrigins[screen].X + loc.X, screenOrigins[screen].Y + loc.Y),
-                minVal = val,
+                val = val,
+                conf = Math.Round(val > THRESHOLD ? 0 : ((1 - val / THRESHOLD) * 100), 3),
                 detected = val < THRESHOLD,
             };
         }
@@ -151,7 +153,7 @@ namespace SyncRecording
             {
                 Target currGuess = DetectTargetOnScreen(template, idx);
 
-                if (currGuess.minVal < bestGuess.minVal) bestGuess = currGuess;
+                if (currGuess.val < bestGuess.val) bestGuess = currGuess;
             }
 
             return bestGuess;
