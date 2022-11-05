@@ -14,6 +14,8 @@ namespace Analysistem
      * which then interacts with the Controller
      * which then gets its methods from the Model
      * which leverages the functionality of other specialized classes
+     * 
+     * this description may change, those last two lines make little sense
      */
     static class Program
     {
