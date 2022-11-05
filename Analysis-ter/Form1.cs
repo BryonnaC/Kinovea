@@ -12,10 +12,17 @@ namespace Analysistem
 {
     public partial class Form1 : Form
     {
+        Controller controller = new Controller();
         public Form1()
         {
             InitializeComponent();
             
+        }
+
+        //Record (Simultaneously) button
+        private void button1_Click(object sender, EventArgs e)
+        {
+            controller.StartSimultaneousRecording();
         }
     }
 }

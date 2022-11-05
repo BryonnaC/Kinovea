@@ -34,6 +34,7 @@ namespace Analysistem
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.synchronizer = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -57,6 +58,7 @@ namespace Analysistem
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.synchronizer);
             this.splitContainer1.Panel1.Controls.Add(this.toolStrip1);
             // 
             // splitContainer1.Panel2
@@ -65,6 +67,17 @@ namespace Analysistem
             this.splitContainer1.Size = new System.Drawing.Size(800, 450);
             this.splitContainer1.SplitterDistance = 266;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // synchronizer
+            // 
+            this.synchronizer.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.synchronizer.Location = new System.Drawing.Point(69, 147);
+            this.synchronizer.Name = "synchronizer";
+            this.synchronizer.Size = new System.Drawing.Size(124, 95);
+            this.synchronizer.TabIndex = 1;
+            this.synchronizer.Text = "Record (Synchronized)";
+            this.synchronizer.UseVisualStyleBackColor = false;
+            this.synchronizer.Click += new System.EventHandler(this.button1_Click);
             // 
             // toolStrip1
             // 
@@ -163,6 +176,7 @@ namespace Analysistem
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.Button synchronizer;
     }
 }
 

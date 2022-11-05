@@ -1,33 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using SyncRecording;
+using SyncRecording;    //TODO move SyncRecording to the Analysistem namespace
+//OR to a more general toolbox namespace -> tbd
 
 namespace Analysistem
-{
+{   
     /**
-     * This class Program is the entrypoint into the application
-     * It loads and presents the GUI
-     * From there, the user interacts with the GUI
-     * which then interacts with the Controller
-     * which then gets its methods from the Model
-     * which leverages the functionality of other specialized classes
+     * This class is the UI's main point of entry.
+     * It handles all callback functions and maps to the proper functionality 
      */
-    static class Program
+    class Controller
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public void StartSimultaneousRecording()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-
-            /*// PARAMETERS BELOW ARE FOR DEMO PURPOSES
+            //TODO put call to clicker.cs in this function
+            // PARAMETERS BELOW ARE FOR DEMO PURPOSES
             bool isStart = true; // you set this depending on if you want to start/stop recording
             Data dataCT = SyncR.ClickTargets(isStart); // ClickTargets() for syncing via autoclicker <-- basically just for testing atm
             Data dataR = SyncR.Record(!isStart); // Record() for syncing via Kinovea.Record() and clicking SparkVue <-- the function we will likely actually use
@@ -35,7 +25,7 @@ namespace Analysistem
 
             Console.WriteLine("CT: {0}us -- [ {1}%, {2}% ]", dataCT.delay, dataCT.targets[0].conf, dataCT.targets[1].conf);
             Console.WriteLine("R: {0}us -- [ {1}% ]", dataR.delay, dataR.targets[1].conf);
-            Console.WriteLine("RT: {0}us -- [ {1}% ]", dataRT.delay, dataRT.targets[1].conf);*/
+            Console.WriteLine("RT: {0}us -- [ {1}% ]", dataRT.delay, dataRT.targets[1].conf);
         }
     }
 }
