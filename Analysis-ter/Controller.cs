@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SyncRecording;    //TODO move SyncRecording to the Analysistem namespace
+using SynchRecording;    //TODO move SyncRecording to the Analysistem namespace
 //OR to a more general toolbox namespace -> tbd
 
 namespace Analysistem
@@ -17,15 +13,31 @@ namespace Analysistem
         public void StartSimultaneousRecording()
         {
             //TODO put call to clicker.cs in this function
-            // PARAMETERS BELOW ARE FOR DEMO PURPOSES
+            #region SynchRecording DEMO
             bool isStart = true; // you set this depending on if you want to start/stop recording
-            Data dataCT = SyncR.ClickTargets(isStart); // ClickTargets() for syncing via autoclicker <-- basically just for testing atm
-            Data dataR = SyncR.Record(!isStart); // Record() for syncing via Kinovea.Record() and clicking SparkVue <-- the function we will likely actually use
-            Data dataRT = SyncR.RecordThreads(isStart); // " <-- same as above but with threads; kinda seems unnecessary
+            Data dataROn = Synchr.Record(isStart); // Record() for syncing via Kinovea.Record() and clicking SparkVue <-- the function we will likely actually use
+            Data dataROff = Synchr.Record(!isStart); // "
+            Data dataRTOn = Synchr.RecordThreads(isStart); // " <-- same as above but with threads; needs thorough comparison/further optimization if possible
+            Data dataRTOff = Synchr.RecordThreads(!isStart); // "
 
-            Console.WriteLine("CT: {0}us -- [ {1}%, {2}% ]", dataCT.delay, dataCT.targets[0].conf, dataCT.targets[1].conf);
-            Console.WriteLine("R: {0}us -- [ {1}% ]", dataR.delay, dataR.targets[1].conf);
-            Console.WriteLine("RT: {0}us -- [ {1}% ]", dataRT.delay, dataRT.targets[1].conf);
+            Console.WriteLine("ROn: {0}us -- [ {1}% ]", dataROn.delay, dataROn.target.confidence);
+            Console.WriteLine("ROff: {0}us -- [ {1}% ]", dataROff.delay, dataROff.target.confidence);
+            Console.WriteLine("RTOn: {0}us -- [ {1}% ]", dataRTOn.delay, dataRTOn.target.confidence);
+            Console.WriteLine("RTOff: {0}us -- [ {1}% ]", dataRTOff.delay, dataRTOff.target.confidence);
+            #endregion
         }
+
+        // play with the Data elsewhere
+        //public Data StartSimultaneousRecording()
+        //{
+        //    return Synchr.StartRecording();
+        //}
+        // OR
+        //public void StartSimultaneousRecording()
+        //{
+        //    (Target sparkvueInfo, double delay) = Synchr.StartRecording();
+        //    // play with the Data here!
+        //}
+        // same goes for stopping => Synchr.StopRecording()
     }
 }
