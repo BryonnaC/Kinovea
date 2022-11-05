@@ -123,5 +123,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.ScreenManager\Kinovea.ScreenManager.csproj">
+      <Project>{25c4b2fb-ca90-4e2e-8046-106fcf36cb81}</Project>
+      <Name>Kinovea.ScreenManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea\Kinovea.csproj">
+      <Project>{bebdde90-1a14-47f9-9a2d-44b9b45c8502}</Project>
+      <Name>Kinovea</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
