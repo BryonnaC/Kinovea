@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProjectGuid>{43D0C326-347E-4635-AF2E-D0AFE84D5221}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Analysis_ter</RootNamespace>
@@ -86,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
-    <Compile Include="clicker.cs" />
+    <Compile Include="Synchrony.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
