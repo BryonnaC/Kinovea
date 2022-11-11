@@ -95,7 +95,12 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuWebsite = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
         #endregion
-        
+
+        #region Analysis Plug-in
+        private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTest = new ToolStripMenuItem();
+        #endregion
+
         private ToolStripButton toolOpenFile = new ToolStripButton();
         private ToolStripStatusLabel statusLabel = new ToolStripStatusLabel();
 
@@ -162,7 +167,7 @@ namespace Kinovea.Root
             Application.Run(mainWindow);
         }
         #endregion
-        
+
         #region IKernel Implementation
         public void BuildSubTree()
         {   
@@ -375,10 +380,20 @@ namespace Kinovea.Root
                 mnuAbout });
             #endregion
 
+            //--****-----------------****-----------------****--------------****--------------****------------------****--------------
+            #region Analysis
+            mnuAnalysis.Text = "Analysis";
+            #endregion
+            //--****-----------------****-----------------****--------------****--------------****------------------****--------------
+
             // Top level merge.
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp, mnuAnalysis });
             thisMenuStrip.AllowMerge = true;
+
+            //^^^ THIS IS WHERE THE TOOLBAR IS FINALIZED TO BECOME FILE|EDIT|VIEW ETC
+            //-----------------------------------------------------------------------------------------------------------------------------------
+            //
 
             ToolStripManager.Merge(thisMenuStrip, menu);
             
