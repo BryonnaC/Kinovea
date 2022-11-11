@@ -98,7 +98,7 @@ namespace Kinovea.Root
 
         #region Analysis Plug-in
         private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuTest = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPlaceholder = new ToolStripMenuItem();
         #endregion
 
         private ToolStripButton toolOpenFile = new ToolStripButton();
@@ -383,6 +383,9 @@ namespace Kinovea.Root
             //--****-----------------****-----------------****--------------****--------------****------------------****--------------
             #region Analysis
             mnuAnalysis.Text = "Analysis";
+            mnuPlaceholder.Text = "Placeholder";
+            mnuAnalysis.DropDownItems.AddRange(new ToolStripItem[] { mnuPlaceholder });
+            mnuPlaceholder.Click += MnuPlaceholder_Click;
             #endregion
             //--****-----------------****-----------------****--------------****--------------****------------------****--------------
 
@@ -400,6 +403,13 @@ namespace Kinovea.Root
             // We need to affect the Text properties before merging with submenus.
             RefreshCultureMenu();
         }
+
+        //--****-----------------****-----------------****--------------****--------------****------------------****--------------
+        private void MnuPlaceholder_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        //--****-----------------****-----------------****--------------****--------------****------------------****--------------
 
         private void GetSubModulesMenus(ToolStrip menu)
         {
