@@ -13,7 +13,7 @@ namespace Analysistem
      * 
      * this description may change, those last two lines make little sense
      */
-    static class Program    //consider renaming to something more useful? 
+    static class AnalysistemProgram    //consider renaming to something more useful? 
     {
         /// <summary>
         /// The main entry point for the application.
