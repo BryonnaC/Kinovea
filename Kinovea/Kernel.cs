@@ -95,7 +95,12 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuWebsite = new ToolStripMenuItem();
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
         #endregion
-        
+
+        #region Analysis Plug-in
+        private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuPlaceholder = new ToolStripMenuItem();
+        #endregion
+
         private ToolStripButton toolOpenFile = new ToolStripButton();
         private ToolStripStatusLabel statusLabel = new ToolStripStatusLabel();
 
@@ -103,44 +108,52 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public RootKernel()
+        public RootKernel(int version)
         {
-            log.Debug("Loading video readers.");
-            List<Type> videoReaders = new List<Type>();
-            videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
-            videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
-            videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
-            videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
-            videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
-            VideoTypeManager.LoadVideoReaders(videoReaders);
+            if(version == 1)
+            {
+                log.Debug("Loading video readers.");
+                List<Type> videoReaders = new List<Type>();
+                videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
+                videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
+                videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
+                videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
+                videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
+                VideoTypeManager.LoadVideoReaders(videoReaders);
 
-            log.Debug("Loading built-in camera managers.");
-            CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
-            CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
-            CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
+                log.Debug("Loading built-in camera managers.");
+                CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
 
-            log.Debug("Loading camera managers plugins.");
-            CameraTypeManager.LoadCameraManagersPlugins();
+                log.Debug("Loading camera managers plugins.");
+                CameraTypeManager.LoadCameraManagersPlugins();
 
-            log.Debug("Loading tools.");
-            ToolManager.LoadTools();
+                log.Debug("Loading tools.");
+                ToolManager.LoadTools();
 
-            BuildSubTree();
-            mainWindow = new KinoveaMainWindow(this);
-            NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
-            NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
-            NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
-            NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
+                BuildSubTree();
+                mainWindow = new KinoveaMainWindow(this);
+                NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
+                NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
+                NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+                NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
 
-            log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
-            ExtendMenu(mainWindow.menuStrip);
-            ExtendToolBar(mainWindow.toolStrip);
-            ExtendStatusBar(mainWindow.statusStrip);
-            ExtendUI();
+                log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
+                ExtendMenu(mainWindow.menuStrip);
+                ExtendToolBar(mainWindow.toolStrip);
+                ExtendStatusBar(mainWindow.statusStrip);
+                ExtendUI();
 
-            log.Debug("Register global services offered at Root level.");
+                log.Debug("Register global services offered at Root level.");
             
-            FormsHelper.SetMainForm(mainWindow);
+                FormsHelper.SetMainForm(mainWindow);
+            }
+            else
+            {
+                Console.WriteLine("ay");
+            }
+
         }
         #endregion
 
@@ -162,7 +175,7 @@ namespace Kinovea.Root
             Application.Run(mainWindow);
         }
         #endregion
-        
+
         #region IKernel Implementation
         public void BuildSubTree()
         {   
@@ -375,16 +388,39 @@ namespace Kinovea.Root
                 mnuAbout });
             #endregion
 
+            //--****-----------------****-----------------****--------------****--------------****------------------****--------------
+            #region Analysis
+            mnuAnalysis.Text = "Analysis";
+            mnuPlaceholder.Text = "Placeholder";
+            mnuAnalysis.DropDownItems.AddRange(new ToolStripItem[] { mnuPlaceholder });
+            mnuPlaceholder.Click += MnuPlaceholder_Click;
+            #endregion
+            //--****-----------------****-----------------****--------------****--------------****------------------****--------------
+
             // Top level merge.
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp, mnuAnalysis });
             thisMenuStrip.AllowMerge = true;
+
+            //^^^ THIS IS WHERE THE TOOLBAR IS FINALIZED TO BECOME FILE|EDIT|VIEW ETC
+            //-----------------------------------------------------------------------------------------------------------------------------------
+            //
 
             ToolStripManager.Merge(thisMenuStrip, menu);
             
             // We need to affect the Text properties before merging with submenus.
             RefreshCultureMenu();
         }
+
+        //--****-----------------****-----------------****--------------****--------------****------------------****--------------
+        private void MnuPlaceholder_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("Hey, I'm a placeholder");
+            AdapterLogic aL = new AdapterLogic();
+            aL.TestClick();
+            
+        }
+        //--****-----------------****-----------------****--------------****--------------****------------------****--------------
 
         private void GetSubModulesMenus(ToolStrip menu)
         {
