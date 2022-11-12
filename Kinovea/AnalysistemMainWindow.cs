@@ -10,8 +10,20 @@ using Kinovea.Services;
 
 namespace Kinovea.Root
 {
-    public partial class AnalysistemMainWindow : KinoveaMainWindow
+    public partial class AnalysistemMainWindow : Form
     {
+        #region Properties
+        public SupervisorUserInterface SupervisorControl
+        {
+            get { return supervisorView; }
+            set { supervisorView = value; }
+        }
+        public bool FullScreen
+        {
+            get { return fullScreen; }
+        }
+        #endregion
+
         #region Members
         private RootKernel rootKernel;
         private SupervisorUserInterface supervisorView;
@@ -22,7 +34,7 @@ namespace Kinovea.Root
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
-        public AnalysistemMainWindow(RootKernel rootKernel) : base (rootKernel)
+        public AnalysistemMainWindow(RootKernel rootKernel)
         {
             //InitializeComponent();
             log.Debug("Creating main UI window.");
@@ -56,6 +68,11 @@ namespace Kinovea.Root
             }
 
             EnableCopyData();
+        }
+
+        public void PlugUI(UserControl fileExplorer, UserControl screenManager)
+        {
+            supervisorView.PlugUI(fileExplorer, screenManager);
         }
 
         private void AnalysistemMainWindow_FormClosing(object sender, FormClosingEventArgs e)

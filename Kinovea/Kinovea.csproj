@@ -211,6 +211,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\AMainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\AMainWindow.Designer.cs">
+      <DependentUpon>AMainWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -294,6 +300,9 @@
     <Compile Include="Kernel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AnalysistemMainWindow.resx">
+      <DependentUpon>AnalysistemMainWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Languages\RootLang.ar.resx" />
     <EmbeddedResource Include="Languages\RootLang.bg.resx" />
     <EmbeddedResource Include="Languages\RootLang.ca.resx" />

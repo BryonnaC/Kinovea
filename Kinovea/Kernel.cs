@@ -54,6 +54,7 @@ namespace Kinovea.Root
         
         #region Members
         private KinoveaMainWindow mainWindow;
+        private AnalysistemMainWindow aMainWindow;
         private FileBrowserKernel fileBrowser;
         private UpdaterKernel updater;
         private ScreenManagerKernel screenManager;
@@ -151,7 +152,42 @@ namespace Kinovea.Root
             }
             else
             {
-                Console.WriteLine("ay");
+                log.Debug("Loading video readers.");
+                List<Type> videoReaders = new List<Type>();
+                videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
+                videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
+                videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
+                videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
+                videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
+                VideoTypeManager.LoadVideoReaders(videoReaders);
+
+                log.Debug("Loading built-in camera managers.");
+                CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
+
+                log.Debug("Loading camera managers plugins.");
+                CameraTypeManager.LoadCameraManagersPlugins();
+
+                log.Debug("Loading tools.");
+                ToolManager.LoadTools();
+
+                BuildSubTree();
+                aMainWindow = new AnalysistemMainWindow(this);
+                NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
+                NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
+                NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+                NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
+
+                log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
+                ExtendMenu(aMainWindow.menuStrip1);
+                ExtendToolBar(aMainWindow.toolStrip1);
+                //ExtendStatusBar(mainWindow.statusStrip);
+                ExtendUI2();
+
+                log.Debug("Register global services offered at Root level.");
+
+                FormsHelper.SetMainForm(aMainWindow);
             }
 
         }
@@ -175,6 +211,17 @@ namespace Kinovea.Root
             Application.Run(mainWindow);
         }
         #endregion
+
+        // ---------------------------- new code TBF (to be refactored)
+        public void Launch2()
+        {
+            /*screenManager.RecoverCrash();
+            screenManager.LoadDefaultWorkspace();*/
+
+            log.Debug("Calling Application.Run() to boot up the UI.");
+            Application.Run(aMainWindow);
+        }
+        // ------------------------------------------------------------
 
         #region IKernel Implementation
         public void BuildSubTree()
@@ -217,6 +264,15 @@ namespace Kinovea.Root
 
             mainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
             mainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+        }
+        public void ExtendUI2()
+        {
+            fileBrowser.ExtendUI();
+            updater.ExtendUI();
+            screenManager.ExtendUI();
+
+            aMainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
+            aMainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
