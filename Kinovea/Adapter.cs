@@ -7,13 +7,13 @@ using Analysistem;
 
 namespace Kinovea.Root
 {
-    class AdapterLogic
+    class Adapter : Controller
     {
-        Controller controller = new Controller();
+        //Controller controller = new Controller();
 
         public void TestClick()
         {
-            controller.StartSimultaneousRecording();
+            base.StartSimultaneousRecording();
         }
     }
 }
