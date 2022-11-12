@@ -105,7 +105,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapter.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Synchrony.cs" />
     <Compile Include="AnalysistemRootForm.cs">
