@@ -9,7 +9,7 @@ namespace Analysistem
      * This class is the UI's main point of entry.
      * It handles all callback functions and maps to the proper functionality 
      */
-    class Controller
+    public class Controller
     {
         public void StartSimultaneousRecording()
         {

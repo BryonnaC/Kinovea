@@ -1,4 +1,4 @@
-﻿using Kinovea.ScreenManager;
+﻿
 
 namespace Analysistem
 {

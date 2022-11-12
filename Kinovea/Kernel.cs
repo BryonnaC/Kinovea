@@ -108,44 +108,52 @@ namespace Kinovea.Root
         #endregion
 
         #region Constructor
-        public RootKernel()
+        public RootKernel(int version)
         {
-            log.Debug("Loading video readers.");
-            List<Type> videoReaders = new List<Type>();
-            videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
-            videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
-            videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
-            videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
-            videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
-            VideoTypeManager.LoadVideoReaders(videoReaders);
+            if(version == 1)
+            {
+                log.Debug("Loading video readers.");
+                List<Type> videoReaders = new List<Type>();
+                videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
+                videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
+                videoReaders.Add(typeof(Video.GIF.VideoReaderGIF));
+                videoReaders.Add(typeof(Video.SVG.VideoReaderSVG));
+                videoReaders.Add(typeof(Video.Synthetic.VideoReaderSynthetic));
+                VideoTypeManager.LoadVideoReaders(videoReaders);
 
-            log.Debug("Loading built-in camera managers.");
-            CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
-            CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
-            CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
+                log.Debug("Loading built-in camera managers.");
+                CameraTypeManager.LoadCameraManager(typeof(Camera.DirectShow.CameraManagerDirectShow));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.HTTP.CameraManagerHTTP));
+                CameraTypeManager.LoadCameraManager(typeof(Camera.FrameGenerator.CameraManagerFrameGenerator));
 
-            log.Debug("Loading camera managers plugins.");
-            CameraTypeManager.LoadCameraManagersPlugins();
+                log.Debug("Loading camera managers plugins.");
+                CameraTypeManager.LoadCameraManagersPlugins();
 
-            log.Debug("Loading tools.");
-            ToolManager.LoadTools();
+                log.Debug("Loading tools.");
+                ToolManager.LoadTools();
 
-            BuildSubTree();
-            mainWindow = new KinoveaMainWindow(this);
-            NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
-            NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
-            NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
-            NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
+                BuildSubTree();
+                mainWindow = new KinoveaMainWindow(this);
+                NotificationCenter.RecentFilesChanged += NotificationCenter_RecentFilesChanged;
+                NotificationCenter.FullScreenToggle += NotificationCenter_FullscreenToggle;
+                NotificationCenter.StatusUpdated += (s, e) => statusLabel.Text = e.Status;
+                NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked; 
 
-            log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
-            ExtendMenu(mainWindow.menuStrip);
-            ExtendToolBar(mainWindow.toolStrip);
-            ExtendStatusBar(mainWindow.statusStrip);
-            ExtendUI();
+                log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
+                ExtendMenu(mainWindow.menuStrip);
+                ExtendToolBar(mainWindow.toolStrip);
+                ExtendStatusBar(mainWindow.statusStrip);
+                ExtendUI();
 
-            log.Debug("Register global services offered at Root level.");
+                log.Debug("Register global services offered at Root level.");
             
-            FormsHelper.SetMainForm(mainWindow);
+                FormsHelper.SetMainForm(mainWindow);
+            }
+            else
+            {
+                Console.WriteLine("ay");
+            }
+
         }
         #endregion
 
@@ -407,7 +415,10 @@ namespace Kinovea.Root
         //--****-----------------****-----------------****--------------****--------------****------------------****--------------
         private void MnuPlaceholder_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Hey, I'm a placeholder");
+            AdapterLogic aL = new AdapterLogic();
+            aL.TestClick();
+            
         }
         //--****-----------------****-----------------****--------------****--------------****------------------****--------------
 

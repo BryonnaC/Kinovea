@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Kinovea.ScreenManager;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 // nuget => emgu.cv.bitmap
@@ -224,8 +223,8 @@ static class Synchronizer
             //==============================================================================================================================================================================================================================================
             //============================================================================== TODO: start/stop recording kinovea here =======================================================================================================================
             //==============================================================================================================================================================================================================================================
-            CaptureScreen captureScreen = new CaptureScreen();
-            captureScreen.TriggerCapture();                     //this capture screen will likely get changed as GUI is put together
+            //CaptureScreen captureScreen = new CaptureScreen();
+            //captureScreen.TriggerCapture();                     //this capture screen will likely get changed as GUI is put together
 
             stopwatch.Stop();
 
@@ -256,8 +255,8 @@ static class Synchronizer
                 //==========================================================================================================================================================================================================================================
                 //========================================================================== TODO: start/stop recording kinovea here =======================================================================================================================
                 //==========================================================================================================================================================================================================================================
-                CaptureScreen captureScreen = new CaptureScreen();  //this will change as GUI is built
-                captureScreen.TriggerCapture();
+                //CaptureScreen captureScreen = new CaptureScreen();  //this will change as GUI is built
+                //captureScreen.TriggerCapture();
 
                 barrier.SignalAndWait(); // wait to stop stopwatch
             };
@@ -293,6 +292,7 @@ static class Synchronizer
     #region FACADE XD
     public static Data Record(bool isStart, Units delayUnits = Units.Microseconds)
     {
+        //this is throwing an exception with CV and Emgu
         return SynchronizeRecording.Record(isStart, delayUnits);
     }
     public static Data RecordThreads(bool isStart, Units delayUnits = Units.Microseconds)
