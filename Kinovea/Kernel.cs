@@ -416,7 +416,7 @@ namespace Kinovea.Root
         private void MnuPlaceholder_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Hey, I'm a placeholder");
-            AdapterLogic aL = new AdapterLogic();
+            Adapter aL = new Adapter();
             aL.TestClick();
             
         }
