@@ -7,7 +7,7 @@ using Analysistem;
 
 namespace Kinovea.Root
 {
-    class Adapter : Controller
+    class AnalysisController : Controller
     {
         //Controller controller = new Controller();
 

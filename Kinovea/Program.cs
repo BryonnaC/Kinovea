@@ -80,10 +80,11 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
 
-            RootKernel kernel = new RootKernel(windowView);
+            
             
             if(windowView == 1)
             {
+                RootKernel kernel = new RootKernel(windowView);
                 kernel.Prepare();
             
                 log.Debug("Closing splash screen.");
@@ -94,13 +95,15 @@ namespace Kinovea.Root
             }
             else if(windowView == 2)
             {
+                Console.WriteLine("hey i'm here");
+                UIAdapter kernel = new UIAdapter(windowView);
                 kernel.Prepare();
 
-                /* log.Debug("Closing splash screen.");
-                splashForm.Close();*/
+                log.Debug("Closing splash screen.");
+                splashForm.Close();
 
                 log.Debug("Launching.");
-                kernel.Launch2();
+                kernel.Launch();
             }
 
         }

@@ -54,10 +54,10 @@ namespace Kinovea.Root
         
         #region Members
         private KinoveaMainWindow mainWindow;
-        private AnalysistemMainWindow aMainWindow;
-        private FileBrowserKernel fileBrowser;
-        private UpdaterKernel updater;
-        private ScreenManagerKernel screenManager;
+        //private AnalysistemMainWindow aMainWindow; - analysis system test window
+        protected FileBrowserKernel fileBrowser;
+        protected UpdaterKernel updater;
+        protected ScreenManagerKernel screenManager;
         private Stopwatch stopwatch = new Stopwatch();
         
         #region Menus
@@ -103,9 +103,9 @@ namespace Kinovea.Root
         #endregion
 
         private ToolStripButton toolOpenFile = new ToolStripButton();
-        private ToolStripStatusLabel statusLabel = new ToolStripStatusLabel();
+        protected ToolStripStatusLabel statusLabel = new ToolStripStatusLabel();
 
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         #region Constructor
@@ -152,7 +152,7 @@ namespace Kinovea.Root
             }
             else
             {
-                log.Debug("Loading video readers.");
+                /*log.Debug("Loading video readers.");
                 List<Type> videoReaders = new List<Type>();
                 videoReaders.Add(typeof(Video.Bitmap.VideoReaderBitmap));
                 videoReaders.Add(typeof(Video.FFMpeg.VideoReaderFFMpeg));
@@ -187,7 +187,7 @@ namespace Kinovea.Root
 
                 log.Debug("Register global services offered at Root level.");
 
-                FormsHelper.SetMainForm(aMainWindow);
+                FormsHelper.SetMainForm(aMainWindow);*/
             }
 
         }
@@ -219,7 +219,7 @@ namespace Kinovea.Root
             screenManager.LoadDefaultWorkspace();*/
 
             log.Debug("Calling Application.Run() to boot up the UI.");
-            Application.Run(aMainWindow);
+            //Application.Run(aMainWindow);
         }
         // ------------------------------------------------------------
 
@@ -271,8 +271,8 @@ namespace Kinovea.Root
             updater.ExtendUI();
             screenManager.ExtendUI();
 
-            aMainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
-            aMainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+            //aMainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
+            //aMainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
         public void RefreshUICulture()
         {
@@ -312,7 +312,7 @@ namespace Kinovea.Root
         #endregion
 
         #region Extension point helpers
-        private void GetModuleMenus(ToolStrip menu)
+        protected void GetModuleMenus(ToolStrip menu)
         {
             // Affectation of .Text property happens in RefreshCultureMenu
             
@@ -445,22 +445,23 @@ namespace Kinovea.Root
             #endregion
 
             //--****-----------------****-----------------****--------------****--------------****------------------****--------------
-            #region Analysis
+/*            #region Analysis
             mnuAnalysis.Text = "Analysis";
             mnuPlaceholder.Text = "Placeholder";
             mnuAnalysis.DropDownItems.AddRange(new ToolStripItem[] { mnuPlaceholder });
             mnuPlaceholder.Click += MnuPlaceholder_Click;
-            #endregion
+            #endregion*/
             //--****-----------------****-----------------****--------------****--------------****------------------****--------------
 
             // Top level merge.
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp, mnuAnalysis });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuFile, mnuEdit, mnuView, mnuImage, mnuVideo, mnuTools, mnuOptions, mnuHelp });
             thisMenuStrip.AllowMerge = true;
 
             //^^^ THIS IS WHERE THE TOOLBAR IS FINALIZED TO BECOME FILE|EDIT|VIEW ETC
             //-----------------------------------------------------------------------------------------------------------------------------------
-            //
+            // add to it with other class
+
 
             ToolStripManager.Merge(thisMenuStrip, menu);
             
@@ -472,19 +473,19 @@ namespace Kinovea.Root
         private void MnuPlaceholder_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Hey, I'm a placeholder");
-            Adapter aL = new Adapter();
+            AnalysisController aL = new AnalysisController();
             aL.TestClick();
             
         }
         //--****-----------------****-----------------****--------------****--------------****------------------****--------------
 
-        private void GetSubModulesMenus(ToolStrip menu)
+        protected void GetSubModulesMenus(ToolStrip menu)
         {
             fileBrowser.ExtendMenu(menu);
             updater.ExtendMenu(menu);
             screenManager.ExtendMenu(menu);
         }
-        private void GetModuleToolBar(ToolStrip toolbar)
+        protected void GetModuleToolBar(ToolStrip toolbar)
         {
             // Open.
             toolOpenFile.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -494,7 +495,7 @@ namespace Kinovea.Root
             
             toolbar.Items.Add(toolOpenFile);
         }
-        private void GetSubModulesToolBars(ToolStrip toolbar)
+        protected void GetSubModulesToolBars(ToolStrip toolbar)
         {
             fileBrowser.ExtendToolBar(toolbar);
             updater.ExtendToolBar(toolbar);
@@ -767,7 +768,7 @@ namespace Kinovea.Root
 
         #endregion        
         
-        private void NotificationCenter_RecentFilesChanged(object sender, EventArgs e)
+        protected void NotificationCenter_RecentFilesChanged(object sender, EventArgs e)
         {
             mnuHistory.DropDownItems.Clear();
 
@@ -829,12 +830,12 @@ namespace Kinovea.Root
             return added;
         }
 
-        private void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
+        protected void NotificationCenter_FullscreenToggle(object sender, EventArgs e)
         {
             FullscreenToggle();
         }
 
-        private void NotificationCenter_PreferenceTabAsked(object sender, PreferenceTabEventArgs e)
+        protected void NotificationCenter_PreferenceTabAsked(object sender, PreferenceTabEventArgs e)
         {
             FormPreferences2 fp = new FormPreferences2(e.Tab);
             fp.ShowDialog();

@@ -198,13 +198,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapter.cs" />
+    <Compile Include="AnalysisController.cs" />
     <Compile Include="AnalysistemMainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AnalysistemMainWindow.Designer.cs">
       <DependentUpon>AnalysistemMainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIAdapter.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
