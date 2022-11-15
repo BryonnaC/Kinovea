@@ -63,7 +63,7 @@ namespace Kinovea.Root
             GetAdditionalMenus(aMainWindow.menuStrip1);
             ExtendToolBar(aMainWindow.toolStrip1);
             //ExtendStatusBar(aMainWindow.statusStrip);
-            ExtendUI2();
+            ExtendUI();
 
             log.Debug("Register global services offered at Root level.");
 
@@ -79,7 +79,7 @@ namespace Kinovea.Root
             Application.Run(aMainWindow);
         }
 
-        public void ExtendUI2()
+        public new void ExtendUI()
         {
             fileBrowser.ExtendUI();
             updater.ExtendUI();

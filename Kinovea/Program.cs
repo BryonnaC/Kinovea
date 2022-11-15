@@ -80,7 +80,7 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
 
-            
+            //if statement for testing purposes -- will be changed TBD
             
             if(windowView == 1)
             {
