@@ -287,6 +287,13 @@ static class Synchronizer
     private static class SynchronizeCsv
     {
 
+        private static void combineCSV(string fileNameOne, string fileNameTwo, string fileNameDest)
+        {
+            var xPositions = File.ReadAllLines(fileNameOne);
+            var yPositions = File.ReadAllLines(fileNameTwo);
+            var result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
+            File.WriteAllLines(fileNameDest, result);
+        }
     }
 
     #region FACADE XD
