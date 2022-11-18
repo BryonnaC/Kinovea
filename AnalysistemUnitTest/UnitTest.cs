@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Linq;
 
 /* https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022#write-your-tests
  * 
@@ -35,7 +34,7 @@ using System.Linq;
  *      If the syntax still doesn't seem very intuitive, a good way to think of it is to read it like this:
  *          - Calling [Name/Action], when [WhatIsBeingTested], should [ExpectedResult]
  *      With the above example:
- *          - Calling Withdraw, when amount (is) more than balance, should throw (an) ArgumentOutOfRange (exception).
+ *          - Calling Withdraw, when amount more than balance, should throw ArgumentOutOfRange.
  *              
  *      In the circumstance where tests are being written *after* the relevant code, use the name of the method
  *          being tested for 'Name/Action.'
@@ -54,34 +53,33 @@ using System.Linq;
  *          Conversely, 'dev-const' variables should *only* be changed if we find the functionality of the test
  *          needs to be tweaked.
  *      If possible, try placing Assert statements between your 'dev-mut' and 'dev-const' sections as a way
- *          of both validating whatever any future developer attempts to hardcode for the test and explicitly stating
+ *          of validating whatever any future developer attempts to hardcode for the test and explicitly stating
  *          the expected parameter domains.
  *      If the method to be tested is private, *DO NOT* change its accessibility. Instead, use the Accessor class
- *          in Accessor.cs. Do not use the Accessor class if a method can be accessed normally. In general,
+ *          in Accessor.cs. *DO NOT* use the Accessor class if a method can be accessed normally. In general,
  *          methods should be declared in 'dev-const.'
  *          To declare a method:
- *              - Method<[ReturnType]> [MethodName] = Accessor.GetMethod(Classes.[ParentClassName], Methods.[MethodName]);
+ *              - Method<[ReturnType]> [MethodName] = Accessor.GetMethod(Types.[ParentTypeName], Methods.[MethodName]);
  *              - Put `object` for the ReturnType if void/unknown/irrelevant
  *          To call the method:
  *              - [MethodName].Call([params...]);
  *              - The params will not be type-checked at all. Not even the number of params. Be mindful.
  *          
- *      There should always exist a variable `expected` in 'dev-mut' and a variable `actual` in 'dev-const.'
+ *      A common pattern is to have a variable `expected` in 'dev-mut' and a variable `actual` in 'dev-const.'
  *          - `expected` will be hardcoded by the developer
  *          - `actual` will be populated in the Act section
  *          - These two variables will then be compared in the Assert section to validate the test
  *     
  *  - The Act section invokes the method under test with the arranged parameters.
- *      While it may be tempting to combine this section with Assert, and there certainly are circumstances where
- *          this pattern would be appropriate, as a matter of policy we will disallow this. Instead, at a minimum,
- *          the Act section should involve populating a variable `actual.`
  *      Where you place the Act and Assert sections (i.e., whatever degree of nesting) does not matter so long
  *          as Act is *always* entered before Assert.
  *  
  *  - The Assert section verifies that the action of the method under test behaves as expected.
  *      For .NET, methods in the Assert class are often used for verification.
- *      If you wish to print for debugging purposes, please place the command at the very end of the Assert
- *          section (or method body). This should help to prevent clutter.            
+ *      If you can reasonably fit both the Act and the Assert sections in a one-liner, then feel free to combine
+ *          the two into a single section.
+ *      Try to place all print commands between the Act and Assert sections. This should help to prevent 
+ *          clutter and will ensure the prints all fire before an assertion potentially throws an error.           
  */
 
 namespace AnalysistemUnitTest
@@ -109,29 +107,26 @@ namespace AnalysistemUnitTest
         {
             #region TEST
             /* Arrange */
-            // dev-mut
+            // dev-mut      (comment is here for example purposes)
             TimeSpan baseTicks = new TimeSpan(10_000);
             Units[] unitsToTest = { Units.Milliseconds, Units.Microseconds, Units.Nanoseconds };
             double[] expected = new double[] { 1.0, 1_000.0, 1_000_000.0 };
 
-            // dev-assert
+            // dev-assert   (comment is here for example purposes)
             Assert.AreEqual(unitsToTest.Length, expected.Length);
 
-            // dev-const
-            Method<double> ToUnits = Accessor.GetMethod(Classes.Synchronizer, Methods.ToUnits);
-            object[][] parameterValues = (from unit in unitsToTest select new object[] { baseTicks, unit }).ToArray();
+            // dev-const    (comment is here for example purposes)
+            Method<double> ToUnits = Accessor.GetMethod(Types.Synchronizer, Methods.ToUnits);
             double[] actual = new double[unitsToTest.Length];
 
             /* Act */
             for (int i = 0; i < unitsToTest.Length; i++)
-            {
-                actual[i] = ToUnits.Call(parameterValues[i]);
+                actual[i] = ToUnits.Call(baseTicks, unitsToTest[i]);
 
-                Console.WriteLine("{0} {1}", actual[i], unitsToTest[i].ToString());
-            }
-
+            Console.WriteLine($"{string.Join(", ", actual)}");
+            
             /* Assert */
-            Assert.AreEqual(expected.ToString(), actual.ToString());
+            CollectionAssert.AreEqual(expected, actual);
             #endregion
         }
 
@@ -146,14 +141,14 @@ namespace AnalysistemUnitTest
             //  but will remain here for now as an example for patterns.
 
             ///* Arrange */
-            //// dev-mut
+            //// dev-mut (comment is here for example purposes)
             //TimeSpan validTicks = new TimeSpan(10_000);
             //Units validUnit = Units.Milliseconds;
             //int invalidTicks = 10_000;
             //double invalidUnit = 0.0;
             //// expected = throws error
 
-            //// dev-const
+            //// dev-const (comment is here for example purposes)
             //MethodInfo ToUnits = typeof(Synchronizer).GetMethod("ToUnits", BindingFlags.NonPublic | BindingFlags.Static);
             //object[][] parameterValues = new object[][] 
             //{
@@ -202,13 +197,13 @@ namespace AnalysistemUnitTest
     }
 
     [TestClass]
-    public class SynchronizeCsvUnitTest
+    public class SynchronizeCsvUnitTest 
     {
         [TestMethod]
-        // name might need some work lol
-        public void CombineCsv_ValidFiles_CompoundCsvCreated()
+        // name might need some work
+        public void CombineCsv_CreamyCsvs_CompoundCsvCreated()
         {
-            Method<object> CombineCsv = Accessor.GetMethod(Classes.SynchronizeCsv, Methods.CombineCsv);
+            Method<object> CombineCsv = Accessor.GetMethod(Types.SynchronizeCsv, Methods.CombineCsv);
 
             CombineCsv.Call("", "", "");
         }
