@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace AnalysistemUnitTest
 {
+    // anything defined in the Classes enum *MUST* be added to the switch statement in GetClass() below
     enum Classes // classes which contain children to be tested
     {
         Synchronizer,
@@ -39,7 +40,6 @@ namespace AnalysistemUnitTest
         //  private class
         private const BindingFlags DefaultFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
-        // any class defined in the Classes enum *MUST* be added to the switch statement below
         public static Type GetClass(Classes className, BindingFlags bindingFlags = DefaultFlags)
         {
             switch (className)
