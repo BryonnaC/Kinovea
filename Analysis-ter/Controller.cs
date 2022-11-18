@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
     //TODO move SyncRecording to the Analysistem namespace
 //OR to a more general toolbox namespace -> tbd
 

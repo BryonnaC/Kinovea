@@ -15,9 +15,9 @@ using Emgu.CV.CvEnum;
 
 public enum Units:int // delay units
 {
-    Nanoseconds = 1_000_000,
-    Microseconds = 1_000,
     Milliseconds = 1,
+    Microseconds = 1_000,
+    Nanoseconds = 1_000_000,
 }
 
 // structs for returning information
@@ -26,7 +26,7 @@ public enum Units:int // delay units
 #region TARGET
 public struct Target // using TM_SQDIFF
 {
-    public Point location; // minLoc 
+    public Point location; // minLoc, adjusted per screen as minLoc has a default origin of (0,0)
     public double value; // minVal for client debugging
     public bool detected; // minVal < THRESHOLD
     public double confidence; // (1 - minVal/THRESHOLD) * 100 for perc representation of detection confidence cuz why not
@@ -82,12 +82,12 @@ public struct Data
 }
 #endregion
 
-static class Synchronizer
+public static class Synchronizer
 {
     #region HELPER FUNCTIONS
     private static double ToUnits(this TimeSpan elapsed, Units unit)
     {
-        return elapsed.Ticks / (double)TimeSpan.TicksPerMillisecond * (int) unit;
+        return elapsed.Ticks / (double)TimeSpan.TicksPerMillisecond * (int)unit;
     }
 
     // converts Bitmap (RGBA) to Mat (BGR)
