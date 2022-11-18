@@ -4,6 +4,8 @@ using System.Linq;
 
 /* https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022#write-your-tests
  * 
+ * To open the Test Explorer: Test > Test Explorer
+ * 
  * ===================================================================================================
  * ================ READ THE FOLLOWING IN ITS ENTIRETY BEFORE CONTRIBUTING UNIT TESTS ================
  * ===================================================================================================
@@ -105,6 +107,7 @@ namespace AnalysistemUnitTest
         // so now it exists as an example/reference
         public void ToUnits_ValidUnits_ReturnConvertedTime()
         {
+            #region TEST
             /* Arrange */
             // dev-mut
             TimeSpan baseTicks = new TimeSpan(10_000);
@@ -129,6 +132,7 @@ namespace AnalysistemUnitTest
 
             /* Assert */
             Assert.AreEqual(expected.ToString(), actual.ToString());
+            #endregion
         }
 
         [TestMethod]
@@ -136,6 +140,7 @@ namespace AnalysistemUnitTest
         {
             /* COMPILER WILL NOT ALLOW ARGS THAT WOULD BREAK THIS METHOD */
 
+            #region RIP
             // Got confused because MethodInfo.Invoke() allows you to pass variables that otherwise would
             //  have been flagged by the compiler. The following commented code is entirely unnecessary,
             //  but will remain here for now as an example for patterns.
@@ -192,6 +197,7 @@ namespace AnalysistemUnitTest
 
             //if (failedIterations.Count > 0)
             //    Assert.Fail($"Too few exceptions thrown: iteration(s) {string.Join(", ", failedIterations)} failed");
+            #endregion
         }
     }
 
