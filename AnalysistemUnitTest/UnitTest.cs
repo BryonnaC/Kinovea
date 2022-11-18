@@ -1,9 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
-using System.Diagnostics;
-using System.Reflection;
-using System.Collections.Generic;
 
 /* https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022#write-your-tests
  * 
@@ -57,6 +54,15 @@ using System.Collections.Generic;
  *      If possible, try placing Assert statements between your 'dev-mut' and 'dev-const' sections as a way
  *          of both validating whatever any future developer attempts to hardcode for the test and explicitly stating
  *          the expected parameter domains.
+ *      If the method to be tested is private, *DO NOT* change its accessibility. Instead, use the Accessor class
+ *          in Accessor.cs. Do not use the Accessor class if a method can be accessed normally. In general,
+ *          methods should be declared in 'dev-const.'
+ *          To declare a method:
+ *              - Method<[ReturnType]> [MethodName] = Accessor.GetMethod(Classes.[ParentClassName], Methods.[MethodName]);
+ *              - Put `object` for the ReturnType if void/unknown/irrelevant
+ *          To call the method:
+ *              - [MethodName].Call([params...]);
+ *              - The params will not be type-checked at all. Not even the number of params. Be mindful.
  *          
  *      There should always exist a variable `expected` in 'dev-mut' and a variable `actual` in 'dev-const.'
  *          - `expected` will be hardcoded by the developer
@@ -67,7 +73,8 @@ using System.Collections.Generic;
  *      While it may be tempting to combine this section with Assert, and there certainly are circumstances where
  *          this pattern would be appropriate, as a matter of policy we will disallow this. Instead, at a minimum,
  *          the Act section should involve populating a variable `actual.`
- *      Placing the Act and Assert sections within the same nested block is allowed.
+ *      Where you place the Act and Assert sections (i.e., whatever degree of nesting) does not matter so long
+ *          as Act is *always* entered before Assert.
  *  
  *  - The Assert section verifies that the action of the method under test behaves as expected.
  *      For .NET, methods in the Assert class are often used for verification.
@@ -108,14 +115,14 @@ namespace AnalysistemUnitTest
             Assert.AreEqual(unitsToTest.Length, expected.Length);
 
             // dev-const
-            MethodInfo ToUnits = typeof(Synchronizer).GetMethod("ToUnits", BindingFlags.NonPublic | BindingFlags.Static);
+            Method<double> ToUnits = Accessor.GetMethod(Classes.Synchronizer, Methods.ToUnits);
             object[][] parameterValues = (from unit in unitsToTest select new object[] { baseTicks, unit }).ToArray();
             double[] actual = new double[unitsToTest.Length];
 
             /* Act */
             for (int i = 0; i < unitsToTest.Length; i++)
             {
-                actual[i] = (double)ToUnits.Invoke(null, parameterValues[i]);
+                actual[i] = ToUnits.Call(parameterValues[i]);
 
                 Console.WriteLine("{0} {1}", actual[i], unitsToTest[i].ToString());
             }
@@ -123,10 +130,6 @@ namespace AnalysistemUnitTest
             /* Assert */
             Assert.AreEqual(expected.ToString(), actual.ToString());
         }
-
-        //[TestMethod]
-        //public void [record] () {
-        //    }
 
         [TestMethod]
         public void ToUnits_InvalidArgs_Throw()
@@ -192,11 +195,16 @@ namespace AnalysistemUnitTest
         }
     }
 
+    [TestClass]
     public class SynchronizeCsvUnitTest
     {
         [TestMethod]
-        public void TestMethod1()
+        // name might need some work lol
+        public void CombineCsv_ValidFiles_CompoundCsvCreated()
         {
+            Method<object> CombineCsv = Accessor.GetMethod(Classes.SynchronizeCsv, Methods.CombineCsv);
+
+            CombineCsv.Call("", "", "");
         }
     }
 }

@@ -106,7 +106,7 @@ public static class Synchronizer
         // if minVal from `DetectTarget()` is below this value, the detection is *likely* to be accurate
         // "likely" because these values tend to be inconsistent across computers and especially between different
         //      templates (e.g., SparkVue's THRESHOLD is approx. double that of Kinovea's (from my own testing!))
-        private const double THRESHOLD = 9_000_000.0;
+        private const double Threshold = 9_000_000.0;
         private static readonly Screen[] screens = Screen.AllScreens;
         #endregion
 
@@ -186,7 +186,7 @@ public static class Synchronizer
             Point maxLoc = new Point(); // used for other TemplateMatchingTypes
             CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
 
-            return new Target(minLoc, minVal, THRESHOLD, screen);
+            return new Target(minLoc, minVal, Threshold, screen);
         }
 
         // detect target on all screens
@@ -286,12 +286,12 @@ public static class Synchronizer
 
     private static class SynchronizeCsv
     {
-
-        private static void combineCSV(string fileNameOne, string fileNameTwo, string fileNameDest)
+        private static void CombineCsv(string fileNameOne, string fileNameTwo, string fileNameDest)
         {
-            var xPositions = File.ReadAllLines(fileNameOne);
-            var yPositions = File.ReadAllLines(fileNameTwo);
-            var result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
+            string[] xPositions = File.ReadAllLines(fileNameOne);
+            string[] yPositions = File.ReadAllLines(fileNameTwo);
+            IEnumerable<string> result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
+
             File.WriteAllLines(fileNameDest, result);
         }
     }
