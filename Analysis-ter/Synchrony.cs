@@ -15,9 +15,9 @@ using Emgu.CV.CvEnum;
 
 public enum Units:int // delay units
 {
-    Nanoseconds = 1_000_000,
-    Microseconds = 1_000,
     Milliseconds = 1,
+    Microseconds = 1_000,
+    Nanoseconds = 1_000_000,
 }
 
 // structs for returning information
@@ -26,7 +26,7 @@ public enum Units:int // delay units
 #region TARGET
 public struct Target // using TM_SQDIFF
 {
-    public Point location; // minLoc 
+    public Point location; // minLoc, adjusted per screen as minLoc has a default origin of (0,0)
     public double value; // minVal for client debugging
     public bool detected; // minVal < THRESHOLD
     public double confidence; // (1 - minVal/THRESHOLD) * 100 for perc representation of detection confidence cuz why not
@@ -82,20 +82,12 @@ public struct Data
 }
 #endregion
 
-// structs for CSV data
-
-#region 
-
-
-
-#endregion
-
-static class Synchronizer
+public static class Synchronizer
 {
     #region HELPER FUNCTIONS
     private static double ToUnits(this TimeSpan elapsed, Units unit)
     {
-        return elapsed.Ticks / (double)TimeSpan.TicksPerMillisecond * (int) unit;
+        return elapsed.Ticks / (double)TimeSpan.TicksPerMillisecond * (int)unit;
     }
 
     // converts Bitmap (RGBA) to Mat (BGR)
@@ -114,7 +106,7 @@ static class Synchronizer
         // if minVal from `DetectTarget()` is below this value, the detection is *likely* to be accurate
         // "likely" because these values tend to be inconsistent across computers and especially between different
         //      templates (e.g., SparkVue's THRESHOLD is approx. double that of Kinovea's (from my own testing!))
-        private const double THRESHOLD = 9_000_000.0;
+        private const double Threshold = 9_000_000.0;
         private static readonly Screen[] screens = Screen.AllScreens;
         #endregion
 
@@ -194,7 +186,7 @@ static class Synchronizer
             Point maxLoc = new Point(); // used for other TemplateMatchingTypes
             CvInvoke.MinMaxLoc(result, ref minVal, ref maxVal, ref minLoc, ref maxLoc);
 
-            return new Target(minLoc, minVal, THRESHOLD, screen);
+            return new Target(minLoc, minVal, Threshold, screen);
         }
 
         // detect target on all screens
@@ -307,6 +299,7 @@ static class Synchronizer
             string[] xPositions = File.ReadAllLines(fileNameOne);
             string[] yPositions = File.ReadAllLines(fileNameTwo);
             IEnumerable<string> result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
+
             File.WriteAllLines(fileNameDest, result);
         }
     }

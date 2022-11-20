@@ -16,6 +16,7 @@ namespace Kinovea.Root
             //will probably need to put call to start Kinovea recording in here
             //because anything in analysistem project/namespace will not be able to access it
             base.StartSimultaneousRecording();
+            Console.WriteLine("hey cloin");
         }
     }
 }
