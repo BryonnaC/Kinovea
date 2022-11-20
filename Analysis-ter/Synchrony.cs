@@ -82,6 +82,14 @@ public struct Data
 }
 #endregion
 
+// structs for CSV data
+
+#region 
+
+
+
+#endregion
+
 static class Synchronizer
 {
     #region HELPER FUNCTIONS
@@ -287,11 +295,18 @@ static class Synchronizer
     private static class SynchronizeCsv
     {
 
-        private static void combineCSV(string fileNameOne, string fileNameTwo, string fileNameDest)
+
+        /// <summary>
+        /// Method <c>CombineCSVFiles</c> places the contents of two .csv files side-by-side in a new .csv file
+        /// </summary>
+        /// <param name="fileNameOne"></param>
+        /// <param name="fileNameTwo"></param>
+        /// <param name="fileNameDest"></param>
+        private static void CombineCSVFiles(string fileNameOne, string fileNameTwo, string fileNameDest)
         {
-            var xPositions = File.ReadAllLines(fileNameOne);
-            var yPositions = File.ReadAllLines(fileNameTwo);
-            var result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
+            string[] xPositions = File.ReadAllLines(fileNameOne);
+            string[] yPositions = File.ReadAllLines(fileNameTwo);
+            IEnumerable<string> result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
             File.WriteAllLines(fileNameDest, result);
         }
     }

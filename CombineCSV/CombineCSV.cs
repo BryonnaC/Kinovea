@@ -1,10 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
 namespace CombineCSV
 {
+    public struct CSV
+    {
+        public List<string> Lines;
+    }
+
+    public struct CSVLine
+    {
+        public List<string> Fields;
+    }
+
+    /// <summary>
+    /// Class <c>CombineCSV</c> contains fuctionality related to combining and synchronizing .csv files from motion analysis and force plate data
+    /// </summary>
     public partial class CombineCSV : Form
     {
         public CombineCSV()
@@ -12,21 +26,30 @@ namespace CombineCSV
             InitializeComponent();
         }
 
-        private void combineCSV(string fileNameOne, string fileNameTwo, string fileNameDest)
+        /// <summary>
+        /// Method <c>CombineCSVFiles</c> places the contents of two .csv files side-by-side in a new .csv file
+        /// </summary>
+        /// <param name="fileNameOne"></param>
+        /// <param name="fileNameTwo"></param>
+        /// <param name="fileNameDest"></param>
+        private void CombineCSVFiles(string fileNameOne, string fileNameTwo, string fileNameDest)
         {
-            var xPositions = File.ReadAllLines(fileNameOne);
-            var yPositions = File.ReadAllLines(fileNameTwo);
-            var result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
+            string[] xPositions = File.ReadAllLines(fileNameOne);
+            string[] yPositions = File.ReadAllLines(fileNameTwo);
+            IEnumerable<string> result = xPositions.Zip(yPositions, (f, s) => string.Join(",", f, s));
             File.WriteAllLines(fileNameDest, result);
         }
 
-        private bool populateTextBoxFromClipboard(TextBox textBox)
+        private bool PopulateTextBoxFromClipboard(TextBox textBox)
         {
             if (!Clipboard.ContainsText(TextDataFormat.Text)) return false;
             string clipboardText = Clipboard.GetText().Trim('"');
 
-            if (!FileUtils.IsFilePathValid(clipboardText)) return false;
-            if (!clipboardText.Contains(".csv")) {
+            FileUtils.PathInfo clipboardPath = new FileUtils.PathInfo(clipboardText);
+
+            if (!FileUtils.IsFilePathValid(clipboardPath)) return false;
+            if (!clipboardText.Contains(".csv"))
+            {
                 lblUserMessage.Text = "File must end in \".csv\"";
                 return false;
             }
@@ -38,20 +61,23 @@ namespace CombineCSV
 
         private void btnPasteXPos_Click(object sender, EventArgs e)
         {
-            if(!populateTextBoxFromClipboard(txtXPos))
+            if (!PopulateTextBoxFromClipboard(txtXPos))
             {
                 lblUserMessage.Text = "Clipboard must contain valid text!";
-            } else {
+            }
+            else
+            {
                 lblUserMessage.Text = "";
             }
         }
 
         private void btnPasteYPos_Click(object sender, EventArgs e)
         {
-            if (!populateTextBoxFromClipboard(txtYPos))
+            if (!PopulateTextBoxFromClipboard(txtYPos))
             {
                 lblUserMessage.Text = "Clipboard must contain valid text!";
-            } else
+            }
+            else
             {
                 lblUserMessage.Text = "";
             }
@@ -63,15 +89,18 @@ namespace CombineCSV
 
             string xPosText = txtXPos.Text.Trim('"');
             string yPosText = txtYPos.Text.Trim('"');
-            if (xPosText.Length == 0) {
+            if (xPosText.Length == 0)
+            {
                 lblUserMessage.Text = "X positions file path cannot be empty";
                 return;
             }
-            if (yPosText.Length == 0) {
+            if (yPosText.Length == 0)
+            {
                 lblUserMessage.Text = "Y positions file path cannot be empty";
                 return;
             }
-            if (xPosText == yPosText) {
+            if (xPosText == yPosText)
+            {
                 lblUserMessage.Text = "Files cannot be the same!";
                 return;
             }
@@ -79,33 +108,57 @@ namespace CombineCSV
             string yPosFilename = Path.GetFileName(yPosText);
             string destFilename = xPosText.Replace(".csv", "") + yPosFilename;
 
-            combineCSV(xPosText, yPosText, destFilename);
+            CombineCSVFiles(xPosText, yPosText, destFilename);
             lblUserMessage.Text = "Success!";
         }
     }
 
     public static class FileUtils
     {
-        public static bool IsFilePathValid(string pathName)
+        public struct PathInfo
         {
-            if (pathName.Trim() == string.Empty) return false;
+            public string PathString;
+            public string PathName;
+            public string FileName;
 
-            string pathname;
-            string filename;
-            try
+            public PathInfo(string path)
             {
-                pathname = Path.GetPathRoot(pathName);
-                filename = Path.GetFileName(pathName);
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
+                PathString= path;
+                PathName = "";
+                FileName = "";
 
-            if (filename.Trim() == string.Empty) return false;
-            if (!pathname.Contains("\\")) return false;
-            if (pathname.IndexOfAny(Path.GetInvalidPathChars()) >= 0) return false;
-            if (filename.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) return false;
+                if (path.Trim() == string.Empty) return;
+                
+                string pathName = "";
+                string fileName = "";
+                try
+                {
+                    pathName = Path.GetPathRoot(path);
+                    fileName = Path.GetFileName(path);
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
+
+                PathName = pathName;
+                FileName = fileName;
+            }
+        }
+
+        public static bool IsFilePathValid(PathInfo path)
+        {
+            if (path.FileName.Trim() == string.Empty) return false;
+            if (!path.PathName.Contains("\\")) return false;
+            if (path.PathName.IndexOfAny(Path.GetInvalidPathChars()) >= 0) return false;
+            if (path.FileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) return false;
+
+            return true;
+        }
+
+        public static bool IsFileCSV(PathInfo path)
+        {
+            if (!path.FileName.EndsWith(".csv")) return false;
 
             return true;
         }
