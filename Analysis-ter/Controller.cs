@@ -16,30 +16,15 @@ namespace Analysistem
     {
         public void StartSimultaneousRecording()
         {
-            int indexOfTheHeaderThatWeWantToPrintRightNow = 0;
-            CsvFile testFile = CsvCombiner.CombineCSVFiles("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", "", new string[] { });
-            foreach (List<string> column in testFile.columns)
-            {
-                Console.WriteLine(testFile.headers[indexOfTheHeaderThatWeWantToPrintRightNow++]);
-                foreach (string s in column)
-                {
-                    Console.Write(s + " ");
-                }
-                Console.WriteLine();
-            }
-            IEnumerable<string> serial = testFile.Serialize();
+            CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
 
-            testFile.Test(serial);
-            indexOfTheHeaderThatWeWantToPrintRightNow = 0;
-            foreach (List<string> column in testFile.columns)
-            {
-                Console.WriteLine(testFile.headers[indexOfTheHeaderThatWeWantToPrintRightNow++]);
-                foreach (string s in column)
-                {
-                    Console.Write(s + " ");
-                }
-                Console.WriteLine();
-            }
+            Console.WriteLine("\n" + testFile);
+
+            IEnumerable<string> serial = testFile.Serialize();
+            Console.WriteLine(string.Join("\n", serial) + "\n");
+            testFile.Load(null, serial);
+
+            Console.WriteLine(testFile);
 
             ////TODO put call to clicker.cs in this function
             //#region Synchrony DEMO
