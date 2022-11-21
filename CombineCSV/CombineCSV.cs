@@ -123,12 +123,12 @@ namespace CombineCSV
 
             public PathInfo(string path)
             {
-                PathString= path;
+                PathString = path;
                 PathName = "";
                 FileName = "";
 
                 if (path.Trim() == string.Empty) return;
-                
+
                 string pathName = "";
                 string fileName = "";
                 try

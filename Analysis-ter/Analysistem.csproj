@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="CsvCombiner.cs" />
     <Compile Include="Synchrony.cs" />
     <Compile Include="AnalysistemRootForm.cs">
       <SubType>Form</SubType>

@@ -269,7 +269,7 @@ namespace CombineCSV
             this.btnPasteYPos.UseVisualStyleBackColor = true;
             this.btnPasteYPos.Click += new System.EventHandler(this.btnPasteYPos_Click);
             // 
-            // Form1
+            // CombineCSV
             // 
             this.AcceptButton = this.btnCombine;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -279,7 +279,7 @@ namespace CombineCSV
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MinimumSize = new System.Drawing.Size(97, 91);
-            this.Name = "Form1";
+            this.Name = "CombineCSV";
             this.Text = "CombineCSV";
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
