@@ -97,11 +97,6 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuAbout = new ToolStripMenuItem();
         #endregion
 
-        #region Analysis Plug-in
-        private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuPlaceholder = new ToolStripMenuItem();
-        #endregion
-
         private ToolStripButton toolOpenFile = new ToolStripButton();
         protected ToolStripStatusLabel statusLabel = new ToolStripStatusLabel();
 

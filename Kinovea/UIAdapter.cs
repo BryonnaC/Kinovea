@@ -27,6 +27,8 @@ namespace Kinovea.Root
         #region Analysis Menu Items
         private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlaceholder = new ToolStripMenuItem();
+        //To encapsulate the button clicks necessary to begin recording -- this can/will be moved later
+        private ToolStripMenuItem mnuVideoRecordingWrapper = new ToolStripMenuItem();
         #endregion
 
         public UIAdapter(int version) : base(version)

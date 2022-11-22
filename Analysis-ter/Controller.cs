@@ -22,7 +22,7 @@ namespace Analysistem
             //PressKey('a');
 
             // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger in FileHandler.cs
-            Data data = ExportSparkvue();
+            Data data = ExportSparkvue();   //TODO this line is throwing an exception still
             Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
