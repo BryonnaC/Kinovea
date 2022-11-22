@@ -105,9 +105,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FakeUser.cs" />
     <Compile Include="Controller.cs" />
-    <Compile Include="CsvCombiner.cs" />
-    <Compile Include="Synchrony.cs" />
+    <Compile Include="Csv.cs" />
+    <Compile Include="FileHandler.cs" />
+    <Compile Include="Time.cs" />
+    <Compile Include="Synchronizer.cs" />
     <Compile Include="AnalysistemRootForm.cs">
       <SubType>Form</SubType>
     </Compile>

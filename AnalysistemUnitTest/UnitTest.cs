@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Analysistem.Utils;
+using Analysistem;
 
 /* https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022#write-your-tests
  * 
@@ -13,7 +15,7 @@ using System;
  *      a corresponding unit test class in this file. This is mostly just to encapsulate tests/scope method names.
  *      
  *      
- *  The naming of methods should adhere to the following pattern (if possible):
+ *  The naming of methods should adhere to the following pattern (when possible):
  *      [Name/Action]_[WhatIsBeingTested]_[ExpectedResult]
  *      
  *      e.g., Imagine we're testing a banking system and wanted to test withdrawing. In this scenario,
@@ -41,7 +43,7 @@ using System;
  *      
  *      
  *  We will rely on the AAA (Arrange, Act, Assert) pattern as our methodology for writing unit tests.
- *  This should be strictly adhered to as much as possible (although, I'm sure exceptions will exist).
+ *  This should be strictly adhered to as much as possible (although, exceptions may exist).
  *
  *  - The Arrange section of a unit test method initializes objects and sets the value of 
  *      the data that is passed to the method under test.
@@ -58,10 +60,10 @@ using System;
  *      If the method to be tested is private, *DO NOT* change its accessibility. Instead, use the Accessor class
  *          in Accessor.cs. *DO NOT* use the Accessor class if a method can be accessed normally. In general,
  *          methods should be declared in 'dev-const.'
- *          To declare a method:
+ *          To declare a method using Accessor:
  *              - Method<[ReturnType]> [MethodName] = Accessor.GetMethod(Types.[ParentTypeName], Methods.[MethodName]);
  *              - Put `object` for the ReturnType if void/unknown/irrelevant
- *          To call the method:
+ *          To call the method using Accessor:
  *              - [MethodName].Call([params...]);
  *              - The params will not be type-checked at all. Not even the number of params. Be mindful.
  *          
@@ -116,14 +118,14 @@ namespace AnalysistemUnitTest
             Assert.AreEqual(unitsToTest.Length, expected.Length);
 
             // dev-const    (comment is here for example purposes)
-            Method<double> ToUnits = Accessor.GetMethod(Types.Synchronizer, Methods.ToUnits);
             double[] actual = new double[unitsToTest.Length];
 
             /* Act */
             for (int i = 0; i < unitsToTest.Length; i++)
-                actual[i] = ToUnits.Call(baseTicks, unitsToTest[i]);
+                actual[i] = baseTicks.ToUnits(unitsToTest[i]);
 
-            Console.WriteLine($"{string.Join(", ", actual)}");
+            // print        (comment is here for example purposes)
+            Console.WriteLine(string.Join(", ", actual));
             
             /* Assert */
             CollectionAssert.AreEqual(expected, actual);
@@ -203,9 +205,9 @@ namespace AnalysistemUnitTest
         // name might need some work
         public void CombineCsv_CreamyCsvs_CompoundCsvCreated()
         {
-            Method<object> CombineCsv = Accessor.GetMethod(Types.SynchronizeCsv, Methods.CombineCsv);
+            Method<CsvFile> CombineCsv = Accessor.GetMethod(Types.SynchronizeCsv, Methods.CombineCsv);
 
-            CombineCsv.Call("", "", "");
+            CombineCsv.Test("", "", "");
         }
     }
 }

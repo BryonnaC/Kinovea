@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using Analysistem;
 
 namespace AnalysistemUnitTest
 {
-    // anything defined in the Classes enum *MUST* be added to the switch statement in GetClass() below
+    // anything defined in the Types enum *MUST* be added to the switch statement in GetType() below
     enum Types // Types (typically, structs & classes) which contain children to be tested
     {
         Synchronizer,
@@ -21,11 +22,11 @@ namespace AnalysistemUnitTest
     delegate object _Method(params object[] arguments);
     struct Method<T>
     {
-        public _Method<T> Call;
+        public _Method<T> Test;
 
         public Method(_Method method)
         {
-            Call = (parameters) => (T)method(parameters);
+            Test = (parameters) => (T)method(parameters);
         }
 
         public static implicit operator Method<T>(_Method method) => new Method<T>(method);

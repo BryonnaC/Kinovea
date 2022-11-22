@@ -15,7 +15,9 @@ namespace Kinovea.Root
         {
             //will probably need to put call to start Kinovea recording in here
             //because anything in analysistem project/namespace will not be able to access it
-            base.StartSimultaneousRecording();
+            // can we pass it in as a callback?
+            // e.g., base.RunDemo(StartRecording); then just pass it through to our Record?
+            base.RunDemo();
             Console.WriteLine("hey cloin");
         }
     }

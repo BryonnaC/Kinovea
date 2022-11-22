@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -26,17 +27,17 @@ namespace Analysistem
             Merge(pathTwo, ignoreColumns);
         }
 
-        // temporary; for testing
-        public void Load(string path)
-        {
-            Load(null, new string[] { "test1,test2,test3", "1,2,3", "11,22,33", "111,222,333" });
-        }
+        // for testing:
+        //public void Load(string path)
+        //{
+        //    Load(null, new string[] { "test1,test2,test3", "1,2,3", "11,22,33", "111,222,333" });
+        //}
 
-        public void Load(string path, IEnumerable<string> tempTest)
+        public void Load(string path) // for testing: (..., IEnumerable<string> tempTest)
         {
-            //string[] lines = File.ReadAllLines(path);
-
-            string[][] cells = tempTest.Select((line) => line.Split(',')).ToArray();
+            string[] lines = File.ReadAllLines(path);
+            // for testing: replace `lines` with `tempTest`
+            string[][] cells = lines.Select((line) => line.Split(',')).ToArray();
 
             columns = new List<List<string>>();
             headers = cells[0].ToList();
@@ -46,7 +47,7 @@ namespace Analysistem
                 for (int col = 0; col < cells[row].Length; col++)
                 {
                     if (columns.Count == col) columns.Add(new List<string>());
-                    
+
                     columns[col].Add(cells[row][col]);
                 }
             }
@@ -60,6 +61,8 @@ namespace Analysistem
 
         public void Merge(CsvFile fileTwo, string[] ignoreColumns)
         {
+            if (ignoreColumns == null) return;
+
             foreach (string keyword in ignoreColumns)
             {
                 for (int index = 0; index < fileTwo.headers.Count; index++)
@@ -115,42 +118,8 @@ namespace Analysistem
 
             return sb.ToString();
         }
-    } // Coluin is gy
-      //Cloin Alcie super mega fucking aw3eesome how we can do this shit you fucking ucnt ass mat\atrooujhp
-      //so when can I go eat dinner
-      //i like WATCHING myself type on cloins screen its just a little laggy
-
-
-    //static class CsvCombiner
-    //{
-    //    /// <summary>
-    //    /// Method <c>CombineCSVFiles</c> places the contents of two .csv files side-by-side in a new .csv file
-    //    /// </summary>
-    //    /// <param name="fileNameOne"></param>
-    //    /// <param name="fileNameTwo"></param>
-    //    /// <param name="fileNameDest"></param>
-    //    public static CsvFile CombineCSVFiles(string fileNameOne, string fileNameTwo, string fileNameDest, string[] ignoreColumns)
-    //    {
-    //        CsvFile fileOne = new CsvFile(fileNameOne);
-    //        CsvFile fileTwo = new CsvFile(fileNameTwo);
-   
-    //        foreach (string keyword in ignoreColumns)
-    //        {
-    //            for (int index = 0; index < fileTwo.headers.Count; index++)
-    //            {
-    //                if (fileTwo.headers[index].ToLower().Contains(keyword.ToLower()))
-    //                {
-    //                    fileTwo.headers.RemoveAt(index);
-    //                    fileTwo.columns.RemoveAt(index);
-    //                    index--;
-    //                }
-    //            }
-    //        }
-
-    //        fileOne.headers.InsertRange(fileOne.headers.Count, fileTwo.headers);
-    //        fileOne.columns.InsertRange(fileOne.columns.Count, fileTwo.columns);
-
-    //        return fileOne;
-    //    }
-    //}
-}
+    }
+}// Coluin is gy
+    //Cloin Alcie super mega fucking aw3eesome how we can do this shit you fucking ucnt ass mat\atrooujhp
+    //so when can I go eat dinner
+    //i like TOUCHING myself. type on cloins screen its just a little laggy
