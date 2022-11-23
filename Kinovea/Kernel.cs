@@ -218,15 +218,7 @@ namespace Kinovea.Root
             mainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
             mainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
-        public void ExtendUI2()
-        {
-            fileBrowser.ExtendUI();
-            updater.ExtendUI();
-            screenManager.ExtendUI();
 
-            //aMainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
-            //aMainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
-        }
         public void RefreshUICulture()
         {
             log.Debug("RefreshUICulture - Reload localized strings for the whole tree.");
@@ -422,16 +414,6 @@ namespace Kinovea.Root
             RefreshCultureMenu();
         }
 
-        //--****-----------------****-----------------****--------------****--------------****------------------****--------------
-        private void MnuPlaceholder_Click(object sender, EventArgs e)
-        {
-            Console.WriteLine("Hey, I'm a placeholder");
-            AnalysisController aL = new AnalysisController();
-            aL.TestClick();
-            
-        }
-        //--****-----------------****-----------------****--------------****--------------****------------------****--------------
-
         protected void GetSubModulesMenus(ToolStrip menu)
         {
             fileBrowser.ExtendMenu(menu);
@@ -454,7 +436,7 @@ namespace Kinovea.Root
             updater.ExtendToolBar(toolbar);
             screenManager.ExtendToolBar(toolbar);
         }
-        private void RefreshCultureMenu()
+        protected void RefreshCultureMenu()
         {
             mnuFile.Text = RootLang.mnuFile;
             mnuOpenFile.Text = ScreenManagerLang.mnuOpenVideo;
@@ -509,7 +491,7 @@ namespace Kinovea.Root
         #region Menus Event Handlers
 
         #region File
-        private void mnuOpenFileOnClick(object sender, EventArgs e)
+        protected void mnuOpenFileOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
             
@@ -517,7 +499,7 @@ namespace Kinovea.Root
             if (!string.IsNullOrEmpty(filename))
                 OpenFromPath(filename);
         }
-        private void mnuOpenReplayWatcherOnClick(object sender, EventArgs e)
+        protected void mnuOpenReplayWatcherOnClick(object sender, EventArgs e)
         {
             NotificationCenter.RaiseStopPlayback(this);
 
@@ -528,21 +510,21 @@ namespace Kinovea.Root
             OpenFromPath(path);
         }
 
-        private void mnuHistoryResetOnClick(object sender, EventArgs e)
+        protected void mnuHistoryResetOnClick(object sender, EventArgs e)
         {
             PreferencesManager.FileExplorerPreferences.ResetRecentFiles();
             PreferencesManager.Save();
         }
-        private void menuQuitOnClick(object sender, EventArgs e)
+        protected void menuQuitOnClick(object sender, EventArgs e)
         {
             Application.Exit();
         }
         #endregion
 
         #region View
-        private void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
+        protected void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
         {
-            if (mainWindow.SupervisorControl.IsExplorerCollapsed)
+            if (mainWindow.SupervisorControl.IsExplorerCollapsed)   //TODO need to remake this function for subclass adapter
             {
                 mainWindow.SupervisorControl.ExpandExplorer(true);
             }
@@ -551,20 +533,20 @@ namespace Kinovea.Root
                 mainWindow.SupervisorControl.CollapseExplorer();
             }
         }
-        private void mnuFullScreenOnClick(object sender, EventArgs e)
+        protected void mnuFullScreenOnClick(object sender, EventArgs e)
         {
             FullscreenToggle();
         }
         #endregion
 
         #region Options
-        private void mnuLanguage_OnClick(object sender, EventArgs e)
+        protected void mnuLanguage_OnClick(object sender, EventArgs e)
         {
             ToolStripMenuItem menu = sender as ToolStripMenuItem;
             if(menu != null && menu.Tag is string)
                 SwitchCulture((string)menu.Tag);
         }
-        private void SwitchCulture(string name)
+        protected void SwitchCulture(string name)
         {
             try
             {
@@ -584,7 +566,7 @@ namespace Kinovea.Root
                 log.ErrorFormat("Could not switch from culture {0} to {1}.", Thread.CurrentThread.CurrentUICulture.Name, name);
             }
         }
-        private void CheckLanguageMenu()
+        protected void CheckLanguageMenu()
         {
             foreach(ToolStripMenuItem mnuLang in languageMenus.Values)
                 mnuLang.Checked = false;
@@ -600,7 +582,7 @@ namespace Kinovea.Root
                 languageMenus["en"].Checked = true;            
             }
         }
-        private void mnuPreferencesOnClick(object sender, EventArgs e)
+        protected void mnuPreferencesOnClick(object sender, EventArgs e)
         {
             FormPreferences2 fp = new FormPreferences2();
             fp.ShowDialog();
@@ -612,7 +594,7 @@ namespace Kinovea.Root
             PreferencesUpdated();
         }
 
-        private void CheckTimecodeMenu()
+        protected void CheckTimecodeMenu()
         {
             mnuTimecodeClassic.Checked = false;
             mnuTimecodeFrames.Checked = false;
@@ -647,38 +629,38 @@ namespace Kinovea.Root
                     break;
             }
         }
-        private void mnuTimecodeClassic_OnClick(object sender, EventArgs e)
+        protected void mnuTimecodeClassic_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.ClassicTime);
         }
-        private void mnuTimecodeFrames_OnClick(object sender, EventArgs e)
+        protected void mnuTimecodeFrames_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.Frames);
         }
-        private void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
+        protected void mnuTimecodeMilliseconds_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.Milliseconds);
         }
-        private void mnuTimecodeMicroseconds_OnClick(object sender, EventArgs e)
+        protected void mnuTimecodeMicroseconds_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.Microseconds);
         }
-        private void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
+        protected void mnuTimecodeTimeAndFrames_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.TimeAndFrames);
         }
-        private void mnuTimecodeNormalized_OnClick(object sender, EventArgs e)
+        protected void mnuTimecodeNormalized_OnClick(object sender, EventArgs e)
         {
             SwitchTimecode(TimecodeFormat.Normalized);
         }
-        private void SwitchTimecode(TimecodeFormat _timecode)
+        protected void SwitchTimecode(TimecodeFormat _timecode)
         {
             PreferencesManager.PlayerPreferences.TimecodeFormat = _timecode;
             RefreshUICulture();
             PreferencesManager.Save();
         }
 
-        private void MnuWorkspaceSaveAsDefault_Click(object sender, EventArgs e)
+        protected void MnuWorkspaceSaveAsDefault_Click(object sender, EventArgs e)
         {
             // Extract the current workspace and save it in the preferences.
             Workspace workspace = screenManager.ExtractWorkspace();
@@ -688,7 +670,7 @@ namespace Kinovea.Root
             MessageBox.Show("Default workspace saved.", "Workspace", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void MnuWorkspaceExport_Click(object sender, EventArgs e)
+        protected void MnuWorkspaceExport_Click(object sender, EventArgs e)
         {
             // Extract the current workspace and save it in a separate file.
             Workspace workspace = screenManager.ExtractWorkspace();
@@ -705,13 +687,13 @@ namespace Kinovea.Root
         #endregion
 
         #region Help
-        private void mnuHelpContents_OnClick(object sender, EventArgs e)
+        protected void mnuHelpContents_OnClick(object sender, EventArgs e)
         {
             // Open online help.
             // Currently only English is supported.
             Process.Start("https://www.kinovea.org/help/en/");
         }
-        private void mnuAbout_OnClick(object sender, EventArgs e)
+        protected void mnuAbout_OnClick(object sender, EventArgs e)
         {
             FormAbout fa = new FormAbout();
             fa.ShowDialog();
@@ -751,7 +733,7 @@ namespace Kinovea.Root
             mnuHistory.Enabled = added;
         }
 
-        private int FillHistoryDropDown(int maxRecentFiles, List<string> recentFiles, bool isFile)
+        protected int FillHistoryDropDown(int maxRecentFiles, List<string> recentFiles, bool isFile)
         {
             if (maxRecentFiles == 0 || recentFiles == null || recentFiles.Count == 0)
                 return 0;
@@ -797,9 +779,9 @@ namespace Kinovea.Root
             Thread.CurrentThread.CurrentUICulture = PreferencesManager.GeneralPreferences.GetSupportedCulture();
             PreferencesUpdated();
         }
-       
+
         #region Lower Level Methods
-        private void OpenFromPath(string path)
+        protected void OpenFromPath(string path)
         {
             if (Path.GetFileName(path).Contains("*"))
             {
@@ -828,7 +810,7 @@ namespace Kinovea.Root
                 }
             }
         }
-        private string GetLocalizedHelpResource(bool manual)
+        protected string GetLocalizedHelpResource(bool manual)
         {
             // Find the local file path of a help resource (manual or help video) according to what is saved in the help index.
             
@@ -878,7 +860,7 @@ namespace Kinovea.Root
             
             return resourceUri;
         }
-        private void FullscreenToggle()
+        protected void FullscreenToggle()
         {
             mainWindow.ToggleFullScreen();
 

@@ -79,6 +79,6 @@ namespace Kinovea.Root
 
         public System.Windows.Forms.MenuStrip menuStrip1;
         public System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.MenuStrip menuStrip2;
+        public System.Windows.Forms.MenuStrip menuStrip2;
     }
 }

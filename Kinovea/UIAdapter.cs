@@ -27,6 +27,19 @@ namespace Kinovea.Root
         #region Analysis Menu Items
         private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlaceholder = new ToolStripMenuItem();
+
+        private ToolStripMenuItem mnuDataGraphing = new ToolStripMenuItem();
+
+        //I'd like to replace the red recording button with this synchronous recording button
+        //so for now it's not implemented here
+        private ToolStripMenuItem mnuStartSynchRecording = new ToolStripMenuItem();
+
+        //easily accessible capture screen button
+        private ToolStripMenuItem mnuOpenCaptureScreen = new ToolStripMenuItem();
+
+        
+
+
         //To encapsulate the button clicks necessary to begin recording -- this can/will be moved later
         private ToolStripMenuItem mnuVideoRecordingWrapper = new ToolStripMenuItem();
         #endregion
@@ -61,9 +74,13 @@ namespace Kinovea.Root
             NotificationCenter.PreferenceTabAsked += NotificationCenter_PreferenceTabAsked;
 
             log.Debug("Plug sub modules at UI extension points (Menus, Toolbars, Statusbar, Windows).");
+            //new toolstrip
+            ExtendMenuStrip2(aMainWindow.menuStrip2);
+
             ExtendMenu(aMainWindow.menuStrip1);
-            GetAdditionalMenus(aMainWindow.menuStrip1);
+            //GetAdditionalMenus(aMainWindow.menuStrip1);
             ExtendToolBar(aMainWindow.toolStrip1);
+            
             //ExtendStatusBar(aMainWindow.statusStrip);
             ExtendUI();
 
@@ -71,11 +88,18 @@ namespace Kinovea.Root
 
             FormsHelper.SetMainForm(aMainWindow);
         }
+    
+        //Build new MenuStrip so that we can eventually remove the old one
+        private void ExtendMenuStrip2(ToolStrip toolStripNew)
+        {
+            toolStripNew.AllowMerge = true;
+            GetAdditionalMenus(toolStripNew);
+        }
 
         public new void Launch()
         {
-            /*screenManager.RecoverCrash();
-            screenManager.LoadDefaultWorkspace();*/
+            screenManager.RecoverCrash();
+            screenManager.LoadDefaultWorkspace();
 
             log.Debug("Calling Application.Run() to boot up the UI.");
             Application.Run(aMainWindow);
@@ -87,8 +111,8 @@ namespace Kinovea.Root
             updater.ExtendUI();
             screenManager.ExtendUI();
 
-            //aMainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
-            //aMainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
+            aMainWindow.PlugUI(fileBrowser.UI, screenManager.UI);
+            aMainWindow.SupervisorControl.buttonCloseExplo.BringToFront();
         }
 
         private void GetAdditionalMenus(ToolStrip toolStrip)
@@ -100,11 +124,30 @@ namespace Kinovea.Root
             mnuPlaceholder.Click += MnuPlaceholder_Click;
             #endregion
 
+            mnuDataGraphing.Text = "Graph Data";
+            mnuDataGraphing.Click += MnuDataGraphing_Click;
+
+            mnuStartSynchRecording.Text = "Record!";
+            mnuStartSynchRecording.Click += MnuStartSynchRecord_Click;
+
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuAnalysis });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuAnalysis, mnuDataGraphing, mnuStartSynchRecording });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+
+        private void MnuStartSynchRecord_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("You want to record two things at once?");
+            //probably move this to a global
+            AnalysisController aL = new AnalysisController();
+            aL.TestClick();
+        }
+
+        private void MnuDataGraphing_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("You want to graph data?");
         }
 
         public void AddToMenuStrip(MenuStrip menuStrip)
@@ -124,6 +167,23 @@ namespace Kinovea.Root
             AnalysisController aL = new AnalysisController();
             aL.TestClick();
 
+        }
+
+ /*       private new void GetModuleMenus(ToolStrip menu)
+        {
+
+        }*/
+
+        private new void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
+        {
+            if (aMainWindow.SupervisorControl.IsExplorerCollapsed)   //TODO need to remake this function for subclass adapter
+            {
+               aMainWindow.SupervisorControl.ExpandExplorer(true);
+            }
+            else
+            {
+                aMainWindow.SupervisorControl.CollapseExplorer();
+            }
         }
         #endregion
 
