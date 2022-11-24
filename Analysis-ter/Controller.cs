@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Analysistem.Utils;
 using static Analysistem.Synchronizer;
 using static Analysistem.FileHandler;
-using static Analysistem.Utils.FakeUser; // ONLY FOR TESTING, unless we find a scenario where having a utils class 
+using static Analysistem.Utils.FakeUser; // ONLY FOR TESTING, unless we find a scenario where having a utils *class* 
                                          // as a dependency is absolutely necessary, we should avoid it on principle
 
 namespace Analysistem

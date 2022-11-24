@@ -97,7 +97,7 @@ namespace Analysistem
 
         public static CsvFile MakeCoincident(CsvFile kinovea, CsvFile sparkvue)
         {
-            // TODO
+            // TODO:  synchronize csv
             return new CsvFile();
         }
         #endregion

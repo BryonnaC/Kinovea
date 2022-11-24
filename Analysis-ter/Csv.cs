@@ -61,17 +61,18 @@ namespace Analysistem
 
         public void Merge(CsvFile fileTwo, string[] ignoreColumns)
         {
-            if (ignoreColumns == null) return;
-
-            foreach (string keyword in ignoreColumns)
+            if (ignoreColumns != null)
             {
-                for (int index = 0; index < fileTwo.headers.Count; index++)
+                foreach (string keyword in ignoreColumns)
                 {
-                    if (fileTwo.headers[index].ToLower().Contains(keyword.ToLower()))
+                    for (int index = 0; index < fileTwo.headers.Count; index++)
                     {
-                        fileTwo.headers.RemoveAt(index);
-                        fileTwo.columns.RemoveAt(index);
-                        index--;
+                        if (fileTwo.headers[index].ToLower().Contains(keyword.ToLower()))
+                        {
+                            fileTwo.headers.RemoveAt(index);
+                            fileTwo.columns.RemoveAt(index);
+                            index--;
+                        }
                     }
                 }
             }
@@ -82,23 +83,23 @@ namespace Analysistem
 
         public IEnumerable<string> Serialize()
         {
-            List<string> cereal = new List<string>
+            List<string> serialized = new List<string>
             {
                 string.Join(",", headers)
             };
 
             for (int row = 0; row < columns[0].Count; row++)
             {
-                cereal.Add("");
+                serialized.Add("");
                 for (int col = 0; col < columns.Count; col++)
                 {
-                    if (col > 0) cereal[row + 1] += ',';
+                    if (col > 0) serialized[row + 1] += ',';
 
-                    cereal[row + 1] += columns[col][row];
+                    serialized[row + 1] += columns[col][row];
                 }
             }
 
-            return cereal;
+            return serialized;
         }
 
         public override string ToString()

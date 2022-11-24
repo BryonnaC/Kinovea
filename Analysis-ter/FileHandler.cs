@@ -22,13 +22,15 @@ namespace Analysistem
         {
             const int timeToOpenBurger = 250; // milliseconds
             Target hamburgerTarget = DetectTarget(encodedTemplates["hamburger"]);
-            Target exportTarget = DetectTarget(encodedTemplates["exportData"]);
 
             // cache original mouse position
             GetCursorPos(out Point originalPos);
 
             MoveToAndClick(hamburgerTarget.location);
+            
             Thread.Sleep(timeToOpenBurger);
+
+            Target exportTarget = DetectTarget(encodedTemplates["exportData"]);
             MoveToAndClick(exportTarget.location);
 
             // return to original mouse position
