@@ -18,30 +18,33 @@ namespace Analysistem
             { "exportData", LoadMat("iVBORw0KGgoAAAANSUhEUgAAACsAAAArCAYAAADhXXHAAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGPSURBVFhH7ZjLSgNBEEWrOwmZiI+V4CaPhYroJ4ggguCvxLWP+AiCC38kbtWIor8g4kL0A4IbdyKCaBLzsDrUwnEqs0t3V8iBy/Sd1Z1LMVOJyp7cdLvQAZ9RoEHrJGjfgxpMxnaniZG7PSdCGi9ikNYsc9dTyWpW4VWKRDWrssdX5hhhc3kWSmsL5OxReXiBg9tncmGwWczaT05gcpCG5D3rEi4PSlSzKnd0aXJHmB5Pw8xEQM4eb19NeP34Jhemb1gfkbYbyEHlyvwYpJMagmSCnD0a7Q7Uf9rkwmDYKhu2uDIHpfVFcvao3Nfg8PqJXJj4mXUFlwUVu3W5gsti5N8XjMtCEjUGKr9/YY4RJoMUTGVS5Ozx2WjBO37FOFR+jw/rI6Of4oOSypdiZnbMwczWY2a2sHvOhi2uzsPOxhI5e5ze1aBcfSQXZohm1gVcDpK0ZjEyp97juOBfjj9She0zPEUx+2w6ZX+fbbZi9tnCFh/WR0Z/zA1K+DZg7noqac3KQVizWkC5CYyZCeAXnK6h/6KX5CIAAAAASUVORK5CYII=") },
         };
 
-        public static Data ExportSparkvue()
+        public static EventInfo ExportSparkvue()
         {
-            const int timeToOpenBurger = 250; // milliseconds
-            Target hamburgerTarget = DetectTarget(encodedTemplates["hamburger"]);
-
             // cache original mouse position
             GetCursorPos(out Point originalPos);
 
+            const int timeToOpenBurger = 250; // milliseconds
+            Target hamburgerTarget = DetectTarget(encodedTemplates["hamburger"]);
             MoveToAndClick(hamburgerTarget.location);
             
             Thread.Sleep(timeToOpenBurger);
 
+            const int timeToOpenFileExplorer = 1000; // milliseconds
             Target exportTarget = DetectTarget(encodedTemplates["exportData"]);
             MoveToAndClick(exportTarget.location);
 
             // return to original mouse position
             SetCursorPos(originalPos.X, originalPos.Y);
 
+            Thread.Sleep(timeToOpenFileExplorer);
+
+            // exported name format: 'force yyyy-MM-dd HH:mm:ss:ffff.csv'
             string fileName = $"force {DateTime.Now.GetTimestamp()}";
             
             foreach (char c in fileName) PressKey(c); // type out the file name
             PressEnter(); // save the file
 
-            return new Data(new Target[] { hamburgerTarget, exportTarget }, 0, fileName);
+            return new EventInfo(new Target[] { hamburgerTarget, exportTarget }, 0, fileName);
         }
 
         public static void ExportKinovea()

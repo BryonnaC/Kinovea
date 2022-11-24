@@ -57,13 +57,13 @@ namespace Analysistem.Utils
     #endregion
 
     #region DATA
-    public struct Data
+    public struct EventInfo
     {
         public Target[] targets; // SparkVue target information
         public double delay; // approx. delay between programmatically starting Kinovea and clicking record in SparkVue
         public string fileName;
 
-        public Data(Target[] targets, double delay, string fileName = "")
+        public EventInfo(Target[] targets, double delay, string fileName = "")
         {
             this.targets = targets;
             this.delay = delay;

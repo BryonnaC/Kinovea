@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using Analysistem.Utils;
 using static Analysistem.Synchronizer;
 using static Analysistem.FileHandler;
-using static Analysistem.Utils.FakeUser; // ONLY FOR TESTING, unless we find a scenario where having a utils *class* 
-                                         // as a dependency is absolutely necessary, we should avoid it on principle
 
 namespace Analysistem
 {
@@ -19,11 +17,11 @@ namespace Analysistem
     {
         public void RunDemo()
         {
-            //PressKey('a');
+            //FakeUser.PressKey('a');
 
-            // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger in FileHandler.cs
-            Data data = ExportSparkvue();   //TODO this line is throwing an exception still
-            Console.WriteLine(data.fileName);
+            // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger or timeToOpenFileExplorer in FileHandler.cs
+            //EventInfo info = ExportSparkvue();   //TODO this line is throwing an exception still
+            //Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
             //CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
@@ -39,10 +37,10 @@ namespace Analysistem
 
             #region Synchronize:Record DEMO
             //bool isStart = true; // you set this depending on if you want to start/stop recording
-            //Data dataROn = Record(isStart); // Record() for syncing via Kinovea.Record() and clicking SparkVue <-- the function we will likely actually use
-            //Data dataROff = Record(!isStart); // "
-            //Data dataRTOn = RecordThreads(isStart); // " <-- same as above but with threads; needs thorough comparison/further optimization if possible
-            //Data dataRTOff = RecordThreads(!isStart); // "
+            //EventInfo dataROn = Record(isStart); // Record() for syncing via Kinovea.Record() and clicking SparkVue <-- the function we will likely actually use
+            //EventInfo dataROff = Record(!isStart); // "
+            //EventInfo dataRTOn = RecordThreads(isStart); // " <-- same as above but with threads; needs thorough comparison/further optimization if possible
+            //EventInfo dataRTOff = RecordThreads(!isStart); // "
 
             //Console.WriteLine("ROn: {0}us -- [ {1}% ]", dataROn.delay, dataROn.target.confidence);
             //Console.WriteLine("ROff: {0}us -- [ {1}% ]", dataROff.delay, dataROff.target.confidence);
@@ -56,7 +54,7 @@ namespace Analysistem
         }
 
         // play with the Data elsewhere
-        //public Data StartSimultaneousRecording()
+        //public EventInfo StartSimultaneousRecording()
         //{
         //    return Record(true);
         //}

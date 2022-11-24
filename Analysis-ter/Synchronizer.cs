@@ -20,7 +20,7 @@ namespace Analysistem
 
         #region WHERE THE MAGIC HAPPENS
         // start/stop recording: Synchronous
-        public static Data Record(bool isStart, Units delayUnits = Units.Milliseconds)
+        public static EventInfo Record(bool isStart, Units delayUnits = Units.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(encodedTemplates[isStart]);
 
@@ -44,11 +44,11 @@ namespace Analysistem
             // return to original mouse position
             SetCursorPos(originalPos.X, originalPos.Y);
 
-            return new Data(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
+            return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
         }
 
         // start/stop recording: Asynchronous
-        public static Data RecordThreads(bool isStart, Units delayUnits = Units.Milliseconds)
+        public static EventInfo RecordThreads(bool isStart, Units delayUnits = Units.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(encodedTemplates[isStart]);
 
@@ -92,7 +92,7 @@ namespace Analysistem
 
             barrier.Dispose();
 
-            return new Data(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
+            return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
         }
 
         public static CsvFile MakeCoincident(CsvFile kinovea, CsvFile sparkvue)
