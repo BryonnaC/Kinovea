@@ -37,9 +37,6 @@ namespace Kinovea.Root
         //easily accessible capture screen button
         private ToolStripMenuItem mnuOpenCaptureScreen = new ToolStripMenuItem();
 
-        
-
-
         //To encapsulate the button clicks necessary to begin recording -- this can/will be moved later
         private ToolStripMenuItem mnuVideoRecordingWrapper = new ToolStripMenuItem();
         #endregion
@@ -81,7 +78,7 @@ namespace Kinovea.Root
             //GetAdditionalMenus(aMainWindow.menuStrip1);
             ExtendToolBar(aMainWindow.toolStrip1);
             
-            //ExtendStatusBar(aMainWindow.statusStrip);
+            ExtendStatusBar(aMainWindow.statusStrip1);
             ExtendUI();
 
             log.Debug("Register global services offered at Root level.");
@@ -140,8 +137,6 @@ namespace Kinovea.Root
         private void MnuStartSynchRecord_Click(object sender, EventArgs e)
         {
             Console.WriteLine("You want to record two things at once?");
-            //probably move this to a global
-            AnalysisController aL = new AnalysisController();
             aL.TestClick();
         }
 
@@ -164,7 +159,6 @@ namespace Kinovea.Root
         private void MnuPlaceholder_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Hey, I'm a placeholder");
-            AnalysisController aL = new AnalysisController();
             aL.TestClick();
 
         }

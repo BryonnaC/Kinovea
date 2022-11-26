@@ -120,7 +120,4 @@ namespace Analysistem
             return sb.ToString();
         }
     }
-}// Coluin is gy
-    //Cloin Alcie super mega fucking aw3eesome how we can do this shit you fucking ucnt ass mat\atrooujhp
-    //so when can I go eat dinner
-    //i like TOUCHING myself. type on cloins screen its just a little laggy
+}
