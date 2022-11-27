@@ -5,14 +5,14 @@ using Analysistem;
 namespace AnalysistemUnitTest
 {
     // anything defined in the Types enum *MUST* be added to the switch statement in GetType() below
-    enum Types // Types (typically, structs & classes) which contain children to be tested
+    enum Type // Types (typically, structs & classes) which contain children to be tested
     {
         Synchronizer,
         SynchronizeRecording,
         SynchronizeCsv,
     }
 
-    enum Methods // methods to be tested
+    enum Method // methods to be tested
     {
         ToUnits,
         CombineCsv,
@@ -41,24 +41,24 @@ namespace AnalysistemUnitTest
         //  private class
         private const BindingFlags DefaultFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
-        public static Type GetType(Types typeName, BindingFlags bindingFlags = DefaultFlags)
+        public static System.Type GetType(Type typeName, BindingFlags bindingFlags = DefaultFlags)
         {
             switch (typeName)
             {
-                case Types.Synchronizer: // top-level class
+                case Type.Synchronizer: // top-level class
                     return typeof(Synchronizer);
                 // how you would handle a class that is a child class, is public (parent is also public), and has private children:
                 // case "NameOfTheClass": return new typeof(ParentName.NameOfTheClass);
-                case Types.SynchronizeRecording: // Synchronizer child classes 
-                case Types.SynchronizeCsv:
+                case Type.SynchronizeRecording: // Synchronizer child classes 
+                case Type.SynchronizeCsv:
                     return typeof(Synchronizer).GetNestedType(typeName.ToString(), bindingFlags);
                 default: return null; // class not found
             }
         }
 
-        public static _Method GetMethod(Types parentClassName, Methods methodName, BindingFlags bindingFlags = DefaultFlags)
+        public static _Method GetMethod(Type parentClassName, Method methodName, BindingFlags bindingFlags = DefaultFlags)
         {
-            Type parent = GetType(parentClassName);
+            System.Type parent = GetType(parentClassName);
             MethodInfo method = parent.GetMethod(methodName.ToString(), bindingFlags);
 
             return (parameters) => method.Invoke(null, parameters);

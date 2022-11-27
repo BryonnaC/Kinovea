@@ -111,7 +111,7 @@ namespace AnalysistemUnitTest
             /* Arrange */
             // dev-mut      (comment is here for example purposes)
             TimeSpan baseTicks = new TimeSpan(10_000);
-            Units[] unitsToTest = { Units.Milliseconds, Units.Microseconds, Units.Nanoseconds };
+            Unit[] unitsToTest = { Unit.Milliseconds, Unit.Microseconds, Unit.Nanoseconds };
             double[] expected = new double[] { 1.0, 1_000.0, 1_000_000.0 };
 
             // dev-assert   (comment is here for example purposes)
@@ -161,7 +161,7 @@ namespace AnalysistemUnitTest
             //};
             //double actual;
 
-            //List<int> failedIterations = new List<int>();
+            //List<int> successfulIterations = new List<int>();
             //for (int i = 0; i < parameterValues.Length; i++)
             //{
             //    try
@@ -169,7 +169,7 @@ namespace AnalysistemUnitTest
             //        /* Act */
             //        actual = (double)ToUnits.Invoke(null, parameterValues[i]);
 
-            //        failedIterations.Add(i); // no exception was thrown
+            //        successfulIterations.Add(i); // no exception was thrown
             //    }
             //    /* Assert */
             //    catch (ArgumentException e)
@@ -192,8 +192,8 @@ namespace AnalysistemUnitTest
             //    }
             //}
 
-            //if (failedIterations.Count > 0)
-            //    Assert.Fail($"Too few exceptions thrown: iteration(s) {string.Join(", ", failedIterations)} failed");
+            //if (successfulIterations.Count > 0)
+            //    Assert.Fail($"Too few exceptions thrown: iteration(s) {string.Join(", ", successfulIterations)} failed");
             #endregion
         }
     }
@@ -205,9 +205,49 @@ namespace AnalysistemUnitTest
         // name might need some work
         public void CombineCsv_CreamyCsvs_CompoundCsvCreated()
         {
-            Method<CsvFile> CombineCsv = Accessor.GetMethod(Types.SynchronizeCsv, Methods.CombineCsv);
+            Method<CsvFile> CombineCsv = Accessor.GetMethod(Type.SynchronizeCsv, Method.CombineCsv);
 
             CombineCsv.Test("", "", "");
+        }
+    }
+
+    [TestClass]
+    public class FakeUserUnitTest
+    {
+        [TestMethod]
+        public void DetectTarget_TargetOnScreen_TargetDetected()
+        {
+
+        }
+
+        [TestMethod]
+        public void DetectTarget_TargetNotOnScreen_TargetNotDetected()
+        {
+
+        }
+
+        [TestMethod]
+        // can PressKey() be used to type out words
+        public void PressKey_TypingWord_WordTyped()
+        {
+
+        }
+    }
+
+    [TestClass]
+    public class FileHandlerUnitTest
+    {
+        [TestMethod]
+        public void ExportSparkvue_SparkvueOnScreen_CsvFileCreated()
+        {
+
+        }
+
+        [TestMethod]
+        // mouse should not move/click, keyboard should not type, no file should be created
+        public void ExportSparkvue_SparkvueNotOnScreen_NoActionTaken()
+        {
+            
         }
     }
 }

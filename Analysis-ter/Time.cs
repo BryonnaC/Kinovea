@@ -2,7 +2,7 @@
 
 namespace Analysistem.Utils
 {
-    public enum Units : int // delay units
+    public enum Unit : int // delay units
     {
         Milliseconds = 1,
         Microseconds = 1_000,
@@ -11,7 +11,7 @@ namespace Analysistem.Utils
 
     public static class Time
     {
-        public static double ToUnits(this TimeSpan elapsed, Units unit)
+        public static double ToUnits(this TimeSpan elapsed, Unit unit)
         {
             return elapsed.Ticks / (double)TimeSpan.TicksPerMillisecond * (int)unit;
         }
