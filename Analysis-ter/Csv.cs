@@ -27,7 +27,7 @@ namespace Analysistem
             Merge(pathTwo, ignoreColumns);
         }
 
-        public CsvFile Empty { get { return new CsvFile(""); } }
+        public static CsvFile Empty { get { return new CsvFile(""); } }
 
         public void Load(string csv) 
         {
@@ -54,7 +54,7 @@ namespace Analysistem
             Merge(fileTwo, ignoreColumns);
         }
 
-        public void Merge(CsvFile fileTwo, string[] ignoreColumns)
+        public void Merge(CsvFile fileTwo, string[] ignoreColumns = null)
         {
             if (ignoreColumns != null)
             {

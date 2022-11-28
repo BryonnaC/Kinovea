@@ -2,6 +2,8 @@
 using System;
 using Analysistem.Utils;
 using Analysistem;
+using System.Collections.Generic;
+using System.Linq;
 
 /* https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022#write-your-tests
  * 
@@ -137,7 +139,7 @@ namespace AnalysistemUnitTest
              * and thus should not be automated
              * 
              * Detect the target => Target foo = DetectTarget(Template.[some_templ]);
-             * Verify foo.detected = true (secondary predicate: CalibrateTemplate works properly)
+             * Verify foo.detected = true
              */
         }
 
@@ -149,6 +151,9 @@ namespace AnalysistemUnitTest
              * 
              * This test relies on a particular host setup (The test target *not* being on screen),
              * and thus should not be automated
+             * 
+             * Detect the target => Target foo = DetectTarget(Template.[some_templ]);
+             * Verify foo.detected = false
              */
         }
 
@@ -175,6 +180,27 @@ namespace AnalysistemUnitTest
              * Have the CsvFile call Load() on the string => foo.Load(bar);
              * Verify the resultant properties are as expected
              */
+
+            /* Assign */
+            string csvTestString = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333";
+            CsvFile csvTestFile = CsvFile.Empty;
+            List<string> expectedHeaders = new List<string>() { "test1", "test2", "test3" };
+            List<List<string>> expectedColumns = new List<List<string>>()
+            {
+                new List<string>() { "1", "11", "111" },
+                new List<string>() { "2", "22", "222" },
+                new List<string>() { "3", "33", "333" },
+            };
+
+            /* Act */
+            csvTestFile.Load(csvTestString);
+
+            /* Assert */
+            CollectionAssert.AreEqual(csvTestFile.headers, expectedHeaders);
+            for (int i = 0; i < expectedColumns.Count; i++)
+            {
+                CollectionAssert.AreEqual(csvTestFile.columns[i], expectedColumns[i]);
+            }
         }
 
         [TestMethod]
@@ -191,6 +217,32 @@ namespace AnalysistemUnitTest
              * Have the first CsvFile call Merge() on the second string => foo.Merge(bar2);
              * Verify the resultant properties are as expected
              */
+
+            /* Assign */
+            string csvTestStringOne = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333";
+            string csvTestStringTwo = "test4,test5,test6\n4,5,6\n44,55,66\n444,555,666";
+            List<string> expectedHeaders = new List<string>() { "test1", "test2", "test3", "test4", "test5", "test6" };
+            List<List<string>> expectedColumns = new List<List<string>>()
+            {
+                new List<string>() { "1", "11", "111" },
+                new List<string>() { "2", "22", "222" },
+                new List<string>() { "3", "33", "333" },
+                new List<string>() { "4", "44", "444" },
+                new List<string>() { "5", "55", "555" },
+                new List<string>() { "6", "66", "666" },
+            };
+
+            CsvFile csvTestFile = new CsvFile(csvTestStringOne);
+
+            /* Act */
+            csvTestFile.Merge(csvTestStringTwo);
+
+            /* Assert */
+            CollectionAssert.AreEqual(csvTestFile.headers, expectedHeaders);
+            for (int i = 0; i < expectedColumns.Count; i++)
+            {
+                CollectionAssert.AreEqual(csvTestFile.columns[i], expectedColumns[i]);
+            }
         }
 
         [TestMethod]
@@ -208,6 +260,33 @@ namespace AnalysistemUnitTest
              * Have one CsvFile call Merge() on the other => foo1.Merge(foo2);
              * Verify the resultant properties are as expected
              */
+
+            /* Assign */
+            string csvTestStringOne = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333";
+            string csvTestStringTwo = "test4,test5,test6\n4,5,6\n44,55,66\n444,555,666";
+            List<string> expectedHeaders = new List<string>() { "test1", "test2", "test3", "test4", "test5", "test6" };
+            List<List<string>> expectedColumns = new List<List<string>>()
+            {
+                new List<string>() { "1", "11", "111" },
+                new List<string>() { "2", "22", "222" },
+                new List<string>() { "3", "33", "333" },
+                new List<string>() { "4", "44", "444" },
+                new List<string>() { "5", "55", "555" },
+                new List<string>() { "6", "66", "666" },
+            };
+
+            CsvFile csvTestFile = new CsvFile(csvTestStringOne);
+            CsvFile csvTestFileTwo = new CsvFile(csvTestStringTwo);
+
+            /* Act */
+            csvTestFile.Merge(csvTestFileTwo);
+
+            /* Assert */
+            CollectionAssert.AreEqual(csvTestFile.headers, expectedHeaders);
+            for (int i = 0; i < expectedColumns.Count; i++)
+            {
+                CollectionAssert.AreEqual(csvTestFile.columns[i], expectedColumns[i]);
+            }
         }
 
         [TestMethod]
@@ -222,6 +301,30 @@ namespace AnalysistemUnitTest
              * Pass the two strings into a new CsvFile => CsvFile foo = new CsvFile(bar1, bar2);
              * Verify the resultant properties are as expected
              */
+
+            /* Assign */
+            string csvTestStringOne = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333";
+            string csvTestStringTwo = "test4,test5,test6\n4,5,6\n44,55,66\n444,555,666";
+            List<string> expectedHeaders = new List<string>() { "test1", "test2", "test3", "test4", "test5", "test6" };
+            List<List<string>> expectedColumns = new List<List<string>>()
+            {
+                new List<string>() { "1", "11", "111" },
+                new List<string>() { "2", "22", "222" },
+                new List<string>() { "3", "33", "333" },
+                new List<string>() { "4", "44", "444" },
+                new List<string>() { "5", "55", "555" },
+                new List<string>() { "6", "66", "666" },
+            };
+
+            /* Act */
+            CsvFile csvTestFile = new CsvFile(csvTestStringOne, csvTestStringTwo);
+
+            /* Assert */
+            CollectionAssert.AreEqual(csvTestFile.headers, expectedHeaders);
+            for (int i = 0; i < expectedColumns.Count; i++)
+            {
+                CollectionAssert.AreEqual(csvTestFile.columns[i], expectedColumns[i]);
+            }
         }
 
         [TestMethod]
@@ -238,6 +341,29 @@ namespace AnalysistemUnitTest
              *      => CsvFile fooDeserialized = new CsvFile(fooSerialized);
              * (predicate: foo (as string) == fooDeserialized (as string))
              */
+
+            /* Assign */
+            string csvTestString = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333";
+            List<string> expectedHeaders = new List<string>() { "test1", "test2", "test3" };
+            List<List<string>> expectedColumns = new List<List<string>>()
+            {
+                new List<string>() { "1", "11", "111" },
+                new List<string>() { "2", "22", "222" },
+                new List<string>() { "3", "33", "333" },
+            };
+
+            CsvFile csvTestFile = new CsvFile(csvTestString);
+
+            /* Act */
+            string serialized = csvTestFile.Serialize();
+            CsvFile csvTestFileDeserialized = new CsvFile(serialized);
+
+            /* Assert */
+            CollectionAssert.AreEqual(csvTestFileDeserialized.headers, expectedHeaders);
+            for (int i = 0; i < expectedColumns.Count; i++)
+            {
+                CollectionAssert.AreEqual(csvTestFileDeserialized.columns[i], expectedColumns[i]);
+            }
         }
     }
 
