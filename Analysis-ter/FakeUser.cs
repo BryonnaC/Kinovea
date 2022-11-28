@@ -167,8 +167,6 @@ namespace Analysistem.Utils
             ReleaseKey(virtualKeyCode);
 
             if (holdingShift) ReleaseKey((byte)VK_SHIFT);
-
-            Console.WriteLine("Don't know if it worked, but at least it didn't crash...");
         }
 
         // for convenience/explicitness
@@ -245,7 +243,7 @@ namespace Analysistem.Utils
                 { Template.ExportData, new TemplateData("iVBORw0KGgoAAAANSUhEUgAAACsAAAArCAYAAADhXXHAAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGPSURBVFhH7ZjLSgNBEEWrOwmZiI+V4CaPhYroJ4ggguCvxLWP+AiCC38kbtWIor8g4kL0A4IbdyKCaBLzsDrUwnEqs0t3V8iBy/Sd1Z1LMVOJyp7cdLvQAZ9RoEHrJGjfgxpMxnaniZG7PSdCGi9ikNYsc9dTyWpW4VWKRDWrssdX5hhhc3kWSmsL5OxReXiBg9tncmGwWczaT05gcpCG5D3rEi4PSlSzKnd0aXJHmB5Pw8xEQM4eb19NeP34Jhemb1gfkbYbyEHlyvwYpJMagmSCnD0a7Q7Uf9rkwmDYKhu2uDIHpfVFcvao3Nfg8PqJXJj4mXUFlwUVu3W5gsti5N8XjMtCEjUGKr9/YY4RJoMUTGVS5Ozx2WjBO37FOFR+jw/rI6Of4oOSypdiZnbMwczWY2a2sHvOhi2uzsPOxhI5e5ze1aBcfSQXZohm1gVcDpK0ZjEyp97juOBfjj9She0zPEUx+2w6ZX+fbbZi9tnCFh/WR0Z/zA1K+DZg7noqac3KQVizWkC5CYyZCeAXnK6h/6KX5CIAAAAASUVORK5CYII=") },
             };
 
-        Mat _template = encodedTemplates[template];
+            Mat _template = encodedTemplates[template];
             int threshold = encodedTemplates[template, onScreen];
 
             Target bestGuess = DetectTargetOnScreen(_template, 0, threshold);

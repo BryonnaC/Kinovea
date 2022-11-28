@@ -24,7 +24,7 @@ namespace Analysistem
             FakeUser.PressCaptureScreenHotkey();
 
             // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger or timeToOpenFileExplorer in FileHandler.cs
-            //EventInfo info = ExportSparkvue();   //TODO this line is throwing an exception still
+            //EventInfo info = ExportSparkvue();   // TODO: this line is throwing an exception still
             //Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
