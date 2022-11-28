@@ -386,7 +386,7 @@ namespace AnalysistemUnitTest
     public class FileHandlerUnitTest
     {
         [TestMethod]
-        public void GetPaths_FilesExist_CorrectPathsFound() // TC-008
+        public void GetPaths_FilesExist_CorrectPathsFound()
         {
             // not 100% on how this would get tested lmao
         }

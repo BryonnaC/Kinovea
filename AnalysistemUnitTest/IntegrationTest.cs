@@ -17,7 +17,7 @@ namespace AnalysistemUnitTest
     public class SynchronizerIntegrationTest
     {
         [TestMethod]
-        public void Record_Called_StartsRecording()
+        public void Record_Called_StartsRecording() // TC-008
         {
             /** Record, when called, starts recording
              * Method: Record(isStart: true, delayUnits: Unit.Milliseconds)
@@ -36,7 +36,7 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void Record_CalledAgain_StopsRecording()
+        public void Record_CalledAgain_StopsRecording() // TC-009
         {
             /** Record, when called again, stops recording
              * Method: Record(isStart: false, delayUnits: Units.Milliseconds)
@@ -55,7 +55,7 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void MakeCoincident_TwoValidCsvFiles_ReturnTwoSynchronizedCsvFiles()
+        public void MakeCoincident_TwoValidCsvFiles_ReturnTwoSynchronizedCsvFiles() // TC-010
         {
             /** MakeCoincident, when passed two valid CsvFiles, should return two synchronized CsvFiles
              * Method: MakeCoincident()
@@ -67,7 +67,7 @@ namespace AnalysistemUnitTest
     public class FileHandlerIntegrationTest
     {
         [TestMethod]
-        public void ExportSparkvue_SparkvueOnScreen_CsvFileCreated()
+        public void ExportSparkvue_SparkvueOnScreen_CsvFileCreated() // TC-011
         {
             /** Calling ExportSparkvue, when Sparkvue is on the screen, should export the recorded force data as a .csv using a time generated name
              * Method: ExportSparkvue()
@@ -98,7 +98,7 @@ namespace AnalysistemUnitTest
 
         [TestMethod]
         // mouse should not move/click, keyboard should not type, no file should be created
-        public void ExportSparkvue_SparkvueNotOnScreen_NoActionTaken()
+        public void ExportSparkvue_SparkvueNotOnScreen_NoActionTaken() // TC-012
         {
             // Call ExportSparkvue, get returned EventInfo, if any properties are null then success!
 
