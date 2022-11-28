@@ -11,41 +11,41 @@ namespace Analysistem
 
     static class FileHandler
     {
-        public static EventInfo ExportSparkvue()
-        {
-            Target? hamburgerTarget = DetectTarget(Template.HamburgerButton);
-            Target? exportTarget = null;
-            string fileName = null;
+        //public static EventInfo ExportSparkvue()
+        //{
+        //    Target? hamburgerTarget = DetectTarget(Template.HamburgerButton);
+        //    Target? exportTarget = null;
+        //    string fileName = null;
 
-            if (hamburgerTarget is Target _hamburgerTarget)
-            {
-                const int timeToOpenBurger = 250; // milliseconds
+        //    if (hamburgerTarget is Target _hamburgerTarget)
+        //    {
+        //        const int timeToOpenBurger = 250; // milliseconds
 
-                GetCursorPos(out Point originalPos); // cache original mouse position
-                MoveToAndClick(_hamburgerTarget.location);
-                SetCursorPos(originalPos.X, originalPos.Y); // return to original mouse position
+        //        GetCursorPos(out Point originalPos); // cache original mouse position
+        //        MoveToAndClick(_hamburgerTarget.location);
+        //        SetCursorPos(originalPos.X, originalPos.Y); // return to original mouse position
 
-                Thread.Sleep(timeToOpenBurger);
+        //        Thread.Sleep(timeToOpenBurger);
 
-                exportTarget = DetectTarget(Template.ExportData);
-                if (exportTarget is Target _exportTarget)
-                {
-                    // exported name format: 'force yyyy-MM-dd HH:mm:ss:ffff.csv'
-                    fileName = $"force {DateTime.Now.GetTimestamp()}";
-                    const int timeToOpenFileExplorer = 1000; // milliseconds
+        //        exportTarget = DetectTarget(Template.ExportData);
+        //        if (exportTarget is Target _exportTarget)
+        //        {
+        //            // exported name format: 'force yyyy-MM-dd HH:mm:ss:ffff.csv'
+        //            fileName = $"force {DateTime.Now.GetTimestamp()}";
+        //            const int timeToOpenFileExplorer = 1000; // milliseconds
 
-                    MoveToAndClick(_exportTarget.location);
-                    SetCursorPos(originalPos.X, originalPos.Y); // return to original mouse position
+        //            MoveToAndClick(_exportTarget.location);
+        //            SetCursorPos(originalPos.X, originalPos.Y); // return to original mouse position
 
-                    Thread.Sleep(timeToOpenFileExplorer);
+        //            Thread.Sleep(timeToOpenFileExplorer);
 
-                    foreach (char c in fileName) PressKey(c); // type out the file name
-                    PressEnter(); // save the file
-                }
-            }
+        //            foreach (char c in fileName) PressKey(c); // type out the file name
+        //            PressEnter(); // save the file
+        //        }
+        //    }
 
-            return new EventInfo(new Target?[] { hamburgerTarget, exportTarget }, 0, fileName);
-        }
+        //    return new EventInfo(new Target?[] { hamburgerTarget, exportTarget }, 0, fileName);
+        //}
 
         public static void ExportKinovea()
         {

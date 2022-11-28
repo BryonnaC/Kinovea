@@ -36,7 +36,7 @@ namespace AnalysistemUnitTest
         public void MakeCoincident_TwoValidCsvFiles_ReturnTwoSynchronizedCsvFiles()
         {
             /** MakeCoincident, when passed two valid CsvFiles, should return two synchronized CsvFiles
-             * 
+             * Method: MakeCoincident()
              */ 
         }
     }
