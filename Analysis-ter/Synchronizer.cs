@@ -11,16 +11,17 @@ namespace Analysistem
 {
     public static class Synchronizer
     {
-        public static void Test()
+        //public delegate void MyFunction();
+
+        public static void Test(Controller.MyFunction fu)
         {
             // putit here bryoppknasdfia
+            fu();
         }
-
-        public delegate void MyFunction();
 
         #region WHERE THE MAGIC HAPPENS
         // start/stop recording: Synchronous
-        public static EventInfo Record(bool isStart, MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
+        public static EventInfo Record(bool isStart, Controller.MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 
@@ -47,7 +48,7 @@ namespace Analysistem
         }
 
         // start/stop recording: Asynchronous
-        public static EventInfo RecordThreads(bool isStart, MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
+        public static EventInfo RecordThreads(bool isStart, Controller.MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 

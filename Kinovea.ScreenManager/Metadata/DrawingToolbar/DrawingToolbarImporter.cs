@@ -83,15 +83,20 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (ToolManager.Tools.ContainsKey(toolName))
+            //THIS "IF" IS HERE BECAUSE OF AN EXCEPTION
+            if(ToolManager.Tools != null)
             {
-                AbstractDrawingTool tool = ToolManager.Tools[toolName];
-                list.Add(tool);
+                if (ToolManager.Tools.ContainsKey(toolName))
+                {
+                    AbstractDrawingTool tool = ToolManager.Tools[toolName];
+                    list.Add(tool);
+                }
+                else
+                {
+                    log.ErrorFormat("Cannot find {0}.", toolName);
+                }
             }
-            else
-            {
-                log.ErrorFormat("Cannot find {0}.", toolName);
-            }
+
         }
     }
 }
