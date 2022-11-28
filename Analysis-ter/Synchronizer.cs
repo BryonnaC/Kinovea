@@ -47,7 +47,7 @@ namespace Analysistem
                 else stopwatch.Stop();
             });
 
-#pragma warning disable IDE0039 //? Use local function
+            #pragma warning disable IDE0039 //? Use local function
             Action recordKinovea = () =>
             {
                 barrier.SignalAndWait(); // wait to start stopwatch
