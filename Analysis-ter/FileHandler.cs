@@ -13,31 +13,38 @@ namespace Analysistem
     {
         public static EventInfo ExportSparkvue()
         {
-            // cache original mouse position
-            GetCursorPos(out Point originalPos);
+            Target? hamburgerTarget = DetectTarget(Template.HamburgerButton);
+            Target? exportTarget = null;
+            string fileName = null;
 
-            const int timeToOpenBurger = 250; // milliseconds
-            Target hamburgerTarget = DetectTarget(encodedTemplates[Template.HamburgerButton]);
-            MoveToAndClick(hamburgerTarget.location);
-            
-            Thread.Sleep(timeToOpenBurger);
+            if (hamburgerTarget is Target _hamburgerTarget)
+            {
+                const int timeToOpenBurger = 250; // milliseconds
 
-            const int timeToOpenFileExplorer = 1000; // milliseconds
-            Target exportTarget = DetectTarget(encodedTemplates[Template.ExportData]);
-            MoveToAndClick(exportTarget.location);
+                GetCursorPos(out Point originalPos); // cache original mouse position
+                MoveToAndClick(_hamburgerTarget.location);
+                SetCursorPos(originalPos.X, originalPos.Y); // return to original mouse position
 
-            // return to original mouse position
-            SetCursorPos(originalPos.X, originalPos.Y);
+                Thread.Sleep(timeToOpenBurger);
 
-            Thread.Sleep(timeToOpenFileExplorer);
+                exportTarget = DetectTarget(Template.ExportData);
+                if (exportTarget is Target _exportTarget)
+                {
+                    // exported name format: 'force yyyy-MM-dd HH:mm:ss:ffff.csv'
+                    fileName = $"force {DateTime.Now.GetTimestamp()}";
+                    const int timeToOpenFileExplorer = 1000; // milliseconds
 
-            // exported name format: 'force yyyy-MM-dd HH:mm:ss:ffff.csv'
-            string fileName = $"force {DateTime.Now.GetTimestamp()}";
-            
-            foreach (char c in fileName) PressKey(c); // type out the file name
-            PressEnter(); // save the file
+                    MoveToAndClick(_exportTarget.location);
+                    SetCursorPos(originalPos.X, originalPos.Y); // return to original mouse position
 
-            return new EventInfo(new Target[] { hamburgerTarget, exportTarget }, 0, fileName);
+                    Thread.Sleep(timeToOpenFileExplorer);
+
+                    foreach (char c in fileName) PressKey(c); // type out the file name
+                    PressEnter(); // save the file
+                }
+            }
+
+            return new EventInfo(new Target?[] { hamburgerTarget, exportTarget }, 0, fileName);
         }
 
         public static void ExportKinovea()

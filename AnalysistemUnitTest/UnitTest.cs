@@ -100,7 +100,7 @@ namespace AnalysistemUnitTest
     }
 
     [TestClass]
-    public class SynchronizeRecordingUnitTest
+    public class TimeUnitTest
     {
         [TestMethod]
         // quite possibly the single lowest priority method to test, but also the most straightforward
@@ -131,99 +131,51 @@ namespace AnalysistemUnitTest
             CollectionAssert.AreEqual(expected, actual);
             #endregion
         }
-
-        [TestMethod]
-        public void ToUnits_InvalidArgs_Throw()
-        {
-            /* COMPILER WILL NOT ALLOW ARGS THAT WOULD BREAK THIS METHOD */
-
-            #region RIP
-            // Got confused because MethodInfo.Invoke() allows you to pass variables that otherwise would
-            //  have been flagged by the compiler. The following commented code is entirely unnecessary,
-            //  but will remain here for now as an example for patterns.
-
-            ///* Arrange */
-            //// dev-mut (comment is here for example purposes)
-            //TimeSpan validTicks = new TimeSpan(10_000);
-            //Units validUnit = Units.Milliseconds;
-            //int invalidTicks = 10_000;
-            //double invalidUnit = 0.0;
-            //// expected = throws error
-
-            //// dev-const (comment is here for example purposes)
-            //MethodInfo ToUnits = typeof(Synchronizer).GetMethod("ToUnits", BindingFlags.NonPublic | BindingFlags.Static);
-            //object[][] parameterValues = new object[][] 
-            //{
-            //    new object[] { invalidTicks, validUnit },
-            //    new object[] { validTicks, invalidUnit },
-            //    new object[] { null, validUnit },
-            //    new object[] { validTicks, null },
-            //};
-            //double actual;
-
-            //List<int> successfulIterations = new List<int>();
-            //for (int i = 0; i < parameterValues.Length; i++)
-            //{
-            //    try
-            //    {
-            //        /* Act */
-            //        actual = (double)ToUnits.Invoke(null, parameterValues[i]);
-
-            //        successfulIterations.Add(i); // no exception was thrown
-            //    }
-            //    /* Assert */
-            //    catch (ArgumentException e)
-            //    {
-            //        string systemArgumentExceptionMessage = $"Object of type '{parameterValues[i][i].GetType()}' cannot be converted to type '{(i == 0 ? "System.TimeSpan" : "Units")}'.";
-            //        StringAssert.Contains(e.Message, systemArgumentExceptionMessage);
-            //    }
-            //    catch (TargetInvocationException e)
-            //    {
-            //        Exception innerE = e.InnerException;
-            //        Assert.IsNotNull(innerE);
-            //        Assert.IsInstanceOfType(innerE, typeof(NullReferenceException));
-
-            //        // assert the null is occuring at the intended argument position
-            //        Assert.IsNull(parameterValues[i][i == 2 ? 0 : 1]);
-            //        Assert.IsNotNull(parameterValues[i][i == 2 ? 1 : 0]);
-
-            //        string toUnitsNullExceptionMessage = i == 2 ? Synchronizer.ToUnitsInvalidTimeSpanMessage : Synchronizer.ToUnitsInvalidUnitsMessage;
-            //        StringAssert.Contains(innerE.Message, toUnitsNullExceptionMessage);
-            //    }
-            //}
-
-            //if (successfulIterations.Count > 0)
-            //    Assert.Fail($"Too few exceptions thrown: iteration(s) {string.Join(", ", successfulIterations)} failed");
-            #endregion
-        }
     }
 
-    [TestClass]
-    public class SynchronizeCsvUnitTest 
-    {
-        [TestMethod]
-        // name might need some work
-        public void CombineCsv_CreamyCsvs_CompoundCsvCreated()
-        {
-            Method<CsvFile> CombineCsv = Accessor.GetMethod(Type.SynchronizeCsv, Method.CombineCsv);
+    //[TestClass]
+    //public class SynchronizeCsvUnitTest 
+    //{
+    //    [TestMethod]
+    //    // name might need some work
+    //    public void CombineCsv_CreamyCsvs_CompoundCsvCreated()
+    //    {
+    //        Method<CsvFile> CombineCsv = Accessor.GetMethod(Type.SynchronizeCsv, Method.CombineCsv);
 
-            CombineCsv.Test("", "", "");
-        }
-    }
+    //        CombineCsv.Test("", "", "");
+    //    }
+    //}
 
     [TestClass]
     public class FakeUserUnitTest
     {
+        /**
+         * DetectTarget() relies on CalibrateTemplate being implemented
+         * (which it isn't)
+         */ 
         [TestMethod]
         public void DetectTarget_TargetOnScreen_TargetDetected()
         {
-
+            /** Calling DetectTarget, when the target is on the screen, should show the target as being detected 
+             * Method: DetectTarget()
+             * 
+             * This test relies on a particular host setup (The test target being on screen),
+             * and thus should not be automated
+             * 
+             * Detect the target => Target foo = DetectTarget(Template.[some_templ]);
+             * Verify foo.detected = true (secondary predicate: CalibrateTemplate works properly)
+             */
         }
 
         [TestMethod]
         public void DetectTarget_TargetNotOnScreen_TargetNotDetected()
         {
-
+            /** Calling DetectTarget, when the target is *not* on the screen, should show the target as *not* being detected
+             * Method: DetectTarget()
+             * 
+             * This test relies on a particular host setup (The test target *not* being on screen),
+             * and thus should not be automated
+             */
         }
 
         [TestMethod]
@@ -235,19 +187,93 @@ namespace AnalysistemUnitTest
     }
 
     [TestClass]
-    public class FileHandlerUnitTest
+    public class CsvFileUnitTest
     {
         [TestMethod]
-        public void ExportSparkvue_SparkvueOnScreen_CsvFileCreated()
+        public void Load_UsingPath_PopulateProperties()
         {
-
+            /** Load, when provided a path to a valid .csv file, should populate the struct properties appropriately
+             * Method: Load()
+             * 
+             * Start with a test string representing a valid .csv file
+             *      e.g., bar = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333"
+             * Create an empty CsvFile => CsvFile foo = CsvFile.Empty;
+             * Have the CsvFile call Load() on the string => foo.Load(bar);
+             * Verify the resultant properties are as expected
+             */
         }
 
         [TestMethod]
-        // mouse should not move/click, keyboard should not type, no file should be created
-        public void ExportSparkvue_SparkvueNotOnScreen_NoActionTaken()
+        public void Merge_UsingPath_MergeFileIntoProperties()
         {
-            
+            /** Merge, when provided a path to a valid .csv file, should load the file and merge its properties with the calling CsvFile
+             * Method: Merge()
+             * 
+             * Start with two test strings representing a valid .csv file
+             *      e.g., bar1 = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333"
+             *            bar2 = "test4,test5,test6\n4,5,6\n44,55,66\n444,555,666"
+             * Load the first string into a CsvFile =>
+             *      CsvFile foo = new CsvFile(bar1);
+             * Have the first CsvFile call Merge() on the second string => foo.Merge(bar2);
+             * Verify the resultant properties are as expected
+             */
+        }
+
+        [TestMethod]
+        public void Merge_UsingCsvFile_MergeFileIntoProperties()
+        {
+            /** Merge, when provided a CsvFile, should merge the struct's properties with the calling CsvFile
+             * Method: Merge()
+             * 
+             * Start with two test strings representing a valid .csv file
+             *      e.g., bar1 = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333"
+             *            bar2 = "test4,test5,test6\n4,5,6\n44,55,66\n444,555,666"
+             * Load the strings into two separate CsvFiles =>
+             *      CsvFile foo1 = new CsvFile(bar1);
+             *      CsvFile foo2 = new CsvFile(bar2);
+             * Have one CsvFile call Merge() on the other => foo1.Merge(foo2);
+             * Verify the resultant properties are as expected
+             */
+        }
+
+        [TestMethod]
+        public void Constructor_TwoCsvsProvided_MergeFilesIntoProperties()
+        {
+            /** Constructor, when provided two .csv paths or files, will merge the files into the resultant properties
+             * Method: Constructor
+             * 
+             * Start with two test strings representing a valid .csv file
+             *      e.g., bar1 = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333"
+             *            bar2 = "test4,test5,test6\n4,5,6\n44,55,66\n444,555,666"
+             * Pass the two strings into a new CsvFile => CsvFile foo = new CsvFile(bar1, bar2);
+             * Verify the resultant properties are as expected
+             */
+        }
+
+        [TestMethod]
+        public void Serialize_Called_ReturnsValidCsv()
+        {
+            /** Serialize, when called, should return a valid .csv file
+             * Method: Serialize()
+             * 
+             * Start with a test string representing a valid .csv file
+             *      e.g., bar = "test1,test2,test3\n1,2,3\n11,22,33\n111,222,333"
+             * Load into CsvFile => CsvFile foo = new CsvFile(bar);
+             * Serialize it => string fooSerialized = foo.Serialize();
+             * Attempt to reload the serialized string into a new CsvFile
+             *      => CsvFile fooDeserialized = new CsvFile(fooSerialized);
+             * (predicate: foo (as string) == fooDeserialized (as string))
+             */
+        }
+    }
+
+    [TestClass]
+    public class FileHandlerUnitTest
+    {
+        [TestMethod]
+        public void GetPaths_FilesExist_CorrectPathsFound()
+        {
+            // not 100% on how this would get tested
         }
     }
 }

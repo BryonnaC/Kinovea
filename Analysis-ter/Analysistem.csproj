@@ -110,6 +110,7 @@
     <Compile Include="Controller.cs" />
     <Compile Include="Csv.cs" />
     <Compile Include="FileHandler.cs" />
+    <Compile Include="Template.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Synchronizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

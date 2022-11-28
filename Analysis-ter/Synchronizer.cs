@@ -15,7 +15,7 @@ namespace Analysistem
         // start/stop recording: Synchronous
         public static EventInfo Record(bool isStart, Unit delayUnits = Unit.Milliseconds)
         {
-            Target sparkvueTarget = DetectTarget(encodedTemplates[isStart ? Template.SparkvueStart : Template.SparkvueStop]);
+            Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 
             Stopwatch stopwatch = new Stopwatch();
 
@@ -43,7 +43,7 @@ namespace Analysistem
         // start/stop recording: Asynchronous
         public static EventInfo RecordThreads(bool isStart, Unit delayUnits = Unit.Milliseconds)
         {
-            Target sparkvueTarget = DetectTarget(encodedTemplates[isStart ? Template.SparkvueStart : Template.SparkvueStop]);
+            Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 
             Stopwatch stopwatch = new Stopwatch();
             Barrier barrier = new Barrier(2, (b) =>

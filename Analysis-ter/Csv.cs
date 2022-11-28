@@ -27,16 +27,11 @@ namespace Analysistem
             Merge(pathTwo, ignoreColumns);
         }
 
-        // for testing:
-        //public void Load(string path)
-        //{
-        //    Load(null, new string[] { "test1,test2,test3", "1,2,3", "11,22,33", "111,222,333" });
-        //}
+        public CsvFile Empty { get { return new CsvFile(""); } }
 
-        public void Load(string path) // for testing: (..., IEnumerable<string> tempTest)
+        public void Load(string csv) 
         {
-            string[] lines = File.ReadAllLines(path);
-            // for testing: replace `lines` with `tempTest`
+            string[] lines = csv.EndsWith(".csv") ? File.ReadAllLines(csv) : csv.Split('\n');
             string[][] cells = lines.Select((line) => line.Split(',')).ToArray();
 
             columns = new List<List<string>>();
@@ -81,7 +76,7 @@ namespace Analysistem
             columns.InsertRange(columns.Count, fileTwo.columns);
         }
 
-        public IEnumerable<string> Serialize()
+        public string Serialize()
         {
             List<string> serialized = new List<string>
             {
@@ -99,7 +94,7 @@ namespace Analysistem
                 }
             }
 
-            return serialized;
+            return string.Join("\n", serialized);
         }
 
         public override string ToString()
