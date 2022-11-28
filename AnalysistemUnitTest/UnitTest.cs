@@ -141,6 +141,17 @@ namespace AnalysistemUnitTest
              * Detect the target => Target foo = DetectTarget(Template.[some_templ]);
              * Verify foo.detected = true
              */
+
+            /* Assign */
+            Template templateToTest = Template.SparkvueStart;
+
+            /* Act */
+            Target target = FakeUser.DetectTarget(templateToTest);
+
+            /* Assert */
+            Assert.IsTrue(target.detected);
+
+            // one liner lol: Assert.IsTrue(FakeUser.DetectTarget(Template.SparkvueStart).detected);
         }
 
         [TestMethod]
@@ -155,13 +166,17 @@ namespace AnalysistemUnitTest
              * Detect the target => Target foo = DetectTarget(Template.[some_templ]);
              * Verify foo.detected = false
              */
-        }
 
-        [TestMethod]
-        // can PressKey() be used to type out words
-        public void PressKey_TypingWord_WordTyped()
-        {
+            /* Assign */
+            Template templateToTest = Template.SparkvueStart;
 
+            /* Act */
+            Target target = FakeUser.DetectTarget(templateToTest);
+
+            /* Assert */
+            Assert.IsFalse(target.detected);
+
+            // one liner lol: Assert.IsFalse(FakeUser.DetectTarget(Template.SparkvueStart).detected);
         }
     }
 

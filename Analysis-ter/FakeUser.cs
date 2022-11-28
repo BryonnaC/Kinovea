@@ -88,7 +88,7 @@ namespace Analysistem.Utils
     }
     #endregion
 
-    static class FakeUser
+    public static class FakeUser
     {
         #region STATIC VARS
         private static readonly Screen[] screens = Screen.AllScreens;
