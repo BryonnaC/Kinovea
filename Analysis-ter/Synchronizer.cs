@@ -13,7 +13,7 @@ namespace Analysistem
     {
         #region WHERE THE MAGIC HAPPENS
         // start/stop recording: Synchronous
-        public static EventInfo Record(bool isStart, Controller.MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
+        public static EventInfo Record(bool isStart, Unit delayUnits = Unit.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 
@@ -36,7 +36,7 @@ namespace Analysistem
         }
 
         // start/stop recording: Asynchronous
-        public static EventInfo RecordThreads(bool isStart, Controller.MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
+        public static EventInfo RecordThreads(bool isStart, Unit delayUnits = Unit.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 

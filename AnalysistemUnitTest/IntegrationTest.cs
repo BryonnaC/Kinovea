@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Analysistem;
+using Analysistem.Utils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,16 @@ namespace AnalysistemUnitTest
              * Method: Record(isStart: true, delayUnits: Unit.Milliseconds)
              * Should begin recording in Kinovea and Sparkvue
              */
+
+            /* Assign */
+            Template templateToExpect = Template.SparkvueStop;
+
+            /* Act */
+            Synchronizer.Record(true);
+            Target actualTarget = FakeUser.DetectTarget(templateToExpect);
+
+            /* Assert */
+            Assert.IsTrue(actualTarget.detected);
         }
 
         [TestMethod]
@@ -30,6 +42,16 @@ namespace AnalysistemUnitTest
              * Method: Record(isStart: false, delayUnits: Units.Milliseconds)
              * Should stop recording in Kinovea and Sparkvue
              */
+
+            /* Assign */
+            Template templateToExpect = Template.SparkvueStart;
+
+            /* Act */
+            Synchronizer.Record(false);
+            Target actualTarget = FakeUser.DetectTarget(templateToExpect);
+
+            /* Assert */
+            Assert.IsTrue(actualTarget.detected);
         }
 
         [TestMethod]
@@ -64,7 +86,14 @@ namespace AnalysistemUnitTest
              * Hit enter to save the file
              * Attempt to load file using CsvFile (predicate: file should exist)
              */
+                     
+            /* Assign & Act */
+            EventInfo eventInfo = FileHandler.ExportSparkvue();
+            string expected = eventInfo.fileName;
+            string actual = expected; // TODO: get the path from the file system (actually try to find the just created file) 
 
+            /* Assert */
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -72,6 +101,14 @@ namespace AnalysistemUnitTest
         public void ExportSparkvue_SparkvueNotOnScreen_NoActionTaken()
         {
             // Call ExportSparkvue, get returned EventInfo, if any properties are null then success!
+
+            /* Assign & Act */
+            EventInfo eventInfo = FileHandler.ExportSparkvue();
+
+            /* Assert */
+            Assert.IsNull(eventInfo.targets[0]);
+            Assert.IsNull(eventInfo.targets[1]);
+            Assert.IsNull(eventInfo.fileName);
         }
     }
 }

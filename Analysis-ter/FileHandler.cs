@@ -9,7 +9,7 @@ namespace Analysistem
 {
     // wanted to put CsvFile here but it's definitely large enough to warrant its own file
 
-    static class FileHandler
+    public static class FileHandler
     {
         public static EventInfo ExportSparkvue()
         {
