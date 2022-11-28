@@ -130,7 +130,7 @@ namespace AnalysistemUnitTest
          * (which it isn't) and having already been run on the host machine
          */ 
         [TestMethod]
-        public void DetectTarget_TargetOnScreen_TargetDetected()
+        public void DetectTarget_TargetOnScreen_TargetDetected() // TC-001
         {
             /** Calling DetectTarget, when the target is on the screen, should show the target as being detected 
              * Method: DetectTarget()
@@ -155,7 +155,7 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void DetectTarget_TargetNotOnScreen_TargetNotDetected()
+        public void DetectTarget_TargetNotOnScreen_TargetNotDetected() // TC-002
         {
             /** Calling DetectTarget, when the target is *not* on the screen, should show the target as *not* being detected
              * Method: DetectTarget()
@@ -184,7 +184,7 @@ namespace AnalysistemUnitTest
     public class CsvFileUnitTest
     {
         [TestMethod]
-        public void Load_UsingPath_PopulateProperties()
+        public void Load_UsingPath_PopulateProperties() // TC-003
         {
             /** Load, when provided a path to a valid .csv file, should populate the struct properties appropriately
              * Method: Load()
@@ -219,7 +219,7 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void Merge_UsingPath_MergeFileIntoProperties()
+        public void Merge_UsingPath_MergeFileIntoProperties() // TC-004
         {
             /** Merge, when provided a path to a valid .csv file, should load the file and merge its properties with the calling CsvFile
              * Method: Merge()
@@ -261,8 +261,8 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void Merge_UsingCsvFile_MergeFileIntoProperties()
-        {
+        public void Merge_UsingCsvFile_MergeFileIntoProperties() // TC-005
+        { 
             /** Merge, when provided a CsvFile, should merge the struct's properties with the calling CsvFile
              * Method: Merge()
              * 
@@ -305,7 +305,7 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void Constructor_TwoCsvsProvided_MergeFilesIntoProperties()
+        public void Constructor_TwoCsvsProvided_MergeFilesIntoProperties() // TC-006
         {
             /** Constructor, when provided two .csv paths or files, will merge the files into the resultant properties
              * Method: Constructor
@@ -343,7 +343,7 @@ namespace AnalysistemUnitTest
         }
 
         [TestMethod]
-        public void Serialize_Called_ReturnsValidCsv()
+        public void Serialize_Called_ReturnsValidCsv() // TC-007
         {
             /** Serialize, when called, should return a valid .csv file
              * Method: Serialize()
@@ -386,7 +386,7 @@ namespace AnalysistemUnitTest
     public class FileHandlerUnitTest
     {
         [TestMethod]
-        public void GetPaths_FilesExist_CorrectPathsFound()
+        public void GetPaths_FilesExist_CorrectPathsFound() // TC-008
         {
             // not 100% on how this would get tested lmao
         }
