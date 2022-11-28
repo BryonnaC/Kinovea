@@ -5,9 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Analysistem.Utils
 {
@@ -28,20 +25,20 @@ namespace Analysistem.Utils
         {
             mat = LoadMat(base64String);
             thresholds = new Dictionary<bool, int>()
-                {
-                    { true, onScreenThreshold is int valueOn ? valueOn : 0 },
-                    { false, offScreenThreshold is int valueOff ? valueOff : 0 },
-                };
+            {
+                { true, onScreenThreshold is int valueOn ? valueOn : 0 },
+                { false, offScreenThreshold is int valueOff ? valueOff : 0 },
+            };
         }
 
         public TemplateData(Mat mat, int? onScreenThreshold = null, int? offScreenThreshold = null)
         {
             this.mat = mat;
             thresholds = new Dictionary<bool, int>()
-                {
-                    { true, onScreenThreshold is int valueOn ? valueOn : 0 },
-                    { false, offScreenThreshold is int valueOff ? valueOff : 0 },
-                };
+            {
+                { true, onScreenThreshold is int valueOn ? valueOn : 0 },
+                { false, offScreenThreshold is int valueOff ? valueOff : 0 },
+            };
         }
 
         public int this[bool onScreen]
@@ -58,7 +55,6 @@ namespace Analysistem.Utils
                     // reaching this block means the user screwed up
                     // and claims the target is/isn't on the screen when it isn't/is
                 }
-
             }
         }
 
