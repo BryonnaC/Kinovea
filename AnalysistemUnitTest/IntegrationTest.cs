@@ -31,6 +31,14 @@ namespace AnalysistemUnitTest
              * Should stop recording in Kinovea and Sparkvue
              */
         }
+
+        [TestMethod]
+        public void MakeCoincident_TwoValidCsvFiles_ReturnTwoSynchronizedCsvFiles()
+        {
+            /** MakeCoincident, when passed two valid CsvFiles, should return two synchronized CsvFiles
+             * 
+             */ 
+        }
     }
 
     [TestClass]

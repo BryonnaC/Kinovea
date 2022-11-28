@@ -11,6 +11,11 @@ namespace Analysistem
 {
     public static class Synchronizer
     {
+        public static void Test()
+        {
+            // putit here bryoppknasdfia
+        }
+
         #region WHERE THE MAGIC HAPPENS
         // start/stop recording: Synchronous
         public static EventInfo Record(bool isStart, Unit delayUnits = Unit.Milliseconds)
