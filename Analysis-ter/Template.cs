@@ -41,8 +41,6 @@ namespace Analysistem.Utils
             };
         }
 
-        public static TemplateData Empty { get { return new TemplateData(new Mat()); } }
-
         public int this[bool onScreen]
         {
             get { return thresholds[onScreen]; }
