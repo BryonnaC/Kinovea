@@ -15,7 +15,9 @@ namespace Analysistem
      */
     public class Controller
     {
-        public void RunDemo()
+        public delegate void MyFunction();
+
+        public void RunDemo(MyFunction recordingFunction)
         {
             //FakeUser.PressKey('a');
 

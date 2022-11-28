@@ -16,9 +16,11 @@ namespace Analysistem
             // putit here bryoppknasdfia
         }
 
+        public delegate void MyFunction();
+
         #region WHERE THE MAGIC HAPPENS
         // start/stop recording: Synchronous
-        public static EventInfo Record(bool isStart, Unit delayUnits = Unit.Milliseconds)
+        public static EventInfo Record(bool isStart, MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 
@@ -34,8 +36,7 @@ namespace Analysistem
             //==============================================================================================================================================================================================================================================
             //============================================================================== TODO: start/stop recording kinovea here =======================================================================================================================
             //==============================================================================================================================================================================================================================================
-            //CaptureScreen captureScreen = new CaptureScreen();
-            //captureScreen.TriggerCapture();                     //this capture screen will likely get changed as GUI is put together
+            kinoveaRecord();
 
             stopwatch.Stop();
 
@@ -46,7 +47,7 @@ namespace Analysistem
         }
 
         // start/stop recording: Asynchronous
-        public static EventInfo RecordThreads(bool isStart, Unit delayUnits = Unit.Milliseconds)
+        public static EventInfo RecordThreads(bool isStart, MyFunction kinoveaRecord, Unit delayUnits = Unit.Milliseconds)
         {
             Target sparkvueTarget = DetectTarget(isStart ? Template.SparkvueStart : Template.SparkvueStop);
 
@@ -66,8 +67,7 @@ namespace Analysistem
                 //==========================================================================================================================================================================================================================================
                 //========================================================================== TODO: start/stop recording kinovea here =======================================================================================================================
                 //==========================================================================================================================================================================================================================================
-                //CaptureScreen captureScreen = new CaptureScreen();  //this will change as GUI is built
-                //captureScreen.TriggerCapture();
+                kinoveaRecord();
 
                 barrier.SignalAndWait(); // wait to stop stopwatch
             };
