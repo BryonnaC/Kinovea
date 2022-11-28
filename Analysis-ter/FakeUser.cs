@@ -24,8 +24,8 @@ namespace Analysistem.Utils
     {
         public Point location; // minLoc, adjusted per screen as minLoc has a default origin of (0,0)
         public double value; // minVal for client debugging
-        public bool detected; // minVal < THRESHOLD
-        public double confidence; // (1 - minVal/THRESHOLD) * 100 for perc representation of detection confidence cuz why not
+        public bool detected; // minVal < threshold
+        public double confidence; // (1 - minVal/threshold) * 100 for perc representation of detection confidence cuz why not
         public double threshold; // THRESHOLD for this Target
         public int screenId; // screen id this Target was found on
 
@@ -91,10 +91,6 @@ namespace Analysistem.Utils
     static class FakeUser
     {
         #region STATIC VARS
-        // if minVal from `DetectTarget()` is below this value, the detection is *likely* to be accurate
-        // "likely" because these values tend to be inconsistent across computers and especially between different
-        //      templates (e.g., SparkVue's THRESHOLD is approx. double that of Kinovea's (from my own testing!))
-        public const double Threshold = 9_000_000.0;
         private static readonly Screen[] screens = Screen.AllScreens;
         public static readonly TemplateDictionary encodedTemplates = new TemplateDictionary()
         {

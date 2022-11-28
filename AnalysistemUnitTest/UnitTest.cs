@@ -87,19 +87,6 @@ using Analysistem;
 namespace AnalysistemUnitTest
 {
     [TestClass]
-    // miscellaneous test class for functionality that won't/shouldn't have a corresponding test class
-    public class UnitTest
-    {
-        [TestMethod]
-        public void TestMethod1()
-        {
-            /* Arrange */
-            /* Act */
-            /* Assert */
-        }
-    }
-
-    [TestClass]
     public class TimeUnitTest
     {
         [TestMethod]
@@ -133,25 +120,12 @@ namespace AnalysistemUnitTest
         }
     }
 
-    //[TestClass]
-    //public class SynchronizeCsvUnitTest 
-    //{
-    //    [TestMethod]
-    //    // name might need some work
-    //    public void CombineCsv_CreamyCsvs_CompoundCsvCreated()
-    //    {
-    //        Method<CsvFile> CombineCsv = Accessor.GetMethod(Type.SynchronizeCsv, Method.CombineCsv);
-
-    //        CombineCsv.Test("", "", "");
-    //    }
-    //}
-
     [TestClass]
     public class FakeUserUnitTest
     {
         /**
-         * DetectTarget() relies on CalibrateTemplate being implemented
-         * (which it isn't)
+         * Testing DetectTarget() relies on CalibrateTemplate being implemented
+         * (which it isn't) and having already been run on the host machine
          */ 
         [TestMethod]
         public void DetectTarget_TargetOnScreen_TargetDetected()
@@ -273,7 +247,7 @@ namespace AnalysistemUnitTest
         [TestMethod]
         public void GetPaths_FilesExist_CorrectPathsFound()
         {
-            // not 100% on how this would get tested
+            // not 100% on how this would get tested lmao
         }
     }
 }

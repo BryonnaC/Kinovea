@@ -74,7 +74,7 @@ namespace Analysistem.Utils
 
     public struct TemplateDictionary : IEnumerable<KeyValuePair<Template, TemplateData>>
     {
-        public Dictionary<Template, TemplateData> templates;
+        public readonly Dictionary<Template, TemplateData> templates;
 
         public IEnumerator GetEnumerator()
         {
