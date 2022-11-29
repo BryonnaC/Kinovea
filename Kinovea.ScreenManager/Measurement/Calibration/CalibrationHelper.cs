@@ -22,6 +22,7 @@ using System;
 using System.Drawing;
 using System.Xml;
 using Kinovea.Services;
+using Emgu.CV;
 
 namespace Kinovea.ScreenManager
 {
@@ -213,9 +214,16 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void SetOrigin(PointF p)
         {
-            PointF u = distortionHelper.Undistort(p);
-            calibrator.SetOrigin(u);
-            AfterCalibrationChanged();
+            try
+            {
+                PointF u = distortionHelper.Undistort(p);
+                calibrator.SetOrigin(u);
+                AfterCalibrationChanged();
+            }
+            catch
+            {
+                return;
+            }
         }
 
         public void SetCalibratorFromType(CalibratorType type)
