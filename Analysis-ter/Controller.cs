@@ -77,5 +77,12 @@ namespace Analysistem
 
             return infoForm;
         }
+
+        protected void InfoWindow()
+        {
+            Form1 infoDemo = new Form1();
+            infoDemo.Show();
+            Console.WriteLine("Happy demo-ing!");
+        }
     }
 }

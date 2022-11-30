@@ -142,9 +142,10 @@ namespace Kinovea.Root
 
         private void mnuInfoCollection_Click(object sender, EventArgs e)
         {
-            informationForm = aL.InformationClick();
+            //informationForm = aL.InformationClick();
             //aMainWindow.AddOwnedForm(informationForm);
-            
+            aL.InfoDemoClick();
+           
         }
 
         private void MnuStartSynchRecord_Click(object sender, EventArgs e)

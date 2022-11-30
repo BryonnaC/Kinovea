@@ -34,5 +34,10 @@ namespace Kinovea.Root
             Console.WriteLine("We're getting the form!");
             return infoForm;
         }
+
+        public void InfoDemoClick()
+        {
+            base.InfoWindow();
+        }
     }
 }
