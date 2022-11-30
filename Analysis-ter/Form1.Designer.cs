@@ -55,6 +55,7 @@ namespace Analysistem
             this.titleBox.ReadOnly = true;
             this.titleBox.Size = new System.Drawing.Size(352, 43);
             this.titleBox.TabIndex = 0;
+            this.titleBox.TabStop = false;
             this.titleBox.Text = "Information Collection";
             // 
             // sexTextBox
@@ -66,6 +67,7 @@ namespace Analysistem
             this.sexTextBox.ReadOnly = true;
             this.sexTextBox.Size = new System.Drawing.Size(148, 35);
             this.sexTextBox.TabIndex = 1;
+            this.sexTextBox.TabStop = false;
             this.sexTextBox.Text = "Sex:";
             // 
             // orTextBox
@@ -77,6 +79,7 @@ namespace Analysistem
             this.orTextBox.ReadOnly = true;
             this.orTextBox.Size = new System.Drawing.Size(148, 30);
             this.orTextBox.TabIndex = 2;
+            this.orTextBox.TabStop = false;
             this.orTextBox.Text = "OR";
             this.orTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -89,6 +92,7 @@ namespace Analysistem
             this.weightTextBox.ReadOnly = true;
             this.weightTextBox.Size = new System.Drawing.Size(148, 35);
             this.weightTextBox.TabIndex = 3;
+            this.weightTextBox.TabStop = false;
             this.weightTextBox.Text = "Weight:";
             // 
             // ageTextBox
@@ -100,6 +104,7 @@ namespace Analysistem
             this.ageTextBox.ReadOnly = true;
             this.ageTextBox.Size = new System.Drawing.Size(148, 35);
             this.ageTextBox.TabIndex = 4;
+            this.ageTextBox.TabStop = false;
             this.ageTextBox.Text = "Age:";
             // 
             // heightTextBox
@@ -111,6 +116,7 @@ namespace Analysistem
             this.heightTextBox.ReadOnly = true;
             this.heightTextBox.Size = new System.Drawing.Size(154, 35);
             this.heightTextBox.TabIndex = 5;
+            this.heightTextBox.TabStop = false;
             this.heightTextBox.Text = "Height:";
             // 
             // ageInput
@@ -234,6 +240,8 @@ namespace Analysistem
             this.Controls.Add(this.orTextBox);
             this.Controls.Add(this.sexTextBox);
             this.Controls.Add(this.titleBox);
+            this.Cursor = System.Windows.Forms.Cursors.No;
+            this.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.Text = "Form1";
