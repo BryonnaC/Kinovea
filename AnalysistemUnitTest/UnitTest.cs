@@ -50,8 +50,8 @@ using System.Linq;
  *  - The Arrange section of a unit test method initializes objects and sets the value of 
  *      the data that is passed to the method under test.
  *      Try to divide your Arrange section into two parts: 
- *          - Variables that should/can be set manually by a developer (comment: dev-mut)
- *          - Variables that should not be set manually by a delevoper (comment: dev-const)
+ *          - Variables that should/can be set manually by a developer (dev-mut)
+ *          - Variables that should not be set manually by a delevoper (dev-const)
  *      The idea behind this is that, if we find we want to adjust certain tests, we should only need to adjust
  *          'dev-mut' variables and doing so should NOT change the actual functionality of the test.
  *          Conversely, 'dev-const' variables should *only* be changed if we find the functionality of the test
@@ -63,10 +63,10 @@ using System.Linq;
  *          in Accessor.cs. *DO NOT* use the Accessor class if a method can be accessed normally. In general,
  *          methods should be declared in 'dev-const.'
  *          To declare a method using Accessor:
- *              - Method<[ReturnType]> [MethodName] = Accessor.GetMethod(Types.[ParentTypeName], Methods.[MethodName]);
+ *              - Method<[ReturnType]> [MethodName] = Accessor.GetMethod(Type.[ParentTypeName], Method.[MethodName]);
  *              - Put `object` for the ReturnType if void/unknown/irrelevant
  *          To call the method using Accessor:
- *              - [MethodName].Call([params...]);
+ *              - [MethodName].Test([params...]);
  *              - The params will not be type-checked at all. Not even the number of params. Be mindful.
  *          
  *      A common pattern is to have a variable `expected` in 'dev-mut' and a variable `actual` in 'dev-const.'
@@ -177,6 +177,12 @@ namespace AnalysistemUnitTest
             Assert.IsFalse(target.detected);
 
             // one liner lol: Assert.IsFalse(FakeUser.DetectTarget(Template.SparkvueStart).detected);
+        }
+
+        [TestMethod]
+        public void PressKey_Called_RegisterKeyPress()
+        {
+
         }
     }
 

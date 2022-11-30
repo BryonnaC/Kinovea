@@ -21,7 +21,8 @@ namespace Analysistem
         {
             //FakeUser.PressKey('a');
 
-            FakeUser.PressCaptureScreenHotkey();
+            //FakeUser.PressCaptureScreenHotkey();
+            Record(true);
 
             // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger or timeToOpenFileExplorer in FileHandler.cs
             //EventInfo info = ExportSparkvue();   // TODO: this line is throwing an exception still
