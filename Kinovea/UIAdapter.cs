@@ -42,6 +42,8 @@ namespace Kinovea.Root
         private ToolStripMenuItem mnuVideoRecordingWrapper = new ToolStripMenuItem();
         #endregion
 
+        private UserControl informationForm;
+
         public UIAdapter(int version) : base(version)
         {
             log.Debug("Loading video readers.");
@@ -140,7 +142,9 @@ namespace Kinovea.Root
 
         private void mnuInfoCollection_Click(object sender, EventArgs e)
         {
-            //
+            informationForm = aL.InformationClick();
+            //aMainWindow.AddOwnedForm(informationForm);
+            
         }
 
         private void MnuStartSynchRecord_Click(object sender, EventArgs e)

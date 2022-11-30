@@ -17,7 +17,7 @@ namespace Analysistem
     {
         public delegate void MyFunction();
 
-        public void RunDemo(MyFunction recordingFunction)
+        protected void RunDemo(MyFunction recordingFunction)
         {
             //FakeUser.PressKey('a');
 
@@ -70,5 +70,12 @@ namespace Analysistem
         //    // play with the Data here!
         //}
         // same goes for stopping => Record(false)
+
+        protected UserControl1 GetUserInformationForm()
+        {
+            UserControl1 infoForm = new UserControl1();
+
+            return infoForm;
+        }
     }
 }
