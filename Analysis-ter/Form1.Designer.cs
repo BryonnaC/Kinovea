@@ -201,6 +201,7 @@ namespace Analysistem
             this.nextButton.TabIndex = 14;
             this.nextButton.Text = "Next";
             this.nextButton.UseVisualStyleBackColor = false;
+            this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
             // 
             // Form1
             // 
