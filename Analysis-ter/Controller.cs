@@ -16,13 +16,15 @@ namespace Analysistem
     public class Controller
     {
         public delegate void MyFunction();
+        public static bool isStart = true;
 
         protected void RunDemo(MyFunction recordingFunction)
         {
             //FakeUser.PressKey('a');
 
             //FakeUser.PressCaptureScreenHotkey();
-            Record(true);
+            Record(isStart);
+            isStart = !isStart;
 
             // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger or timeToOpenFileExplorer in FileHandler.cs
             //EventInfo info = ExportSparkvue();   // TODO: this line is throwing an exception still

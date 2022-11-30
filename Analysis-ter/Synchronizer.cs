@@ -32,7 +32,7 @@ namespace Analysistem
             stopwatch.Stop();
 
             // return to original mouse position
-            SetCursorPos(originalPos.X, originalPos.Y);
+           // SetCursorPos(originalPos.X, originalPos.Y);
 
             return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
         }
