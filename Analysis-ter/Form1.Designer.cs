@@ -115,43 +115,53 @@ namespace Analysistem
             // 
             // ageInput
             // 
+            this.ageInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.ageInput.Location = new System.Drawing.Point(114, 314);
             this.ageInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ageInput.Name = "ageInput";
             this.ageInput.Size = new System.Drawing.Size(148, 26);
             this.ageInput.TabIndex = 6;
+            this.ageInput.Text = "years";
             // 
             // inchInput
             // 
+            this.inchInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.inchInput.Location = new System.Drawing.Point(644, 140);
             this.inchInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.inchInput.Name = "inchInput";
             this.inchInput.Size = new System.Drawing.Size(58, 26);
             this.inchInput.TabIndex = 7;
+            this.inchInput.Text = "inches";
             // 
             // feetInput
             // 
+            this.feetInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.feetInput.Location = new System.Drawing.Point(548, 140);
             this.feetInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.feetInput.Name = "feetInput";
             this.feetInput.Size = new System.Drawing.Size(85, 26);
             this.feetInput.TabIndex = 8;
+            this.feetInput.Text = "feet";
             // 
             // lbsInput
             // 
+            this.lbsInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.lbsInput.Location = new System.Drawing.Point(554, 314);
             this.lbsInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lbsInput.Name = "lbsInput";
             this.lbsInput.Size = new System.Drawing.Size(85, 26);
             this.lbsInput.TabIndex = 9;
+            this.lbsInput.Text = "lbs";
             // 
             // kgsInput
             // 
+            this.kgsInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.kgsInput.Location = new System.Drawing.Point(554, 397);
             this.kgsInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.kgsInput.Name = "kgsInput";
             this.kgsInput.Size = new System.Drawing.Size(85, 26);
             this.kgsInput.TabIndex = 10;
+            this.kgsInput.Text = "kgs";
             // 
             // femaleRadio
             // 
@@ -191,7 +201,7 @@ namespace Analysistem
             // 
             // nextButton
             // 
-            this.nextButton.BackColor = System.Drawing.SystemColors.Desktop;
+            this.nextButton.BackColor = System.Drawing.Color.LimeGreen;
             this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.nextButton.Location = new System.Drawing.Point(783, 451);
@@ -207,6 +217,7 @@ namespace Analysistem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.ClientSize = new System.Drawing.Size(964, 530);
             this.Controls.Add(this.nextButton);
             this.Controls.Add(this.declineRadio);
