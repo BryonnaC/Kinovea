@@ -105,19 +105,6 @@ namespace Analysistem
             columns.Add(new List<string>(fileTwo.columns[index]));
         }
 
-        //public void AppendColumn(CsvFile fileTwo, string header)
-        //{
-        //    AppendColumn(fileTwo.GetColumn(header));
-        //}
-
-        //public void AppendColumn(string[] column)
-        //{
-        //    List<string> columnToAdd = column.ToList();
-        //    headers.Add(columnToAdd[0]);
-        //    columnToAdd.RemoveAt(0);
-        //    columns.Add(columnToAdd);
-        //}
-
         public string[] GetColumn(string header)
         {
             int index = GetColumnIndex(header);

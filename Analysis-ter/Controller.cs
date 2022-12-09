@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
 using Analysistem.Utils;
+using System.IO;
 using static Analysistem.Synchronizer;
 using static Analysistem.FileHandler;
 
@@ -31,10 +32,11 @@ namespace Analysistem
             //Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
-            CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { "time "});
-            CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\Downloads\\force_110122.csv");
-            CsvFile syncKinovea =  Synchronizer.MakeCoincident(kinovea, sparkvue);
+            CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { "time " });
+            CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\Downloads\\force_demo_112922.csv");
+            CsvFile syncKinovea = Synchronizer.MakeCoincident(kinovea, sparkvue);
             Console.WriteLine(syncKinovea.ToString());
+            File.WriteAllText("C:\\Users\\col_b\\Downloads\\syncKinovea.csv", syncKinovea.Serialize());
 
             /*CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
 
