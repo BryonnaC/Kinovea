@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Convert;
 
 namespace Analysistem
 {
@@ -32,7 +33,7 @@ namespace Analysistem
             stopwatch.Stop();
 
             // return to original mouse position
-           // SetCursorPos(originalPos.X, originalPos.Y);
+            // SetCursorPos(originalPos.X, originalPos.Y);
 
             return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
         }
@@ -49,7 +50,7 @@ namespace Analysistem
                 else stopwatch.Stop();
             });
 
-            #pragma warning disable IDE0039 //? Use local function
+#pragma warning disable IDE0039 //? Use local function
             Action recordKinovea = () =>
             {
                 barrier.SignalAndWait(); // wait to start stopwatch
@@ -83,7 +84,30 @@ namespace Analysistem
         public static CsvFile MakeCoincident(CsvFile kinovea, CsvFile sparkvue)
         {
             // TODO:  synchronize csv
-            return new CsvFile();
+            //return new CsvFile();
+
+            // identify lower and higer time resolution file - we're just assuming it will always be the same
+            // create a new csv
+            CsvFile upSampledKinovea = CsvFile.Empty;
+            // populate it with the higher resolution time column
+            upSampledKinovea.AppendColumn(sparkvue, "time (s)");
+            // convert the units bro
+            //string[] timeColumn = sparkvue.GetColumn("time (s)");
+            for (int i = 1; i < upSampledKinovea.columns[0].Count; i++)
+            {
+                int colIndex = upSampledKinovea.GetColumnIndex("time (s)");
+                string timeCell = upSampledKinovea.columns[colIndex][i];
+                timeCell = ToDouble(timeCell).ToFromUnits(Unit.Seconds, Unit.Milliseconds).ToString();
+                upSampledKinovea.columns[colIndex][i] = timeCell;
+            }
+            // populate the new file's motion column with the data from the low res file, at closest time
+
+            // find the flat spot in the force data      - "airtime"
+            // find the parabola spot in the motion data - "airtime"
+            // make sure their lengths are the same enough based on the new time scale
+            // possibly fix the position of the beginning or end
+
+            return upSampledKinovea;
         }
         #endregion
     }

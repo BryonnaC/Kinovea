@@ -23,23 +23,28 @@ namespace Analysistem
             //FakeUser.PressKey('a');
 
             //FakeUser.PressCaptureScreenHotkey();
-            Record(isStart);
-            isStart = !isStart;
+            // THESE SHOULD GO BACK //Record(isStart);
+            // THESE SHOULD GO BACK //isStart = !isStart;
 
             // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger or timeToOpenFileExplorer in FileHandler.cs
             //EventInfo info = ExportSparkvue();   // TODO: this line is throwing an exception still
             //Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
-            //CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
+            CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { "time "});
+            CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\Downloads\\force_110122.csv");
+            CsvFile syncKinovea =  Synchronizer.MakeCoincident(kinovea, sparkvue);
+            Console.WriteLine(syncKinovea.ToString());
 
-            //Console.WriteLine($"\nCsvFile:\n{testFile}");
+            /*CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
 
-            //IEnumerable<string> serial = testFile.Serialize();
-            //Console.WriteLine($"Serialized:\n{string.Join("\n", serial)}\n");
-            //testFile.Load(null, serial);
+            Console.WriteLine($"\nCsvFile:\n{testFile}");
 
-            //Console.WriteLine($"Deserialized:\n{testFile}");
+            IEnumerable<string> serial = testFile.Serialize();
+            Console.WriteLine($"Serialized:\n{string.Join("\n", serial)}\n");
+            testFile.Load(null, serial);
+
+            Console.WriteLine($"Deserialized:\n{testFile}");*/
             #endregion
 
             #region Synchronize:Record DEMO
