@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Math;
 using static System.Convert;
 
 namespace Analysistem
@@ -89,18 +90,22 @@ namespace Analysistem
             // identify lower and higer time resolution file - we're just assuming it will always be the same
             // create a new csv
             CsvFile upSampledKinovea = CsvFile.Empty;
-            // populate it with the higher resolution time column
-            upSampledKinovea.AppendColumn(sparkvue, "time (s)");
-            // convert the units bro
-            //string[] timeColumn = sparkvue.GetColumn("time (s)");
-            for (int i = 1; i < upSampledKinovea.columns[0].Count; i++)
+            // create time, x, and y headers and columns
+            upSampledKinovea.headers.AddRange(new List<string>() { "Time (ms)", "X Trajectory", "Y Trajectory" });
+            upSampledKinovea.columns.AddRange(new List<List<string>>() { new List<string>(), new List<string>(), new List<string>() });
+            // find time delta (ms) of sparkvue data
+            /* IF FORCE PLATE IS RECORDING AT 1000HZ, THE RESOLUTION IS 1MS THIS MEANS THAT THEY WOULD ALWAYS BE ON THE SAME TIME SCALE, SO NO ROUNDING ON OUR END */
+            double targetResolutionMs = (ToDouble(sparkvue.columns[1][1]) - ToDouble(sparkvue.columns[1][0])) * 1000;
+            // go through each cell in kinovea time column
+            for (int i = 0; i < kinovea.columns[0].Count; i++)
             {
-                int colIndex = upSampledKinovea.GetColumnIndex("time (s)");
-                string timeCell = upSampledKinovea.columns[colIndex][i];
-                timeCell = ToDouble(timeCell).ToFromUnits(Unit.Seconds, Unit.Milliseconds).ToString();
-                upSampledKinovea.columns[colIndex][i] = timeCell;
+                kinovea.columns[0][i] = (Round(ToInt32(kinovea.columns[0][i]) / targetResolutionMs) * targetResolutionMs).ToString();
+                for (int j = 0; j < kinovea.columns[i].Count; j++) // TODO: Make this do wtf it's suppsoed to 
+                {
+                    // put all the motion data where it's supposed to go
+
+                }
             }
-            // populate the new file's motion column with the data from the low res file, at closest time
 
             // find the flat spot in the force data      - "airtime"
             // find the parabola spot in the motion data - "airtime"
