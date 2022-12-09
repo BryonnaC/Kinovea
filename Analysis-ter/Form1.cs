@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,9 +16,12 @@ namespace Analysistem
         int sex = 0;
         int age;
         float weightLbs;
+        float weightKgs;
         int heightFt;
         int heightIn;
+        float heightCm;
         bool errorCode = false;
+        string toBeWritten = "";
 
         //0 for decline, 1 for male (1st is the worst), 2 for female (second is the best) (the childrens rhyme)
         private const int femSex = 2;
@@ -31,13 +35,15 @@ namespace Analysistem
 
         private void nextButton_Click(object sender, EventArgs e)
         {
-            determineSex();
-            getAge();
-            getWeight();
-            getHeight();
+            toBeWritten += determineSex();
+            toBeWritten += getAge();
+            toBeWritten += getWeight();
+            toBeWritten += getHeight();
 
             if(errorCode == true)
             {
+                ErrorMessage em = new ErrorMessage();
+                em.Show();
                 return;
             }
             else if(errorCode == false)
@@ -48,80 +54,153 @@ namespace Analysistem
             errorCode = false;
         }
 
-        private void ageInput_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-
-        }
-
         private void saveInfoToFile()
         {
+            string desiredFileName = @"C:\Users\Bryonna\Documents\informationCollection.txt";
 
+            File.WriteAllText(desiredFileName, toBeWritten);
+            Console.WriteLine(File.ReadAllText(desiredFileName));
         }
 
-        private void getHeight()
+        private string getHeight()
         {
-            try
+            if (imperialHeight.Checked)
             {
-                heightFt = Int32.Parse(feetInput.Text);
-                heightIn = Int32.Parse(inchInput.Text);
+                try
+                {
+                    heightFt = Int32.Parse(feetInput.Text);
+                    heightIn = Int32.Parse(inchInput.Text);
+                    return heightFt.ToString()
+                        + " ft " + heightIn.ToString() + " in \n";
+                }
+                catch
+                {
+                    Console.WriteLine("wow, you only exist in two dimensions?");
+                    errorCode = true;
+                }
             }
-            catch
+            else if (metricHeight.Checked)
             {
-                Console.WriteLine("wow, you only exist in two dimensions?");
-                errorCode = true;
+                try
+                {
+                    heightCm = float.Parse(feetInput.Text);
+                    return heightCm.ToString() + " cm \n";
+                }
+                catch
+                {
+                    Console.WriteLine("wow, you only exist in two dimensions?");
+                    errorCode = true;
+                }
             }
+
+            return null;
+
         }
 
-        private void getWeight()
+        private string getWeight()
         {
             if (imperialWeight.Checked)
             {
-
+                try
+                {
+                    weightKgs = 0.0f;
+                    weightLbs = float.Parse(weightInput.Text);
+                    return weightLbs.ToString() + " lbs \n";
+                }
+                catch
+                {
+                    Console.WriteLine("YOU BROKE THE SCALE?!?!");
+                    errorCode = true;
+                }
             }
             else if (metricWeight.Checked)
             {
-
+                try
+                {
+                    weightLbs = 0.0f;
+                    weightKgs = float.Parse(weightInput.Text);
+                    return weightKgs.ToString() + " kgs \n";
+                }
+                catch
+                {
+                    Console.WriteLine("YOU BROKE THE SCALE?!?!");
+                    errorCode = true;
+                }
             }
 
-            try
-            {
-                weightLbs = float.Parse(lbsInput.Text);
-            }
-            catch
-            {
-                Console.WriteLine("YOU BROKE THE SCALE?!?!");
-                errorCode = true;
-            }
+            return null;
         }
 
-        private void getAge()
+        private string getAge()
         {
             try
             {
                 age = Int32.Parse(ageInput.Text);
+                return age.ToString() + " yrs \n";
             }
             catch
             {
                 Console.WriteLine("AGE IS A NUMBER");
                 errorCode = true;
             }
-            
+
+            return null;
         }
 
-        private void determineSex()
+        private string determineSex()
         {
             if (femaleRadio.Checked)
             {
                 sex = femSex;
+                return "Female \n";
             }
             if (maleRadio.Checked)
             {
                 sex = malSex;
+                return "Male \n";
             }
             else if (declineRadio.Checked)
             {
                 sex = declineSex;
+                return "Decline to Answer Sex \n";
             }
+
+            return null;
+        }
+
+        private void inchInput_TabIndexChanged(object sender, EventArgs e)
+        {
+            inchInput.Text = "";
+        }
+
+        private void inchInput_Click(object sender, EventArgs e)
+        {
+            inchInput.Text = "";
+        }
+
+        private void feetInput_Click(object sender, EventArgs e)
+        {
+            feetInput.Text = "";
+        }
+
+        private void ageInput_Click(object sender, EventArgs e)
+        {
+            ageInput.Text = "";
+        }
+
+        private void lbsInput_Click(object sender, EventArgs e)
+        {
+            weightInput.Text = "";
+        }
+
+        private void metricHeight_CheckedChanged(object sender, EventArgs e)
+        {
+            inchInput.Hide();
+        }
+
+        private void imperialHeight_CheckedChanged(object sender, EventArgs e)
+        {
+            inchInput.Show();
         }
     }
 }

@@ -206,12 +206,11 @@ namespace AnalysistemUnitTest
             List<double> actual = new List<double>(expected.Length);
 
             /* Act */
-            foreach (Unit unitFrom in it)
+            foreach (Unit unitTo in it)
             {
-                foreach (Unit unitTo in it)
+                foreach (Unit unitFrom in it)
                 {
-                    Console.WriteLine(unitFrom.ToString() + unitTo.ToString());
-                    actual.Add(baseValue.ToFromUnits(unitFrom, unitTo));
+                    actual.Add(baseValue.ToFromUnits(unitTo, unitFrom));
                 }
             }
 

@@ -72,7 +72,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalibrationWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CalibrationWindow.Designer.cs">
+      <DependentUpon>CalibrationWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Class1.cs" />
+    <Compile Include="ErrorMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorMessage.Designer.cs">
+      <DependentUpon>ErrorMessage.cs</DependentUpon>
+    </Compile>
     <Compile Include="FakeUser.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Csv.cs" />
@@ -93,6 +105,12 @@
     <Compile Include="UserControl1.Designer.cs">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CalibrationWindow.resx">
+      <DependentUpon>CalibrationWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorMessage.resx">
+      <DependentUpon>ErrorMessage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
