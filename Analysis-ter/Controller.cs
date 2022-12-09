@@ -91,5 +91,12 @@ namespace Analysistem
             infoDemo.Show();
             Console.WriteLine("Happy demo-ing!");
         }
+
+        protected void CalibrateWindow()
+        {
+            CalibrationWindow calWin = new CalibrationWindow();
+            calWin.Show();
+            Console.WriteLine("Happy cal-demo-ing!");
+        }
     }
 }
