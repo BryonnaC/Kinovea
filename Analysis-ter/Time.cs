@@ -19,12 +19,14 @@ namespace Analysistem.Utils
 
         public static double ToFromUnits(this double time, Unit oldUnits, Unit newUnits)
         {
+            double secScale = newUnits == Unit.Seconds ? 1000 : 1;
+            newUnits = newUnits == Unit.Seconds ? Unit.Milliseconds : newUnits;
             switch(oldUnits)
             {
-                case Unit.Seconds: return time / ((double) newUnits * 1000);
-                case Unit.Milliseconds: return time * (double) newUnits;
-                case Unit.Microseconds: return oldUnits < newUnits ? time * 1_000 : time / 1_000;
-                case Unit.Nanoseconds: return newUnits == Unit.Microseconds ? time / 1_000 : time / 1_000_000;
+                case Unit.Seconds: return time * (double) newUnits * 1000;
+                case Unit.Milliseconds: return time * (double) newUnits / secScale;
+                case Unit.Microseconds: return oldUnits < newUnits ? time / 1_000 : time * 1_000 * secScale;
+                case Unit.Nanoseconds: return newUnits == Unit.Microseconds ? time / 1_000 : time / (1_000_000 * secScale);
                 default: return time; // this will never be reached
             }
         }
