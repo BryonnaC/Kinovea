@@ -44,6 +44,7 @@ namespace Analysistem
             {
                 ErrorMessage em = new ErrorMessage();
                 em.Show();
+                errorCode = false;
                 return;
             }
             else if(errorCode == false)
@@ -51,12 +52,12 @@ namespace Analysistem
                 saveInfoToFile();
                 this.Close();
             }
-            errorCode = false;
+
         }
 
         private void saveInfoToFile()
         {
-            string desiredFileName = @"C:\Users\Bryonna\Documents\informationCollection.txt";
+            string desiredFileName = @"C:\Users\bryy_\Documents\informationCollection.txt";
 
             File.WriteAllText(desiredFileName, toBeWritten);
             Console.WriteLine(File.ReadAllText(desiredFileName));
