@@ -208,7 +208,7 @@ namespace AnalysistemUnitTest
             /* Act */
             foreach (Unit unitFrom in it)
             {
-                foreach (Unit unitTo in (Unit[])Enum.GetValues(typeof(Unit)))
+                foreach (Unit unitTo in it)
                 {
                     Console.WriteLine(unitFrom.ToString() + unitTo.ToString());
                     actual.Add(baseValue.ToFromUnits(unitFrom, unitTo));

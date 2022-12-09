@@ -14,15 +14,13 @@ namespace Analysistem.Utils
     {
         public static double ToUnits(this TimeSpan elapsed, Unit unit)
         {
-            return elapsed.Ticks / (double)TimeSpan.TicksPerSecond * (int)unit;
+            int scale = (int)Math.Pow(10, (int)unit);
+            return elapsed.Ticks / (double)TimeSpan.TicksPerSecond * scale;
         }
-
 
         public static double ToFromUnits(this double time, Unit oldUnits, Unit newUnits)
         {
             int scale = (int)Math.Pow(10, Math.Abs(newUnits - oldUnits));
-
-            Console.WriteLine("old: " + oldUnits.ToString() + "\tnew: " + newUnits.ToString() + "\tscale: " + scale);
 
             switch (oldUnits)
             {
