@@ -48,6 +48,7 @@ namespace Analysistem
             // 
             // titleBox
             // 
+            this.titleBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.titleBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titleBox.Location = new System.Drawing.Point(187, 3);
             this.titleBox.Name = "titleBox";
@@ -58,6 +59,7 @@ namespace Analysistem
             // 
             // sexTextBox
             // 
+            this.sexTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.sexTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sexTextBox.Location = new System.Drawing.Point(76, 59);
             this.sexTextBox.Name = "sexTextBox";
@@ -68,6 +70,7 @@ namespace Analysistem
             // 
             // orTextBox
             // 
+            this.orTextBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.orTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.orTextBox.Location = new System.Drawing.Point(369, 230);
             this.orTextBox.Name = "orTextBox";
@@ -79,6 +82,7 @@ namespace Analysistem
             // 
             // weightTextBox
             // 
+            this.weightTextBox.Cursor = System.Windows.Forms.Cursors.Default;
             this.weightTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.weightTextBox.Location = new System.Drawing.Point(369, 172);
             this.weightTextBox.Name = "weightTextBox";
@@ -89,6 +93,7 @@ namespace Analysistem
             // 
             // ageTextBox
             // 
+            this.ageTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.ageTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ageTextBox.Location = new System.Drawing.Point(76, 172);
             this.ageTextBox.Name = "ageTextBox";
@@ -99,6 +104,7 @@ namespace Analysistem
             // 
             // heightTextBox
             // 
+            this.heightTextBox.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.heightTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.heightTextBox.Location = new System.Drawing.Point(365, 59);
             this.heightTextBox.Name = "heightTextBox";
@@ -178,6 +184,7 @@ namespace Analysistem
             // nextButton
             // 
             this.nextButton.BackColor = System.Drawing.SystemColors.Desktop;
+            this.nextButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.nextButton.Location = new System.Drawing.Point(522, 293);
@@ -192,6 +199,7 @@ namespace Analysistem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.Controls.Add(this.nextButton);
             this.Controls.Add(this.declineRadio);
             this.Controls.Add(this.maleRadio);
@@ -207,8 +215,10 @@ namespace Analysistem
             this.Controls.Add(this.orTextBox);
             this.Controls.Add(this.sexTextBox);
             this.Controls.Add(this.titleBox);
+            this.Cursor = System.Windows.Forms.Cursors.Default;
             this.Name = "UserControl1";
             this.Size = new System.Drawing.Size(627, 336);
+            this.Load += new System.EventHandler(this.UserControl1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
