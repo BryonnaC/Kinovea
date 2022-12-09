@@ -34,6 +34,7 @@ namespace Analysistem
             {
                 ErrorMessage em = new ErrorMessage();
                 em.Show();
+                errorCode = false;
                 return;
             }
             else if (errorCode == false)
@@ -41,7 +42,7 @@ namespace Analysistem
                 saveInfoToFile();
                 this.Close();
             }
-            errorCode = false;
+            
         }
 
         private void lengthCm_CheckedChanged(object sender, EventArgs e)
@@ -61,7 +62,7 @@ namespace Analysistem
             try
             {
                 lengthDim = float.Parse(heightBox.Text);
-                return lengthDim.ToString() + " in/cm";
+                return lengthDim.ToString() + " in/cm\n";
             }
             catch
             {
@@ -77,7 +78,7 @@ namespace Analysistem
             try
             {
                 heightDim = float.Parse(heightBox.Text);
-                return heightDim.ToString() + " in/cm";
+                return heightDim.ToString() + " in/cm\n";
             }
             catch
             {
@@ -93,7 +94,7 @@ namespace Analysistem
             try
             {
                 widthDim = float.Parse(heightBox.Text);
-                return widthDim.ToString() + " in/cm";
+                return widthDim.ToString() + " in/cm\n";
             }
             catch
             {
@@ -107,7 +108,7 @@ namespace Analysistem
         //REFACTOR THIS TOO already using this twice too
         private void saveInfoToFile()
         {
-            string desiredFileName = @"C:\Users\Bryonna\Documents\calibrationInfo.txt";
+            string desiredFileName = @"C:\Users\bryy_\Documents\calibrationInfo.txt";
 
             File.WriteAllText(desiredFileName, toBeWritten);
             Console.WriteLine(File.ReadAllText(desiredFileName));
