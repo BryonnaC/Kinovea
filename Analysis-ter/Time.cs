@@ -15,6 +15,7 @@ namespace Analysistem.Utils
         public static double ToUnits(this TimeSpan elapsed, Unit unit)
         {
             int scale = (int)Math.Pow(10, (int)unit);
+
             return elapsed.Ticks / (double)TimeSpan.TicksPerSecond * scale;
         }
 
