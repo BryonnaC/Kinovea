@@ -16,13 +16,15 @@ namespace Analysistem
     public class Controller
     {
         public delegate void MyFunction();
+        public static bool isStart = true;
 
-        public void RunDemo(MyFunction recordingFunction)
+        protected void RunDemo(MyFunction recordingFunction)
         {
             //FakeUser.PressKey('a');
 
             //FakeUser.PressCaptureScreenHotkey();
-            Record(true);
+            Record(isStart);
+            isStart = !isStart;
 
             // if it doesn't work (but doesn't throw an error), try increasing timeToOpenBurger or timeToOpenFileExplorer in FileHandler.cs
             //EventInfo info = ExportSparkvue();   // TODO: this line is throwing an exception still
@@ -70,5 +72,19 @@ namespace Analysistem
         //    // play with the Data here!
         //}
         // same goes for stopping => Record(false)
+
+        protected UserControl1 GetUserInformationForm()
+        {
+            UserControl1 infoForm = new UserControl1();
+
+            return infoForm;
+        }
+
+        protected void InfoWindow()
+        {
+            Form1 infoDemo = new Form1();
+            infoDemo.Show();
+            Console.WriteLine("Happy demo-ing!");
+        }
     }
 }

@@ -27,6 +27,7 @@ namespace Kinovea.Root
         #region Analysis Menu Items
         private ToolStripMenuItem mnuAnalysis = new ToolStripMenuItem();
         private ToolStripMenuItem mnuPlaceholder = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuInfoCollection = new ToolStripMenuItem();
 
         private ToolStripMenuItem mnuDataGraphing = new ToolStripMenuItem();
 
@@ -40,6 +41,8 @@ namespace Kinovea.Root
         //To encapsulate the button clicks necessary to begin recording -- this can/will be moved later
         private ToolStripMenuItem mnuVideoRecordingWrapper = new ToolStripMenuItem();
         #endregion
+
+        private UserControl informationForm;
 
         public UIAdapter(int version) : base(version)
         {
@@ -121,6 +124,9 @@ namespace Kinovea.Root
             mnuPlaceholder.Click += MnuPlaceholder_Click;
             #endregion
 
+            mnuInfoCollection.Text = "Enter Subject Info";
+            mnuInfoCollection.Click += mnuInfoCollection_Click;
+
             mnuDataGraphing.Text = "Graph Data";
             mnuDataGraphing.Click += MnuDataGraphing_Click;
 
@@ -128,10 +134,18 @@ namespace Kinovea.Root
             mnuStartSynchRecording.Click += MnuStartSynchRecord_Click;
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuAnalysis, mnuDataGraphing, mnuStartSynchRecording });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuAnalysis, mnuDataGraphing, mnuStartSynchRecording, mnuInfoCollection });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+
+        private void mnuInfoCollection_Click(object sender, EventArgs e)
+        {
+            //informationForm = aL.InformationClick();
+            //aMainWindow.AddOwnedForm(informationForm);
+            aL.InfoDemoClick();
+           
         }
 
         private void MnuStartSynchRecord_Click(object sender, EventArgs e)

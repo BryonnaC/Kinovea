@@ -13,6 +13,7 @@ namespace Kinovea.Root
         //Controller controller = new Controller();
         //public delegate void MyFunction();
         CaptureScreen capScreen = new CaptureScreen();
+        UserControl1 infoForm;
         
         public void TestClick()
         {
@@ -25,6 +26,18 @@ namespace Kinovea.Root
             //capScreen.View_ToggleRecording();
             
             Console.WriteLine("hey cloin");
+        }
+
+        public UserControl1 InformationClick()
+        {
+            infoForm = base.GetUserInformationForm();
+            Console.WriteLine("We're getting the form!");
+            return infoForm;
+        }
+
+        public void InfoDemoClick()
+        {
+            base.InfoWindow();
         }
     }
 }
