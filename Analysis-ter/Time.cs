@@ -19,15 +19,15 @@ namespace Analysistem.Utils
             return elapsed.Ticks / (double)TimeSpan.TicksPerSecond * scale;
         }
 
-        public static double ToFromUnits(this double time, Unit oldUnits, Unit newUnits)
+        public static double ToFromUnits(this double time, Unit toUnits, Unit fromUnits)
         {
-            int scale = (int)Math.Pow(10, Math.Abs(newUnits - oldUnits));
+            int scale = (int)Math.Pow(10, Math.Abs(fromUnits - toUnits));
 
-            switch (oldUnits)
+            switch (toUnits)
             {
                 case Unit.Seconds: return time * scale;
                 case Unit.Milliseconds: 
-                case Unit.Microseconds: return oldUnits > newUnits ? time / scale : time * scale;
+                case Unit.Microseconds: return toUnits < fromUnits ? time * scale : time / scale;
                 case Unit.Nanoseconds: return time / scale;
                 default: return time; // this will never be reached
             }
