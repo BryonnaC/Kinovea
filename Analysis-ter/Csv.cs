@@ -27,10 +27,17 @@ namespace Analysistem
             Merge(pathTwo, ignoreColumns);
         }
 
+        public void AppendColumn(CsvFile from, int index)
+        {
+            headers.Add(from.headers[index]);
+            columns.Add(new List<string>(from.columns[index]));
+        }
+
         public static CsvFile Empty { get { return new CsvFile(""); } }
 
-        public void Load(string csv) 
+        public void Load(string csv)
         {
+            if (csv == "") return;
             string[] lines = csv.EndsWith(".csv") ? File.ReadAllLines(csv) : csv.Split('\n');
             string[][] cells = lines.Select((line) => line.Split(',')).ToArray();
 
@@ -60,15 +67,9 @@ namespace Analysistem
             {
                 foreach (string keyword in ignoreColumns)
                 {
-                    for (int index = 0; index < fileTwo.headers.Count; index++)
-                    {
-                        if (fileTwo.headers[index].ToLower().Contains(keyword.ToLower()))
-                        {
-                            fileTwo.headers.RemoveAt(index);
-                            fileTwo.columns.RemoveAt(index);
-                            index--;
-                        }
-                    }
+                    int index = GetColumnIndex(keyword);
+                    fileTwo.headers.RemoveAt(index);
+                    fileTwo.columns.RemoveAt(index);
                 }
             }
 
@@ -95,6 +96,50 @@ namespace Analysistem
             }
 
             return string.Join("\n", serialized);
+        }
+
+        public void AppendColumn(CsvFile fileTwo, string header)
+        {
+            int index = fileTwo.GetColumnIndex(header);
+            headers.Add(fileTwo.headers[index]);
+            columns.Add(new List<string>(fileTwo.columns[index]));
+        }
+
+        //public void AppendColumn(CsvFile fileTwo, string header)
+        //{
+        //    AppendColumn(fileTwo.GetColumn(header));
+        //}
+
+        //public void AppendColumn(string[] column)
+        //{
+        //    List<string> columnToAdd = column.ToList();
+        //    headers.Add(columnToAdd[0]);
+        //    columnToAdd.RemoveAt(0);
+        //    columns.Add(columnToAdd);
+        //}
+
+        public string[] GetColumn(string header)
+        {
+            int index = GetColumnIndex(header);
+            if (index != -1)
+            {
+                List<string> headerColumn = new List<string>() { headers[index] };
+                headerColumn = headerColumn.Concat(columns[index]).ToList();
+                return headerColumn.ToArray();
+            }
+            return null;
+        }
+
+        public int GetColumnIndex(string header)
+        {
+            for (int index = 0; index < headers.Count; index++)
+            {
+                if (headers[index].ToLower().Contains(header.ToLower()))
+                {
+                    return index;
+                }
+            }
+            return -1;
         }
 
         public override string ToString()
