@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System;
 
 namespace Analysistem
 {
@@ -90,7 +91,7 @@ namespace Analysistem
                 for (int col = 0; col < columns.Count; col++)
                 {
                     if (col > 0) serialized[row + 1] += ',';
-
+                    
                     serialized[row + 1] += columns[col][row];
                 }
             }

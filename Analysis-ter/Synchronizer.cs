@@ -89,8 +89,8 @@ namespace Analysistem
             // create a new csv
             CsvFile upSampledKinovea = CsvFile.Empty;
             // create time, x, and y headers and columns
-            upSampledKinovea.headers.AddRange(new List<string>() { "Time (ms)", "X Trajectory", "Y Trajectory" });
-            upSampledKinovea.columns.AddRange(new List<List<string>>() { new List<string>(), new List<string>(), new List<string>() });
+            upSampledKinovea.headers.AddRange(new List<string>() { "Time (ms)", "Y Trajectory" });
+            upSampledKinovea.columns.AddRange(new List<List<string>>() { new List<string>(), new List<string>() });
             // find time delta (ms) of sparkvue data (target resolution)
             /* IF FORCE PLATE IS RECORDING AT 1000HZ, THE RESOLUTION IS 1MS THIS MEANS THAT THEY WOULD ALWAYS BE ON THE SAME TIME SCALE, SO NO ROUNDING ON OUR END */
             double targetResolutionMs = (ToDouble(sparkvue.columns[1][1]) - ToDouble(sparkvue.columns[1][0])) * 1000;
@@ -109,47 +109,103 @@ namespace Analysistem
                 }
             }
 
-            // define size of "look at" windows
-            int windowLength = 10;
+            // define size of force "look at" window
+            int forceWindowLength = 10;
             // define "flat" std dev threshold
             double flatThreshold = 20.0;
-            // declare left and right side of force "airtime"
+            // declare left and right side of force "airtime", and width (range of these idxs)
             int forceAirIdxL = 0, forceAirIdxR = 0;
-            // declare left and right side of motion "airtime"
+            int forceAirWidth = 0;
+
+            // define size of motion "look at" window
+            int motionWindowLength = 2;
+            // define "steep" std dev threshold
+            double steepThreshold = 10;
+            // declare left and right side of motion "airtime", and width (range of these idxs)
             int motionAirIdxL = 0, motionAirIdxR = 0;
+            int motionAirWidth = 0;
 
             // find the flat spot in the force data      - "airtime"
             // create queue to look at a bit of the data at a time
             Queue<double> forceWindow = new Queue<double>();
-            // populate with the first `windowLength` data points
-            for (int i = 0; i < windowLength; i++)
+            // populate with the first `forceWindowLength` data points
+            for (int i = 0; i < forceWindowLength; i++)
             {
                 forceWindow.Enqueue(ToDouble(sparkvue.columns[6][i]));
             }
             // loop through the rest of the data
-            for (int i = windowLength; i < sparkvue.columns[6].Count; i++)
+            for (int i = forceWindowLength; i < sparkvue.columns[6].Count; i++)
             {
                 List<double> windowList = forceWindow.ToList();
                 double stdDev = getStandardDeviation(windowList);
                 if (forceAirIdxL == 0 && stdDev < flatThreshold)
                 {
-                    forceAirIdxL = i - windowLength;
+                    forceAirIdxL = i - forceWindowLength;
                 }
-                if (forceAirIdxR == 0 && stdDev > flatThreshold)
+                if (forceAirIdxR == 0 && forceAirIdxL != 0 && stdDev > flatThreshold)
                 {
-                    forceAirIdxR = i - 1;
-                    Console.WriteLine("----------" + sparkvue.columns[1][forceAirIdxL] + " " + sparkvue.columns[1][forceAirIdxR] + " " + stdDev + "----------");
-                    //break;
+                    forceAirIdxR = i - 3;
+                    forceAirWidth = ToInt32((ToDouble(sparkvue.columns[1][forceAirIdxR]) - ToDouble(sparkvue.columns[1][forceAirIdxL])) * 1000);
+                    Console.WriteLine("forceAirWidth: " + forceAirWidth);
+                    //Console.WriteLine("----------" + sparkvue.columns[1][forceAirIdxL] + " " + sparkvue.columns[1][forceAirIdxR] + " " + stdDev + "----------");
+                    break;
                 }
-                Console.Write(stdDev);
-                Console.WriteLine(" " + sparkvue.columns[1][i - windowLength]);
 
                 forceWindow.Enqueue(ToDouble(sparkvue.columns[6][i]));
                 forceWindow.Dequeue();
             }
+
             // find the parabola spot in the motion data - "airtime"
+            // create queue to look at a bit of the data at a time
+            Queue<double> motionWindow = new Queue<double>();
+            // populate with the first `windowLength` data points
+            for (int i = 0; i < motionWindowLength; i++)
+            {
+                motionWindow.Enqueue(ToDouble(upSampledKinovea.columns[1][i]));
+            }
+            // loop through the rest of the data
+            for (int i = motionWindowLength; i < upSampledKinovea.columns[1].Count; i++)
+            {
+                List<double> windowList = motionWindow.ToList();
+                double range = Abs(windowList[1] - windowList[0]);
+                if (motionAirIdxL == 0 && range > steepThreshold)
+                {
+                    motionAirIdxL = i - motionWindowLength;
+                }
+                if (motionAirIdxR == 0 && motionAirIdxL != 0 && range > flatThreshold)
+                {
+                    motionAirIdxR = i - 4;
+                    motionAirWidth = ToInt32(upSampledKinovea.columns[0][motionAirIdxR]) - ToInt32(upSampledKinovea.columns[0][motionAirIdxL]);
+                    //Console.WriteLine("----------" + upSampledKinovea.columns[1][motionAirIdxL] + " " + upSampledKinovea.columns[1][motionAirIdxR] + " " + range + "----------");
+                    break;
+                }
+                //Console.Write(range);
+                //Console.WriteLine(" " + upSampledKinovea.columns[0][i - motionWindowLength]);
+
+                motionWindow.Enqueue(ToDouble(upSampledKinovea.columns[1][i]));
+                motionWindow.Dequeue();
+            }
+
             // make sure their lengths are the same enough based on the new time scale
+            if (forceAirWidth == motionAirWidth) return upSampledKinovea;
             // possibly fix the position of the beginning or end
+            //if (motionAirWidth < forceAirWidth)
+            //{
+            while (motionAirWidth < forceAirWidth)
+            {
+                upSampledKinovea.columns[0][motionAirIdxR] = (ToInt32(upSampledKinovea.columns[0][motionAirIdxR]) + targetResolutionMs).ToString();
+                motionAirWidth = ToInt32(upSampledKinovea.columns[0][motionAirIdxR]) - ToInt32(upSampledKinovea.columns[0][motionAirIdxL]);
+            }
+            //}
+            //if (motionAirWidth > forceAirWidth)
+            //{
+            while (motionAirWidth > forceAirWidth)
+            {
+                upSampledKinovea.columns[0][motionAirIdxR] = (ToInt32(upSampledKinovea.columns[0][motionAirIdxR]) - targetResolutionMs).ToString(); ;
+                motionAirWidth = ToInt32(upSampledKinovea.columns[0][motionAirIdxR]) - ToInt32(upSampledKinovea.columns[0][motionAirIdxL]);
+            }
+            //}
+            Console.WriteLine("motion width: " + motionAirWidth);
 
             return upSampledKinovea;
         }

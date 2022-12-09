@@ -32,11 +32,11 @@ namespace Analysistem
             //Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
-            CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { "time " });
-            CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\Downloads\\force_demo_112922.csv");
+            CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\demo_motion_y.csv");
+            CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\force_demo_112922.csv");
             CsvFile syncKinovea = Synchronizer.MakeCoincident(kinovea, sparkvue);
-            Console.WriteLine(syncKinovea.ToString());
-            File.WriteAllText("C:\\Users\\col_b\\Downloads\\syncKinovea.csv", syncKinovea.Serialize());
+            //Console.WriteLine(syncKinovea.ToString());
+            File.WriteAllText("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\syncKinovea.csv", syncKinovea.Serialize());
 
             /*CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
 
