@@ -115,7 +115,7 @@ namespace AnalysistemUnitTest
 
             // print        (comment is here for example purposes)
             Console.WriteLine(string.Join(", ", actual));
-            
+
             /* Assert */
             CollectionAssert.AreEqual(expected, actual);
             #endregion
@@ -128,7 +128,7 @@ namespace AnalysistemUnitTest
         /**
          * Testing DetectTarget() relies on CalibrateTemplate being implemented
          * (which it isn't) and having already been run on the host machine
-         */ 
+         */
         [TestMethod]
         public void DetectTarget_TargetOnScreen_TargetDetected() // TC-001
         {
@@ -183,6 +183,45 @@ namespace AnalysistemUnitTest
         public void PressKey_Called_RegisterKeyPress()
         {
 
+        }
+    }
+
+    [TestClass]
+    public class Time
+    {
+        [TestMethod]
+        public void ToFromUnits_validArgs_ConvertUnitsProperly()
+        {
+            /* Assign */
+            double baseValue = 230;
+            double[] expected = new double[] 
+            { 
+                230, 230_000, 230_000_000, 230_000_000_000, // from seconds
+                0.23, 230, 230_000, 230_000_000, // from milliseconds
+                0.000_23, 0.23, 230, 230_000, // from microseconds
+                0.000_000_23, 0.000_23, 0.23, 230 // from nanoseconds
+            };
+
+            Unit[] it = (Unit[])Enum.GetValues(typeof(Unit));
+            List<double> actual = new List<double>(expected.Length);
+
+            /* Act */
+            foreach (Unit unitFrom in it)
+            {
+                foreach (Unit unitTo in (Unit[])Enum.GetValues(typeof(Unit)))
+                {
+                    Console.WriteLine(unitFrom.ToString() + unitTo.ToString());
+                    actual.Add(baseValue.ToFromUnits(unitFrom, unitTo));
+                }
+            }
+
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Console.WriteLine("expected: " + expected[i] + "\tactual: " + actual[i]);
+            }
+
+            /* Assert */
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 
@@ -268,7 +307,7 @@ namespace AnalysistemUnitTest
 
         [TestMethod]
         public void Merge_UsingCsvFile_MergeFileIntoProperties() // TC-005
-        { 
+        {
             /** Merge, when provided a CsvFile, should merge the struct's properties with the calling CsvFile
              * Method: Merge()
              * 

@@ -27,6 +27,12 @@ namespace Analysistem
             Merge(pathTwo, ignoreColumns);
         }
 
+        public void AppendColumn(CsvFile from, int index)
+        {
+            headers.Add(from.headers[index]);
+            columns.Add(new List<string>(from.columns[index]));
+        }
+
         public static CsvFile Empty { get { return new CsvFile(""); } }
 
         public void Load(string csv) 
