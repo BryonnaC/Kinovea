@@ -39,5 +39,10 @@ namespace Kinovea.Root
         {
             base.InfoWindow();
         }
+
+        public void CalibrateDemoClick()
+        {
+            base.CalibrateWindow();
+        }
     }
 }

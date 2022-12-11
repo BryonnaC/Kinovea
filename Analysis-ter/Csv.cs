@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System;
 
 namespace Analysistem
 {
@@ -90,7 +91,7 @@ namespace Analysistem
                 for (int col = 0; col < columns.Count; col++)
                 {
                     if (col > 0) serialized[row + 1] += ',';
-
+                    
                     serialized[row + 1] += columns[col][row];
                 }
             }
@@ -104,19 +105,6 @@ namespace Analysistem
             headers.Add(fileTwo.headers[index]);
             columns.Add(new List<string>(fileTwo.columns[index]));
         }
-
-        //public void AppendColumn(CsvFile fileTwo, string header)
-        //{
-        //    AppendColumn(fileTwo.GetColumn(header));
-        //}
-
-        //public void AppendColumn(string[] column)
-        //{
-        //    List<string> columnToAdd = column.ToList();
-        //    headers.Add(columnToAdd[0]);
-        //    columnToAdd.RemoveAt(0);
-        //    columns.Add(columnToAdd);
-        //}
 
         public string[] GetColumn(string header)
         {
