@@ -10,6 +10,19 @@ namespace Analysistem.Utils
         Nanoseconds = 9,
     }
 
+    public class Milliseconds : double
+    {
+        double amount;
+
+        public Milliseconds(double amount)
+        {
+            this.amount = amount;
+        }
+
+        public static implicit operator Milliseconds(double amount) => new Milliseconds(amount);
+        public static implicit operator double(Milliseconds value) => value.amount;
+    }
+
     public static class Time
     {
         public static double ToUnits(this TimeSpan elapsed, Unit unit)
@@ -31,6 +44,11 @@ namespace Analysistem.Utils
                 case Unit.Nanoseconds: return time / scale;
                 default: return time; // this will never be reached
             }
+        }
+
+        public static double ToSeconds(this Milliseconds milliseconds)
+        {
+            return ToFromUnits(milliseconds, Unit.Seconds, Unit.Milliseconds);
         }
 
         public static string GetTimestamp(this DateTime value)
