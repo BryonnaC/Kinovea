@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using static Analysistem.Math.Math;
 using static System.Math;
 using static System.Convert;
 
@@ -81,6 +82,30 @@ namespace Analysistem
             barrier.Dispose();
 
             return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
+        }
+
+        public static CsvFile _MakeCoincident(CsvFile kinovea, CsvFile sparkvue)
+        {
+            const int kinoveaSampleRate = 33;
+            const int sparkvueSampleRate = 5;
+            const int timeColumnIndex = 1;
+
+            List<double> kinoveaTimeVector = CalculateTimeVector(kinovea.headers.Count, kinoveaSampleRate);
+            List<double> sparkvueTimeVector = CalculateTimeVector(sparkvue.headers.Count, sparkvueSampleRate);
+
+            List<double> kinoveaSignal = kinovea.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToList();
+            List<double> sparkvueSignal = sparkvue.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToList();
+
+            List<double> crossCorrelation = CalculateCrossCorrelation(kinoveaSignal, sparkvueSignal).ToList();
+            int maxCrossCorrelationIndex = crossCorrelation.IndexOf(crossCorrelation.Max());
+
+            double timeOffset = kinoveaTimeVector[maxCrossCorrelationIndex] - sparkvueTimeVector[maxCrossCorrelationIndex];
+
+            List<string> adjustedKinoveaTimeVector = (List<string>)kinoveaTimeVector.Select(time => time + timeOffset);
+
+            kinovea.columns[timeColumnIndex] = adjustedKinoveaTimeVector;
+
+            return kinovea;
         }
 
         public static CsvFile MakeCoincident(CsvFile kinovea, CsvFile sparkvue)
@@ -219,7 +244,7 @@ namespace Analysistem
                 sumOfDerivation += (value) * (value);
             }
             double sumOfDerivationAverage = sumOfDerivation / (doubleList.Count - 1);
-            return Math.Sqrt(sumOfDerivationAverage - (average * average));
+            return Sqrt(sumOfDerivationAverage - (average * average));
         }
         #endregion
     }

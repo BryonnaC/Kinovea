@@ -64,15 +64,6 @@ namespace Analysistem.Math
             }
         }
 
-        static List<double> CalculateTimeVector(int length, double samplingFrequency)
-        {
-            // create an array of indices from 0 to length - 1
-            var indexArray = Enumerable.Range(0, length).ToList();
-
-            // calculate time vector by dividing each index by the sampling frequency
-            return indexArray.Select(i => i / samplingFrequency).ToList();
-        }
-
         static List<double> Fft(List<double> signal)
         {
             var length = signal.Count;
@@ -129,10 +120,10 @@ namespace Analysistem.Math
             return ifft;
         }
 
-        public static double[] CalculateCrossCorrelation(double[] signal1, double[] signal2)
+        public static double[] CalculateCrossCorrelation(List<double> signal1, List<double> signal2)
         {
-            int signal1Length = signal1.Length;
-            int signal2Length = signal2.Length;
+            int signal1Length = signal1.Count;
+            int signal2Length = signal2.Count;
             int length = signal1Length + signal2Length - 1;
 
             // pad signal1 and signal2 with zeros to make them the same length
@@ -154,6 +145,15 @@ namespace Analysistem.Math
             return crossCorrelation.ToArray();
         }
 
+        public static List<double> CalculateTimeVector(int length, double samplingFrequency)
+        {
+            // create an array of indices from 0 to length - 1
+            var indexArray = Enumerable.Range(0, length).ToList();
+
+            // calculate time vector by dividing each index by the sampling frequency
+            return indexArray.Select(i => i / samplingFrequency).ToList();
+        }
+
         /**
          * 
          * how to use (allegedly)::
@@ -161,7 +161,7 @@ namespace Analysistem.Math
          *  - read in force and motion data
          *  
          *  - call CalculateTimeVector on both, passing their lengths and sample rates as parameters
-         *  - call CalculateCrossCorrelation passing in the signals (??? wtf is that)
+         *  - call CalculateCrossCorrelation passing in the signals (the signals are the time columns of each file!!)
          *  
          *  - Find maximum value in cross-correlation
          *  - Get the index of that value
