@@ -90,19 +90,23 @@ namespace Analysistem
             const int sparkvueSampleRate = 5;
             const int timeColumnIndex = 1;
 
-            List<double> kinoveaTimeVector = CalculateTimeVector(kinovea.headers.Count, kinoveaSampleRate);
-            List<double> sparkvueTimeVector = CalculateTimeVector(sparkvue.headers.Count, sparkvueSampleRate);
+            double[] kinoveaTimeVector = CalculateTimeVector(kinovea.headers.Count, kinoveaSampleRate);
+            double[] sparkvueTimeVector = CalculateTimeVector(sparkvue.headers.Count, sparkvueSampleRate);
 
-            List<double> kinoveaSignal = kinovea.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToList();
-            List<double> sparkvueSignal = sparkvue.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToList();
+            double[] kinoveaSignal = kinovea.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToArray();
+            double[] sparkvueSignal = sparkvue.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToArray();
 
-            List<double> crossCorrelation = CalculateCrossCorrelation(kinoveaSignal, sparkvueSignal).ToList();
-            int maxCrossCorrelationIndex = crossCorrelation.IndexOf(crossCorrelation.Max());
+            /** In the words of ChatGTP:
+             * It is worth noting that this approach may not always be reliable, as the cross-correlation 
+             *  may not always have a unique maximum value. In such cases, it may be necessary to use a 
+             *  different method to determine the time offset that aligns the two signals.
+             */
+            double[] crossCorrelation = CalculateCrossCorrelation(kinoveaSignal, sparkvueSignal);
+            int maxCrossCorrelationIndex = Array.IndexOf(crossCorrelation, crossCorrelation.Max());
 
             double timeOffset = kinoveaTimeVector[maxCrossCorrelationIndex] - sparkvueTimeVector[maxCrossCorrelationIndex];
 
-            List<string> adjustedKinoveaTimeVector = (List<string>)kinoveaTimeVector.Select(time => time + timeOffset);
-
+            List<string> adjustedKinoveaTimeVector = kinoveaTimeVector.Select(time => (time + timeOffset).ToString()).ToList();
             kinovea.columns[timeColumnIndex] = adjustedKinoveaTimeVector;
 
             return kinovea;

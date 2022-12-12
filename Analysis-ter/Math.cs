@@ -64,12 +64,12 @@ namespace Analysistem.Math
             }
         }
 
-        static List<double> Fft(List<double> signal)
+        static double[] Fft(double[] signal)
         {
-            var length = signal.Count;
-            var fft = new List<double>((IEnumerable<double>)Enumerable.Range(0, length));
+            int length = signal.Length;
+            double[] fft = new double[length];
 
-            var omega = -2 * System.Math.PI / length;
+            double omega = -2 * System.Math.PI / length;
 
             // iterate over each stage of the FFT
             for (int stage = 1; stage < length; stage *= 2)
@@ -92,7 +92,7 @@ namespace Analysistem.Math
                 // combine even and odd components
                 for (int i = 0; i < length / 2; i++)
                 {
-                    var oddComponent = odd[i] * System.Math.Exp(omega * i * i);
+                    double oddComponent = odd[i] * System.Math.Exp(omega * i * i);
                     fft[i] = even[i] + oddComponent;
                     fft[i + length / 2] = even[i] - oddComponent;
                 }
@@ -101,17 +101,17 @@ namespace Analysistem.Math
             return fft;
         }
 
-        static List<double> Ifft(List<double> signal)
+        static double[] Ifft(double[] signal)
         {
-            var length = signal.Count;
-            var ifft = Enumerable.Repeat(0.0, length).ToList();
+            int length = signal.Length;
+            double[] ifft = new double[length];
 
             // use Parallel.ForEach to perform the calculation in parallel
             Parallel.ForEach(Partitioner.Create(0, length / 2), range =>
             {
                 for (int i = range.Item1; i < range.Item2; i++)
                 {
-                    var value = signal[i] / length;
+                    double value = signal[i] / length;
                     ifft[i] = value;
                     ifft[length - i - 1] = value;
                 }
@@ -120,10 +120,10 @@ namespace Analysistem.Math
             return ifft;
         }
 
-        public static double[] CalculateCrossCorrelation(List<double> signal1, List<double> signal2)
+        public static double[] CalculateCrossCorrelation(double[] signal1, double[] signal2)
         {
-            int signal1Length = signal1.Count;
-            int signal2Length = signal2.Count;
+            int signal1Length = signal1.Length;
+            int signal2Length = signal2.Length;
             int length = signal1Length + signal2Length - 1;
 
             // pad signal1 and signal2 with zeros to make them the same length
@@ -133,26 +133,35 @@ namespace Analysistem.Math
             signal2.CopyTo(signal2Padded, 0);
 
             // calculate Fourier transforms of signal1 and signal2
-            List<double> signal1Fft = Fft(signal1Padded.ToList());
-            List<double> signal2Fft = Fft(signal2Padded.ToList());
+            double[] signal1Fft = Fft(signal1Padded);
+            double[] signal2Fft = Fft(signal2Padded);
 
             // calculate cross-correlation by taking the inverse Fourier transform of the product of the Fourier transforms of signal1 and signal2
-            List<double> crossCorrelation = Ifft(
-                (List<double>)signal1Fft.Select((s, i) => new Complex(s).Mult(new Complex(signal2Fft[i]).Conj()).Real)
+            double[] crossCorrelation = Ifft(
+                (double[])signal1Fft.Select((s, i) => new Complex(s).Mult(new Complex(signal2Fft[i]).Conj()).Real)
             );
 
             // return real part of cross-correlation
             return crossCorrelation.ToArray();
         }
 
-        public static List<double> CalculateTimeVector(int length, double samplingFrequency)
+        public static double[] CalculateTimeVector(int length, double samplingFrequency)
         {
-            // create an array of indices from 0 to length - 1
-            var indexArray = Enumerable.Range(0, length).ToList();
+            double[] timeVector = new double[length];
+            double timeStep = 1 / samplingFrequency;
 
-            // calculate time vector by dividing each index by the sampling frequency
-            return indexArray.Select(i => i / samplingFrequency).ToList();
+            for (int i = 0; i < length; i++)
+            {
+                timeVector[i] = i * timeStep;
+            }
+
+            return timeVector;
         }
+
+        //public static double CalculateTimeOffset(int maxCrossCorrelationIndex, int sampleRateOne, int sampleRateTwo)
+        //{
+        //    return maxCrossCorrelationIndex * (1 / sampleRateOne) - maxCrossCorrelationIndex * (1 / sampleRateTwo);
+        //}
 
         /**
          * 
