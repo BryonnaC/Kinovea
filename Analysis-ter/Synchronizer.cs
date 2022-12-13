@@ -84,6 +84,20 @@ namespace Analysistem
             return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
         }
 
+        /// <summary> Courtesy of ChatGPT:
+        ///     This code defines a method named aaaaMakeCoincident that adjusts the time vector 
+        ///     of one signal so that it is coincident with another signal. This is done by 
+        ///     calculating the cross-correlation of the two signals, finding the time offset 
+        ///     that produces the maximum cross-correlation, and then adding that time offset 
+        ///     to the time vector of the first signal. This method takes as input two CsvFile 
+        ///     objects, which are assumed to contain signals in the form of columns of data. 
+        ///     It uses several of the methods defined in the previous code snippets to calculate 
+        ///     the time vector, cross-correlation, and time offset of the two signals, and 
+        ///     then adjusts the time vector of the first signal and returns it.
+        /// </summary>
+        /// <param name="kinovea"></param>
+        /// <param name="sparkvue"></param>
+        /// <returns></returns>
         public static CsvFile _MakeCoincident(CsvFile kinovea, CsvFile sparkvue)
         {
             const int kinoveaSampleRate = 33;
@@ -96,11 +110,6 @@ namespace Analysistem
             double[] kinoveaSignal = kinovea.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToArray();
             double[] sparkvueSignal = sparkvue.columns[timeColumnIndex].Select(cell => double.Parse(cell)).ToArray();
 
-            /** In the words of ChatGTP:
-             * It is worth noting that this approach may not always be reliable, as the cross-correlation 
-             *  may not always have a unique maximum value. In such cases, it may be necessary to use a 
-             *  different method to determine the time offset that aligns the two signals.
-             */
             double[] crossCorrelation = CalculateCrossCorrelation(kinoveaSignal, sparkvueSignal);
             int maxCrossCorrelationIndex = Array.IndexOf(crossCorrelation, crossCorrelation.Max());
 
