@@ -1,4 +1,5 @@
 ﻿using System;
+using static System.Math;
 
 namespace Analysistem.Utils
 {
@@ -10,7 +11,7 @@ namespace Analysistem.Utils
         Nanoseconds = 9,
     }
 
-    public class Milliseconds : double
+    public class Milliseconds
     {
         double amount;
 
@@ -27,14 +28,14 @@ namespace Analysistem.Utils
     {
         public static double ToUnits(this TimeSpan elapsed, Unit unit)
         {
-            int scale = (int)Math.Pow(10, (int)unit);
+            int scale = (int)Pow(10, (int)unit);
 
             return elapsed.Ticks / (double)TimeSpan.TicksPerSecond * scale;
         }
 
         public static double ToFromUnits(this double time, Unit toUnits, Unit fromUnits)
         {
-            int scale = (int)Math.Pow(10, Math.Abs(fromUnits - toUnits));
+            int scale = (int)Pow(10, Abs(fromUnits - toUnits));
 
             switch (toUnits)
             {

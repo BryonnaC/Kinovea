@@ -21,6 +21,27 @@ namespace Analysistem
 
         protected void RunDemo(MyFunction recordingFunction)
         {
+            List<Marker> frontMarkers = new List<Marker>() {
+                new Marker(256.98, -201.43),
+                new Marker(98.80, -631.48),
+                new Marker(422.57, -574.63),
+                new Marker(254.40, -315.12),
+            };
+            List<Marker> sideMarkers = new List<Marker>() {
+                new Marker(-516.62, -201.43),
+                new Marker(-588.29, -572.16),
+                new Marker(-373.27, -648.78),
+                new Marker(-499.32, -305.24),
+            };
+
+            Markers markers = new Markers(frontMarkers, sideMarkers);
+            markers.NormalizeAndCentralizeCoords();
+
+            Console.WriteLine(markers.frontMarkers[0].x);
+            Console.WriteLine(markers.frontMarkers[0].y);
+            Console.WriteLine(markers.frontMarkers[1].x);
+            Console.WriteLine(markers.frontMarkers[1].y);
+
             //FakeUser.PressKey('a');
 
             //FakeUser.PressCaptureScreenHotkey();
@@ -32,11 +53,11 @@ namespace Analysistem
             //Console.WriteLine(data.fileName);
 
             #region CsvFile DEMO
-            CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\demo_motion_y.csv");
-            CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\force_demo_112922.csv");
-            CsvFile syncKinovea = Synchronizer.MakeCoincident(kinovea, sparkvue);
-            //Console.WriteLine(syncKinovea.ToString());
-            File.WriteAllText("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\syncKinovea.csv", syncKinovea.Serialize());
+            //CsvFile kinovea = new CsvFile("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\demo_motion_y.csv");
+            //CsvFile sparkvue = new CsvFile("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\force_demo_112922.csv");
+            //CsvFile syncKinovea = Synchronizer.MakeCoincident(kinovea, sparkvue);
+            ////Console.WriteLine(syncKinovea.ToString());
+            //File.WriteAllText("C:\\Users\\col_b\\OneDrive\\Documents\\_PSU\\cmspc484\\test_data_demo\\syncKinovea.csv", syncKinovea.Serialize());
 
             /*CsvFile testFile = new CsvFile("C:\\Users\\col_b\\Downloads\\test_x.csv", "C:\\Users\\col_b\\Downloads\\test_y.csv", new string[] { });
 

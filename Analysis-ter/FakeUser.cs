@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Emgu.CV.CvEnum;
 using Emgu.CV;
+using static System.Math;
 // nuget => emgu.cv.bitmap
 // if you're still getting errors, go on a rampage uninstalling and reinstalling in different ways til it works (somehow not really a joke)
 
@@ -34,7 +35,7 @@ namespace Analysistem.Utils
             value = minVal;
             this.threshold = threshold;
             this.screenId = screenId;
-            confidence = Math.Round(minVal > threshold ? 0 : ((1 - minVal / threshold) * 100), 3);
+            confidence = Round(minVal > threshold ? 0 : ((1 - minVal / threshold) * 100), 3);
             detected = minVal < threshold;
         }
 
