@@ -54,7 +54,7 @@ namespace Kinovea.Camera
         #endregion
 
         #region Members
-        private static List<CameraManager> cameraManagers = new List<CameraManager>();
+        private static List<CameraManager> cameraManagers = new List<CameraManager>(); // NEED THIS - THIS IS WHY WE HAVE NULL
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static Timer timerDiscovery = new Timer();
         #endregion
@@ -71,8 +71,31 @@ namespace Kinovea.Camera
             // This discovery mechanism is duplicated for each instance.
             // This adds only a few milliseconds so we don't keep a cache in preferences.
             string pluginsDirectory = Software.CameraPluginsDirectory;
+            //string pluginsDirectory = SoftwareManager.camDirectory;
             List<CameraManagerPluginInfo> plugins = new List<CameraManagerPluginInfo>();
-            List<string> directories = Directory.GetDirectories(pluginsDirectory).ToList();
+            List<string> directories = Directory.GetDirectories(pluginsDirectory).ToList(); //exception here
+            foreach (string directory in directories)
+            {
+                string manifest = Path.Combine(directory, "manifest.xml");
+                CameraManagerPluginInfo pluginInfo = CameraManagerPluginInfo.Load(manifest);
+                if (pluginInfo == null)
+                    continue;
+
+                plugins.Add(pluginInfo);
+            }
+
+            log.DebugFormat("Loaded camera plugins manifests.");
+
+            // Load all compatible plugins.
+            foreach (CameraManagerPluginInfo info in plugins)
+                LoadCameraManagerPlugin(pluginsDirectory, info);
+        }
+
+        // NEW METHOD we usin' it boys -Bryonna
+        public static void LoadCameraManagersPlugins(string pluginsDirectory)
+        {
+            List<CameraManagerPluginInfo> plugins = new List<CameraManagerPluginInfo>();
+            List<string> directories = Directory.GetDirectories(pluginsDirectory).ToList(); //exception here
             foreach (string directory in directories)
             {
                 string manifest = Path.Combine(directory, "manifest.xml");

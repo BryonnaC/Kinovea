@@ -1,18 +1,23 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Analysistem
+namespace AnalysystemTakeTwo
 {
-    public partial class Form1 : Form
+    public partial class SubjectInformationScreen : UserControl
     {
+        public SubjectInformationScreen()
+        {
+            InitializeComponent();
+        }
+
         int sex = 0;
         int age;
         float weightLbs;
@@ -28,11 +33,6 @@ namespace Analysistem
         private const int malSex = 1;
         private const int declineSex = 0;
 
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
         private void nextButton_Click(object sender, EventArgs e)
         {
             toBeWritten += determineSex();
@@ -40,17 +40,17 @@ namespace Analysistem
             toBeWritten += getWeight();
             toBeWritten += getHeight();
 
-            if(errorCode == true)
+            if (errorCode == true)
             {
-                ErrorMessage em = new ErrorMessage();
+/*                ErrorMessage em = new ErrorMessage();
                 em.Show();
-                errorCode = false;
+                errorCode = false;*/
                 return;
             }
-            else if(errorCode == false)
+            else if (errorCode == false)
             {
                 saveInfoToFile();
-                this.Close();
+                //this.Close();
             }
 
         }
@@ -202,11 +202,6 @@ namespace Analysistem
         private void imperialHeight_CheckedChanged(object sender, EventArgs e)
         {
             inchInput.Show();
-        }
-
-        private void maskedTextBox1_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-
         }
     }
 }

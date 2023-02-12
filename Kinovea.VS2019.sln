@@ -82,6 +82,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysistemUnitTest", "Anal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CombineCSV", "CombineCSV\CombineCSV.csproj", "{0D322C6E-6E4B-4C5C-B357-0C3B6389B79C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalysystemTakeTwo", "AnalysystemTakeTwo\AnalysystemTakeTwo.csproj", "{2DC2D70B-099B-443C-BD72-4F38AAC12422}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -313,7 +315,8 @@ Global
 		{4CBB8462-00A7-4814-AD3B-07C82EEEB0DE}.Release|x86.Build.0 = Release|x86
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|Any CPU.Build.0 = Debug|Win32
-		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|x64.ActiveCfg = Debug|Win32
+		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|x64.ActiveCfg = Debug|x64
+		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|x64.Build.0 = Debug|x64
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|x86.ActiveCfg = Debug|Win32
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.Debug|x86.Build.0 = Debug|Win32
 		{F80DBE6D-D394-4811-B5E6-7528F849C71A}.DebugExternals|Any CPU.ActiveCfg = Release|Win32
@@ -520,6 +523,24 @@ Global
 		{0D322C6E-6E4B-4C5C-B357-0C3B6389B79C}.Release|x64.Build.0 = Release|Any CPU
 		{0D322C6E-6E4B-4C5C-B357-0C3B6389B79C}.Release|x86.ActiveCfg = Release|Any CPU
 		{0D322C6E-6E4B-4C5C-B357-0C3B6389B79C}.Release|x86.Build.0 = Release|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Debug|x64.ActiveCfg = Debug|x64
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Debug|x64.Build.0 = Debug|x64
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Debug|x86.Build.0 = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.DebugExternals|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.DebugExternals|Any CPU.Build.0 = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.DebugExternals|x64.ActiveCfg = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.DebugExternals|x64.Build.0 = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.DebugExternals|x86.ActiveCfg = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.DebugExternals|x86.Build.0 = Debug|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Release|x64.ActiveCfg = Release|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Release|x64.Build.0 = Release|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Release|x86.ActiveCfg = Release|Any CPU
+		{2DC2D70B-099B-443C-BD72-4F38AAC12422}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
