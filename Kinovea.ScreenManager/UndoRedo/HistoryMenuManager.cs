@@ -49,7 +49,7 @@ namespace Kinovea.ScreenManager
                 stack.HistoryChanged -= HistoryChanged;
 
             stack = _stack;
-            UpdateMenus();
+            //UpdateMenus();
 
             if (stack != null)
                 stack.HistoryChanged += HistoryChanged;

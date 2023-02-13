@@ -8,22 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace Analysistem
 {
-    public partial class Form1 : Form
+    public partial class ErrorMessage : Form
     {
-        Controller controller = new Controller();
-        public Form1()
+        public ErrorMessage()
         {
             InitializeComponent();
-            
         }
 
-        //Record (Simultaneously) button
         private void button1_Click(object sender, EventArgs e)
         {
-            controller.StartSimultaneousRecording();
+            this.Close();
         }
     }
 }

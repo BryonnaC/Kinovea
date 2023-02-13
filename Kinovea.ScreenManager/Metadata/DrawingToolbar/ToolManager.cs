@@ -162,13 +162,18 @@ namespace Kinovea.ScreenManager
         }
         public static DrawingStyle GetStylePreset(string tool)
         {
-            if (!Tools.ContainsKey(tool))
-                return new DrawingStyle();
+            //THIS IS HERE BECAUSE OF AN EXCEPTION
+            if(Tools != null)
+            {
+                if (!Tools.ContainsKey(tool))
+                    return new DrawingStyle();
 
-            if (Tools[tool].StylePreset == null)
-                return new DrawingStyle();
+                if (Tools[tool].StylePreset == null)
+                    return new DrawingStyle();
 
-            return Tools[tool].StylePreset.Clone();
+                return Tools[tool].StylePreset.Clone();
+            }
+            return new DrawingStyle();
         }
 
         public static void SetStylePreset(string tool, DrawingStyle style)

@@ -36,7 +36,7 @@ using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Pipeline;
-using Kinovea.Video.FFMpeg;
+//using Kinovea.Video.FFMpeg;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -143,7 +143,7 @@ namespace Kinovea.ScreenManager
         private Guid id = Guid.NewGuid();
         private ICaptureScreenView view;
 
-        private bool cameraLoaded;
+        protected bool cameraLoaded;
         private bool cameraConnected;
         private bool recording;
 
@@ -153,7 +153,7 @@ namespace Kinovea.ScreenManager
         
         private CameraSummary cameraSummary;
         private CameraManager cameraManager;
-        private ICaptureSource cameraGrabber;
+        protected ICaptureSource cameraGrabber;
         private Stopwatch stopwatchDiscovery = new Stopwatch();
         private const long discoveryTimeout = 5000;
         private ScreenDescriptionCapture screenDescription;
@@ -165,7 +165,7 @@ namespace Kinovea.ScreenManager
         private Bitmap recordingThumbnail;
         private DateTime recordingStart;
         private CaptureRecordingMode recordingMode;
-        private VideoFileWriter videoFileWriter = new VideoFileWriter();
+        //private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
         private bool triggerArmed = false;
         private bool manualArmed = false;
@@ -598,7 +598,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void AssociateCamera(bool connect)
+        protected void AssociateCamera(bool connect)
         {
             if (cameraGrabber == null)
                 return;
@@ -687,7 +687,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Configure the stream and start receiving frames.
         /// </summary>
-        private void Connect()
+        protected void Connect()
         {
            if (!cameraLoaded || cameraGrabber == null)
                 return;
@@ -735,7 +735,7 @@ namespace Kinovea.ScreenManager
                 Connect2();
         }
 
-        private void Connect2()
+        protected void Connect2()
         {
             // Second part of Connect function. 
             // The function is split because the first part might need to be run repeatedly and from non UI thread, 
@@ -1658,10 +1658,10 @@ namespace Kinovea.ScreenManager
                     //DisplayError(result);
                 }
             }
-            else
+/*            else
             {
                 SaveBuffer(path, uncompressed, false, 0);
-            }
+            }*/
         }
 
         private void StopRecording(bool forcedStop)
@@ -1703,7 +1703,7 @@ namespace Kinovea.ScreenManager
 
                 AfterStopRecording(finalFilename);
             }
-            else // recordingMode == CaptureRecordingMode.Scheduled
+/*            else // recordingMode == CaptureRecordingMode.Scheduled
             {
                 // Save buffer to disk.
                 // Avoid reentry in StopRecording when we disconnect.
@@ -1717,7 +1717,7 @@ namespace Kinovea.ScreenManager
                 string dropMessage = string.Format("Dropped frames: {0}.", pipelineManager.Drops);
                 log.Debug(dropMessage);
                 viewportController.ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
-            }
+            }*/
         }
 
         private void AfterStopRecording(string finalFilename)
@@ -1798,7 +1798,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Save the delay buffer to a file.
         /// </summary>
-        private void SaveBuffer(string path, bool uncompressed, bool forcedStop, float recordingSeconds)
+       /* private void SaveBuffer(string path, bool uncompressed, bool forcedStop, float recordingSeconds)
         {
             //------------------------------------------------------------------
             // "Pause & Browse" scenario. The user has paused the camera stream and is browsing the recently buffered action.
@@ -1813,7 +1813,7 @@ namespace Kinovea.ScreenManager
             // Use a background worker, a progress bar, and allow cancellation.
             log.DebugFormat("Manual scheduled recording: saving delay buffer content.");
 
-            MJPEGWriter writer = new MJPEGWriter();
+            //MJPEGWriter writer = new MJPEGWriter();
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
@@ -1926,7 +1926,7 @@ namespace Kinovea.ScreenManager
             writer.Dispose();
 
             AfterStopRecording(path);
-        }
+        }*/
         private void ExecutePostCaptureCommand(string command, string path)
         {
             // Build replacement context.
@@ -1971,7 +1971,7 @@ namespace Kinovea.ScreenManager
         /// Allocates or reallocates the delay buffer.
         /// This must be done each time the image descriptor, or available memory or framerate changes.
         /// </summary>
-        private bool AllocateDelayer()
+        protected bool AllocateDelayer()
         {
             if (!cameraLoaded || imageDescriptor == null || imageDescriptor == ImageDescriptor.Invalid)
                 return false;

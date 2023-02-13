@@ -30,6 +30,8 @@ namespace Kinovea.Root
 {
     internal static class Program
     {
+        const int windowView = 2; //used for testing purposes to launch window
+                                  //will be changed later
         private static bool FirstInstance
         {
             get
@@ -78,14 +80,32 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
 
-            RootKernel kernel = new RootKernel(1);
-            kernel.Prepare();
+            //if statement for testing purposes -- will be changed TBD
             
-            log.Debug("Closing splash screen.");
-            splashForm.Close();
+            if(windowView == 1)
+            {
+                RootKernel kernel = new RootKernel(windowView);
+                kernel.Prepare();
+            
+                log.Debug("Closing splash screen.");
+                splashForm.Close();
 
-            log.Debug("Launching.");
-            kernel.Launch();
+                log.Debug("Launching.");
+                kernel.Launch();
+            }
+            else if(windowView == 2)
+            {
+                Console.WriteLine("hey i'm here");
+                UIAdapter kernel = new UIAdapter(windowView);
+                kernel.Prepare();
+
+                log.Debug("Closing splash screen.");
+                splashForm.Close();
+
+                log.Debug("Launching.");
+                kernel.Launch();
+            }
+
         }
         
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)

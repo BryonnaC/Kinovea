@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
         private ScreenManagerUserInterface view;
         private DualPlayerController dualPlayer = new DualPlayerController();
         private DualCaptureController dualCapture = new DualCaptureController();
-        private List<AbstractScreen> screenList = new List<AbstractScreen>();
+        protected List<AbstractScreen> screenList = new List<AbstractScreen>();
         private IEnumerable<PlayerScreen> playerScreens;
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
@@ -174,7 +174,7 @@ namespace Kinovea.ScreenManager
             audioInputLevelMonitor.DeviceLost += (s, e) => AudioDeviceLost();
 
             InitializeVideoFilters();
-            InitializeGuideWatcher();
+            //InitializeGuideWatcher();
 
             NotificationCenter.StopPlayback += (s, e) => DoStopPlaying();
             NotificationCenter.PreferencesOpened += NotificationCenter_PreferencesOpened;
@@ -2386,7 +2386,8 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        private void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
+        
+        protected void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
         {
             if(summary == null)
                 return;
