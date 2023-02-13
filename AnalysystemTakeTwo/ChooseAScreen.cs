@@ -26,9 +26,8 @@ namespace AnalysystemTakeTwo
             Console.WriteLine("You want /live/ video? Okay then.");
 
             CameraTypeManager.StartDiscoveringCameras();
+            
             screenManger.ShowCamChooser();
-            /*            ScreenManagerKernel sm = new ScreenManagerKernel();
-                        sm.AddCaptureScreen();*/
         }
 
         private void SelectVideo_Click(object sender, EventArgs e)

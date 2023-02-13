@@ -30,6 +30,7 @@ namespace AnalysystemTakeTwo
         private void InitializeComponent()
         {
             this.camOption = new System.Windows.Forms.Button();
+            this.nextButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // camOption
@@ -40,11 +41,25 @@ namespace AnalysystemTakeTwo
             this.camOption.TabIndex = 0;
             this.camOption.Text = "You have a camera plugged in!";
             this.camOption.UseVisualStyleBackColor = true;
+            this.camOption.Click += new System.EventHandler(this.camOption_Click);
+            // 
+            // nextButton
+            // 
+            this.nextButton.BackColor = System.Drawing.Color.LimeGreen;
+            this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.nextButton.Location = new System.Drawing.Point(423, 370);
+            this.nextButton.Name = "nextButton";
+            this.nextButton.Size = new System.Drawing.Size(102, 40);
+            this.nextButton.TabIndex = 31;
+            this.nextButton.Text = "Next";
+            this.nextButton.UseVisualStyleBackColor = false;
             // 
             // CameraSourceViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.nextButton);
             this.Controls.Add(this.camOption);
             this.Name = "CameraSourceViewer";
             this.Size = new System.Drawing.Size(582, 450);
@@ -56,5 +71,6 @@ namespace AnalysystemTakeTwo
         #endregion
 
         private System.Windows.Forms.Button camOption;
+        private System.Windows.Forms.Button nextButton;
     }
 }

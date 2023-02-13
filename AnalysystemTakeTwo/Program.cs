@@ -33,7 +33,7 @@ namespace AnalysystemTakeTwo
             string camDirectory = Path.Combine(specificFolder, "Plugins", "Camera");
             Directory.CreateDirectory(camDirectory);*/
 
-            //Software.Initialize(assembly.GetName().Version);
+            Software.Initialize(assembly.GetName().Version);
             Console.WriteLine("Loading video readers.");
             List<Type> videoReaders = new List<Type>();
             videoReaders.Add(typeof(Kinovea.Video.Bitmap.VideoReaderBitmap));
