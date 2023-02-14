@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ButtonClickedEventArgs.cs" />
     <Compile Include="CameraSourceViewer.cs">
       <SubType>UserControl</SubType>
     </Compile>

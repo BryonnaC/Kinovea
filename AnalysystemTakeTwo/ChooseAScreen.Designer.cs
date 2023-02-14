@@ -87,7 +87,7 @@ namespace AnalysystemTakeTwo
             this.IntakeInfo.UseVisualStyleBackColor = false;
             this.IntakeInfo.Click += new System.EventHandler(this.IntakeInfo_Click);
             // 
-            // InitialWindow
+            // ChooseAScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -96,8 +96,9 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.SelectVideo);
             this.Controls.Add(this.CalibrationObject);
             this.Controls.Add(this.LiveVideo);
-            this.Name = "InitialWindow";
+            this.Name = "ChooseAScreen";
             this.Size = new System.Drawing.Size(693, 419);
+            this.Load += new System.EventHandler(this.ChooseAScreen_Load);
             this.ResumeLayout(false);
 
         }
