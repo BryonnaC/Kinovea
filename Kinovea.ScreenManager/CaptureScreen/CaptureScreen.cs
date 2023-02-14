@@ -36,7 +36,7 @@ using Kinovea.Camera;
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Video;
 using Kinovea.Pipeline;
-//using Kinovea.Video.FFMpeg;
+using Kinovea.Video.FFMpeg;
 using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
@@ -165,7 +165,7 @@ namespace Kinovea.ScreenManager
         private Bitmap recordingThumbnail;
         private DateTime recordingStart;
         private CaptureRecordingMode recordingMode;
-        //private VideoFileWriter videoFileWriter = new VideoFileWriter();
+        private VideoFileWriter videoFileWriter = new VideoFileWriter();
         private Stopwatch stopwatchRecording = new Stopwatch();
         private bool triggerArmed = false;
         private bool manualArmed = false;
@@ -389,11 +389,11 @@ namespace Kinovea.ScreenManager
         public override void AddImageDrawing(string filename, bool svg)
         {
             // Adding drawing should go directly to the metadata.
-            //view.AddImageDrawing(filename, svg);
+            view.AddImageDrawing(filename, svg);
         }
         public override void AddImageDrawing(Bitmap bmp)
         {
-            //view.AddImageDrawing(bmp);
+            view.AddImageDrawing(bmp);
         }
         public override void FullScreen(bool fullScreen)
         {
@@ -1658,10 +1658,10 @@ namespace Kinovea.ScreenManager
                     //DisplayError(result);
                 }
             }
-/*            else
+            else
             {
                 SaveBuffer(path, uncompressed, false, 0);
-            }*/
+            }
         }
 
         private void StopRecording(bool forcedStop)
@@ -1703,7 +1703,7 @@ namespace Kinovea.ScreenManager
 
                 AfterStopRecording(finalFilename);
             }
-/*            else // recordingMode == CaptureRecordingMode.Scheduled
+            else // recordingMode == CaptureRecordingMode.Scheduled
             {
                 // Save buffer to disk.
                 // Avoid reentry in StopRecording when we disconnect.
@@ -1717,7 +1717,7 @@ namespace Kinovea.ScreenManager
                 string dropMessage = string.Format("Dropped frames: {0}.", pipelineManager.Drops);
                 log.Debug(dropMessage);
                 viewportController.ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
-            }*/
+            }
         }
 
         private void AfterStopRecording(string finalFilename)
@@ -1798,7 +1798,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Save the delay buffer to a file.
         /// </summary>
-       /* private void SaveBuffer(string path, bool uncompressed, bool forcedStop, float recordingSeconds)
+        private void SaveBuffer(string path, bool uncompressed, bool forcedStop, float recordingSeconds)
         {
             //------------------------------------------------------------------
             // "Pause & Browse" scenario. The user has paused the camera stream and is browsing the recently buffered action.
@@ -1813,7 +1813,7 @@ namespace Kinovea.ScreenManager
             // Use a background worker, a progress bar, and allow cancellation.
             log.DebugFormat("Manual scheduled recording: saving delay buffer content.");
 
-            //MJPEGWriter writer = new MJPEGWriter();
+            MJPEGWriter writer = new MJPEGWriter();
             VideoInfo info = new VideoInfo();
             info.OriginalSize = new Size(imageDescriptor.Width, imageDescriptor.Height);
 
@@ -1841,7 +1841,7 @@ namespace Kinovea.ScreenManager
             if (forcedStop || recordingSeconds > 0)
             {
                 // Scheduled mode.
-                
+
                 if (forcedStop && maxSeconds > 0)
                 {
                     //----------------------------------------------------------------------------------------------
@@ -1861,7 +1861,7 @@ namespace Kinovea.ScreenManager
                     //----------------------------------------------------------------------------------------------
                     int recordingFrames = Math.Max(SecondsToAge(recordingSeconds) - 1, 0);
                     maxAge = delay + recordingFrames;
-                 
+
                     // This case always implies the entire "max configured duration" is available.
                     minAge = maxAge - SecondsToAge(maxSeconds);
                 }
@@ -1882,7 +1882,7 @@ namespace Kinovea.ScreenManager
                     //----------------------------------------------------------------------------------------------
                     int recordingFrames = Math.Max(SecondsToAge(recordingSeconds) - 1, 0);
                     maxAge = delay + recordingFrames;
-                    
+
                     // Special case to handle the case where the user let the oldest interesting frame fall off.
                     maxAge = Math.Min(maxAge, delayer.SafeCapacity - 1);
 
@@ -1926,7 +1926,7 @@ namespace Kinovea.ScreenManager
             writer.Dispose();
 
             AfterStopRecording(path);
-        }*/
+        }
         private void ExecutePostCaptureCommand(string command, string path)
         {
             // Build replacement context.

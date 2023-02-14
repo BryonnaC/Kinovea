@@ -33,11 +33,13 @@ namespace AnalysystemTakeTwo
             string camDirectory = Path.Combine(specificFolder, "Plugins", "Camera");
             Directory.CreateDirectory(camDirectory);*/
 
+            Console.WriteLine(Directory.GetCurrentDirectory());
+
             Software.Initialize(assembly.GetName().Version);
             Console.WriteLine("Loading video readers.");
             List<Type> videoReaders = new List<Type>();
             videoReaders.Add(typeof(Kinovea.Video.Bitmap.VideoReaderBitmap));
-            //videoReaders.Add(typeof(Kinovea.Video.FFMpeg.VideoReaderFFMpeg));
+            videoReaders.Add(typeof(Kinovea.Video.FFMpeg.VideoReaderFFMpeg));
             videoReaders.Add(typeof(Kinovea.Video.GIF.VideoReaderGIF));
             videoReaders.Add(typeof(Kinovea.Video.SVG.VideoReaderSVG));
             videoReaders.Add(typeof(Kinovea.Video.Synthetic.VideoReaderSynthetic));
@@ -52,6 +54,8 @@ namespace AnalysystemTakeTwo
             // Do camera shit
             Console.WriteLine("Loading camera managers plugins.");
             CameraTypeManager.LoadCameraManagersPlugins(SoftwareManager.camDirectory);
+            
+            Console.WriteLine(Directory.GetCurrentDirectory());
 
             ScreenManager screenManager = new ScreenManager();
             screenManager.ShowInitialScreen();

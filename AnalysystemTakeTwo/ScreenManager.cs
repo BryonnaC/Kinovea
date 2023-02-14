@@ -8,6 +8,8 @@ using Kinovea.ScreenManager;
 
 namespace AnalysystemTakeTwo
 {
+
+
     class ScreenManager : ScreenManagerKernel
     {
         MainFrame mainFrame;
