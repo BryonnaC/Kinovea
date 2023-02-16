@@ -73,12 +73,19 @@
       <DependentUpon>ChooseAScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomCaptureScreen.cs" />
-    <Compile Include="LiveCaptureWindow.cs">
+    <Compile Include="CustomSplashscreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LiveCaptureWindow.Designer.cs">
-      <DependentUpon>LiveCaptureWindow.cs</DependentUpon>
+    <Compile Include="CustomSplashscreen.Designer.cs">
+      <DependentUpon>CustomSplashscreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="DashboardControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DashboardControl.Designer.cs">
+      <DependentUpon>DashboardControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DashboardNavigation.cs" />
     <Compile Include="MainFrame.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,15 +102,17 @@
     <Compile Include="SubjectInformationScreen.Designer.cs">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="WindowPreparer.cs" />
     <EmbeddedResource Include="CameraSourceViewer.resx">
       <DependentUpon>CameraSourceViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ChooseAScreen.resx">
       <DependentUpon>ChooseAScreen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LiveCaptureWindow.resx">
-      <DependentUpon>LiveCaptureWindow.cs</DependentUpon>
+    <EmbeddedResource Include="CustomSplashscreen.resx">
+      <DependentUpon>CustomSplashscreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DashboardControl.resx">
+      <DependentUpon>DashboardControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>

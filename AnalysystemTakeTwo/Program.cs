@@ -58,7 +58,7 @@ namespace AnalysystemTakeTwo
             Console.WriteLine(Directory.GetCurrentDirectory());
 
             ScreenManager screenManager = new ScreenManager();
-            screenManager.ShowInitialScreen();
+            //screenManager.ShowInitialScreen();
 
             Application.Run();
         }

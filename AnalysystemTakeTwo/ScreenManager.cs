@@ -8,23 +8,47 @@ using Kinovea.ScreenManager;
 
 namespace AnalysystemTakeTwo
 {
-
-
     class ScreenManager : ScreenManagerKernel
     {
         MainFrame mainFrame;
         ChooseAScreen chooseScreen = new ChooseAScreen();
         CustomCaptureScreen customCapScr = new CustomCaptureScreen();
         CameraSourceViewer availableCamerasScreen;
+        CustomSplashscreen customSplash = new CustomSplashscreen();
+        DashboardControl dashboardScr = new DashboardControl();
         //ScreenManagerKernel smKernel;
         //CameraSourceViewer availableCamerasScreen;
+
+        //TODO should make state machine for UI windows
 
         public ScreenManager()
         {
             //smKernel = new ScreenManagerKernel();
             mainFrame = new MainFrame();
+            LoadSplashScreen();
+            mainFrame.Show();
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
+            CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
+            DashboardControl.GoBackToDash += DashboardControl_GoBackToDash;
+        }
+
+        private void DashboardControl_GoBackToDash()
+        {
+            HideCurrentScreen();
+            SwitchToDashboard();
+        }
+
+        private void CustomSplashscreen_StartDashboard()
+        {
+            //ShowInitialScreen();
+            HideCurrentScreen();
+            SwitchToDashboard();
+        }
+
+        private void LoadSplashScreen()
+        {
+            mainFrame.Controls.Add(customSplash);
         }
 
         public void CreateCaptureScreen()
@@ -34,6 +58,7 @@ namespace AnalysystemTakeTwo
 
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
         {
+            mainFrame.Controls.Clear();
             DoLoadCameraInScreen(e.Source, e.Target);
         }
 
@@ -65,6 +90,7 @@ namespace AnalysystemTakeTwo
 
         public void ShowInitialScreen()
         {
+            mainFrame.Controls.Remove(customSplash);
             mainFrame.Controls.Add(chooseScreen);
 
             mainFrame.Show();
@@ -90,14 +116,24 @@ namespace AnalysystemTakeTwo
         public void ShowSubjectInfoScreen()
         {
             SubjectInformationScreen subInfoScr = new SubjectInformationScreen();
+            mainFrame.Controls.Remove(chooseScreen);
             mainFrame.Controls.Add(subInfoScr);
         }
 
         public void HideCurrentScreen()
         {
-            //Clears all controls, not the most useful long term, but fine for now
             mainFrame.Controls.Clear();
-            mainFrame.Show();
+        }
+
+        private void SwitchToDashboard()
+        {
+            DashboardNavigation dashNav = new DashboardNavigation();
+            dashNav.PopulateToolBar(dashboardScr.toolStrip1);
+
+            ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
+
+            dashboardScr.panel1.Controls.Add(scrMgUI);
+            mainFrame.Controls.Add(dashboardScr);
         }
     }
 }

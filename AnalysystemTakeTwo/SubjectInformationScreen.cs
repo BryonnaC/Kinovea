@@ -169,19 +169,14 @@ namespace AnalysystemTakeTwo
             return null;
         }
 
-        private void inchInput_TabIndexChanged(object sender, EventArgs e)
+        private void metricHeight_CheckedChanged_1(object sender, EventArgs e)
         {
-            inchInput.Text = "";
+            inchInput.Hide();
         }
 
-        private void inchInput_Click(object sender, EventArgs e)
+        private void imperialHeight_CheckedChanged_1(object sender, EventArgs e)
         {
-            inchInput.Text = "";
-        }
-
-        private void feetInput_Click(object sender, EventArgs e)
-        {
-            feetInput.Text = "";
+            inchInput.Show();
         }
 
         private void ageInput_Click(object sender, EventArgs e)
@@ -189,19 +184,24 @@ namespace AnalysystemTakeTwo
             ageInput.Text = "";
         }
 
-        private void lbsInput_Click(object sender, EventArgs e)
+        private void weightInput_Click(object sender, EventArgs e)
         {
             weightInput.Text = "";
         }
 
-        private void metricHeight_CheckedChanged(object sender, EventArgs e)
+        private void feetInput_Click_1(object sender, EventArgs e)
         {
-            inchInput.Hide();
+            feetInput.Text = "";
         }
 
-        private void imperialHeight_CheckedChanged(object sender, EventArgs e)
+        private void inchInput_Click_1(object sender, EventArgs e)
         {
-            inchInput.Show();
+            inchInput.Text = "";
+        }
+
+        private void inchInput_TabIndexChanged_1(object sender, EventArgs e)
+        {
+            inchInput.Text = "";
         }
     }
 }

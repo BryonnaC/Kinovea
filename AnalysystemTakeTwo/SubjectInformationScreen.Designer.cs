@@ -126,6 +126,7 @@ namespace AnalysystemTakeTwo
             this.weightInput.Size = new System.Drawing.Size(58, 20);
             this.weightInput.TabIndex = 29;
             this.weightInput.Text = "weight";
+            this.weightInput.Click += new System.EventHandler(this.weightInput_Click);
             // 
             // metricHeight
             // 
@@ -136,6 +137,7 @@ namespace AnalysystemTakeTwo
             this.metricHeight.TabIndex = 19;
             this.metricHeight.Text = "cm";
             this.metricHeight.UseVisualStyleBackColor = true;
+            this.metricHeight.CheckedChanged += new System.EventHandler(this.metricHeight_CheckedChanged_1);
             // 
             // label7
             // 
@@ -159,6 +161,7 @@ namespace AnalysystemTakeTwo
             this.imperialHeight.TabStop = true;
             this.imperialHeight.Text = "ft, in";
             this.imperialHeight.UseVisualStyleBackColor = true;
+            this.imperialHeight.CheckedChanged += new System.EventHandler(this.imperialHeight_CheckedChanged_1);
             // 
             // inchInput
             // 
@@ -168,6 +171,8 @@ namespace AnalysystemTakeTwo
             this.inchInput.Size = new System.Drawing.Size(58, 20);
             this.inchInput.TabIndex = 35;
             this.inchInput.Text = "height";
+            this.inchInput.Click += new System.EventHandler(this.inchInput_Click_1);
+            this.inchInput.TabIndexChanged += new System.EventHandler(this.inchInput_TabIndexChanged_1);
             // 
             // label8
             // 
@@ -188,6 +193,7 @@ namespace AnalysystemTakeTwo
             this.feetInput.Size = new System.Drawing.Size(58, 20);
             this.feetInput.TabIndex = 28;
             this.feetInput.Text = "height";
+            this.feetInput.Click += new System.EventHandler(this.feetInput_Click_1);
             // 
             // ageInput
             // 
@@ -197,6 +203,7 @@ namespace AnalysystemTakeTwo
             this.ageInput.Size = new System.Drawing.Size(100, 20);
             this.ageInput.TabIndex = 27;
             this.ageInput.Text = "age";
+            this.ageInput.Click += new System.EventHandler(this.ageInput_Click);
             // 
             // groupBox4
             // 
