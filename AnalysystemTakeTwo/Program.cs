@@ -19,22 +19,12 @@ namespace AnalysystemTakeTwo
         [STAThread]
         static void Main()
         {
+            // C# winforms default
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Set up essential to mimicking Kinovea
             Assembly assembly = Assembly.GetExecutingAssembly();
-
-            /*Console.WriteLine(Application.StartupPath);
-            Console.WriteLine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string specificFolder = Path.Combine(folder, "AnalysisApp");
-            Directory.CreateDirectory(specificFolder);
-            string camDirectory = Path.Combine(specificFolder, "Plugins", "Camera");
-            Directory.CreateDirectory(camDirectory);*/
-
-            Console.WriteLine(Directory.GetCurrentDirectory());
-
             Software.Initialize(assembly.GetName().Version);
             Console.WriteLine("Loading video readers.");
             List<Type> videoReaders = new List<Type>();
@@ -46,21 +36,28 @@ namespace AnalysystemTakeTwo
             VideoTypeManager.LoadVideoReaders(videoReaders);
 
             SoftwareManager.StartUp();
+
             Console.WriteLine("Loading built-in camera managers.");
             CameraTypeManager.LoadCameraManager(typeof(Kinovea.Camera.DirectShow.CameraManagerDirectShow));
             CameraTypeManager.LoadCameraManager(typeof(Kinovea.Camera.HTTP.CameraManagerHTTP));
             CameraTypeManager.LoadCameraManager(typeof(Kinovea.Camera.FrameGenerator.CameraManagerFrameGenerator));
 
-            // Do camera shit
+            // Load camera plugins to OUR library, not Kinovea library
             Console.WriteLine("Loading camera managers plugins.");
             CameraTypeManager.LoadCameraManagersPlugins(SoftwareManager.camDirectory);
-            
-            Console.WriteLine(Directory.GetCurrentDirectory());
 
+            // Set up actually just happens in the constructor
             ScreenManager screenManager = new ScreenManager();
-            //screenManager.ShowInitialScreen();
-
-            Application.Run();
         }
+    
+        // NO LONGER USED STUFF
+        /*Console.WriteLine(Application.StartupPath);
+        Console.WriteLine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+        string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        string specificFolder = Path.Combine(folder, "AnalysisApp");
+        Directory.CreateDirectory(specificFolder);
+        string camDirectory = Path.Combine(specificFolder, "Plugins", "Camera");
+        Directory.CreateDirectory(camDirectory);*/
     }
 }

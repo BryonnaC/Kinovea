@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.ScreenManager;
 
@@ -12,7 +13,7 @@ namespace AnalysystemTakeTwo
     {
         MainFrame mainFrame;
         ChooseAScreen chooseScreen = new ChooseAScreen();
-        CustomCaptureScreen customCapScr = new CustomCaptureScreen();
+        RecordingControl recordingControl = new RecordingControl();
         CameraSourceViewer availableCamerasScreen;
         CustomSplashscreen customSplash = new CustomSplashscreen();
         DashboardControl dashboardScr = new DashboardControl();
@@ -31,8 +32,11 @@ namespace AnalysystemTakeTwo
             ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
             DashboardControl.GoBackToDash += DashboardControl_GoBackToDash;
+
+            Application.Run();
         }
 
+        #region EventHandlers
         private void DashboardControl_GoBackToDash()
         {
             HideCurrentScreen();
@@ -46,22 +50,14 @@ namespace AnalysystemTakeTwo
             SwitchToDashboard();
         }
 
-        private void LoadSplashScreen()
-        {
-            mainFrame.Controls.Add(customSplash);
-        }
-
-        public void CreateCaptureScreen()
-        {
-            mainFrame.Controls.Add(base.screenList[0].UI);
-        }
-
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
         {
             mainFrame.Controls.Clear();
+            mainFrame.Controls.Add(recordingControl);
             DoLoadCameraInScreen(e.Source, e.Target);
         }
 
+        //this was for testing
         private void ChooseAScreen_ButtonClicked(object sender, ButtonClickedEventArgs e)
         {
             switch (e.buttonNumber)
@@ -80,37 +76,25 @@ namespace AnalysystemTakeTwo
                     break;
             }
         }
+        #endregion
+
+        #region Not Event Handlers
+        private void LoadSplashScreen()
+        {
+            mainFrame.Controls.Add(customSplash);
+        }
+
+        public void CreateCaptureScreen()
+        {
+            //mainFrame.Controls.Add(base.screenList[0].UI);
+            recordingControl.panel1.Controls.Add(base.screenList[0].UI);
+        }
 
         new private void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
         {
-            mainFrame.Controls.Remove(availableCamerasScreen);
+            //mainFrame.Controls.Remove(availableCamerasScreen);
             base.DoLoadCameraInScreen(summary, targetScreen);
             CreateCaptureScreen();
-        }
-
-        public void ShowInitialScreen()
-        {
-            mainFrame.Controls.Remove(customSplash);
-            mainFrame.Controls.Add(chooseScreen);
-
-            mainFrame.Show();
-        }
-
-        public void ShowCamChooser()
-        {
-            mainFrame.Controls.Remove(chooseScreen);
-            availableCamerasScreen = new CameraSourceViewer();
-            mainFrame.Controls.Add(availableCamerasScreen);
-        }
-
-        public void ShowCaptureScreen()
-        {
-
-        }
-
-        public void ShowPlaybackScreen()
-        {
-
         }
 
         public void ShowSubjectInfoScreen()
@@ -135,5 +119,33 @@ namespace AnalysystemTakeTwo
             dashboardScr.panel1.Controls.Add(scrMgUI);
             mainFrame.Controls.Add(dashboardScr);
         }
+        #endregion
+
+        #region Not Permanent/Not In Use
+        public void ShowCaptureScreen()
+        {
+
+        }
+
+        public void ShowPlaybackScreen()
+        {
+
+        }
+
+        public void ShowCamChooser()
+        {
+            mainFrame.Controls.Remove(chooseScreen);
+            availableCamerasScreen = new CameraSourceViewer();
+            mainFrame.Controls.Add(availableCamerasScreen);
+        }
+
+        public void ShowInitialScreen()
+        {
+            mainFrame.Controls.Remove(customSplash);
+            mainFrame.Controls.Add(chooseScreen);
+
+            mainFrame.Show();
+        }
+        #endregion
     }
 }

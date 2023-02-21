@@ -40,17 +40,18 @@ namespace AnalysystemTakeTwo
 
         private void MnuDataGraphing_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("IMPLEMENT ME!");
         }
 
         private void mnuCalibrationObject_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("IMPLEMENT ME!");
         }
 
         private void mnuInfoCollection_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("IMPLEMENT ME!");
+            //throw new NotImplementedException();
         }
     }
 }
