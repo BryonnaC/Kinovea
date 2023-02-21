@@ -37,7 +37,6 @@ namespace AnalysystemTakeTwo
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
-            DashboardControl.GoBackToDash += DashboardControl_GoBackToDash;
             DashboardNavigation.ToolBarClick += DashboardNav_ToolBarClick;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
@@ -63,20 +62,14 @@ namespace AnalysystemTakeTwo
         private void RecordingControl_ReturnToDash()
         {
             HideCurrentScreen();
-            SwitchToDashboard();
-        }
-
-        private void DashboardControl_GoBackToDash()
-        {
-            HideCurrentScreen();
-            SwitchToDashboard();
+            BackToDashboard();
         }
 
         private void CustomSplashscreen_StartDashboard()
         {
             //ShowInitialScreen();
             HideCurrentScreen();
-            SwitchToDashboard();
+            FirstSwitchToDashboard();
         }
 
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
@@ -156,15 +149,22 @@ namespace AnalysystemTakeTwo
             mainFrame.Controls.Clear();
         }
 
-        private void SwitchToDashboard()
+        private void FirstSwitchToDashboard()
         {
             DashboardNavigation dashNav = new DashboardNavigation();
             dashNav.PopulateToolBar(dashboardScr.toolStrip1);
 
             ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
-            //FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
 
-            //dashboardScr.panel1.Controls.Add(fileBrowsUI);
+            dashboardScr.panel1.Controls.Add(scrMgUI);
+            mainFrame.Controls.Add(dashboardScr);
+        }
+
+        private void BackToDashboard()
+        {
+            dashboardScr.panel1.Controls.Clear();
+
+            ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
             dashboardScr.panel1.Controls.Add(scrMgUI);
             mainFrame.Controls.Add(dashboardScr);
         }
