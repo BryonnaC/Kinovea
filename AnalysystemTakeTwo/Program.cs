@@ -48,6 +48,9 @@ namespace AnalysystemTakeTwo
 
             // Set up actually just happens in the constructor
             ScreenManager screenManager = new ScreenManager();
+            ServiceManager serviceManager = new ServiceManager();
+
+            Application.Run();
         }
     
         // NO LONGER USED STUFF

@@ -33,7 +33,7 @@ namespace AnalysystemTakeTwo
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
             DashboardControl.GoBackToDash += DashboardControl_GoBackToDash;
 
-            Application.Run();
+            //Application.Run();
         }
 
         #region EventHandlers

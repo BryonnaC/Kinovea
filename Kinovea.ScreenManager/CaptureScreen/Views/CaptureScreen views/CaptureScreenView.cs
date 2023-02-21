@@ -350,6 +350,7 @@ namespace Kinovea.ScreenManager
         private void BtnRecordClick(object sender, EventArgs e)
         {
             presenter.View_ToggleRecording();
+            // I added this event handler - Bryonna
             RecordingStarted?.Invoke();
         }
         private void btnArm_Click(object sender, EventArgs e)

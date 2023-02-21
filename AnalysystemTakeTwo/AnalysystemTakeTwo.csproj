@@ -88,6 +88,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ServiceManager.cs" />
     <Compile Include="UserInterface\ButtonClickedEventArgs.cs" />
     <Compile Include="UserInterface\CameraSourceViewer.cs">
       <SubType>UserControl</SubType>

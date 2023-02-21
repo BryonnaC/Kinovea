@@ -37,6 +37,8 @@ namespace AnalysystemTakeTwo
             // return to original mouse position
             // SetCursorPos(originalPos.X, originalPos.Y);
 
+            Console.WriteLine("Ay you made it bucko");
+
             return new EventInfo(new Target[] { sparkvueTarget }, stopwatch.Elapsed.ToUnits(delayUnits));
         }
 
