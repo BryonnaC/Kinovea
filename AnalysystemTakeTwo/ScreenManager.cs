@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.ScreenManager;
+using Kinovea.FileBrowser;
+using Kinovea.Services;
+using Kinovea.Video;
 
 namespace AnalysystemTakeTwo
 {
@@ -28,15 +31,41 @@ namespace AnalysystemTakeTwo
             mainFrame = new MainFrame();
             LoadSplashScreen();
             mainFrame.Show();
+
+            FormsHelper.SetMainForm(mainFrame);
+
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
             DashboardControl.GoBackToDash += DashboardControl_GoBackToDash;
+            DashboardNavigation.ToolBarClick += DashboardNav_ToolBarClick;
+            VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
+            RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
 
             //Application.Run();
         }
 
         #region EventHandlers
+        private void DashboardNav_ToolBarClick(object sender, ButtonClickedEventArgs e)
+        {
+            switch (e.buttonNumber)
+            {
+                case 1:
+                case 2:
+                case 3:
+                    return;
+                case 4:
+                    PrepareFileBrowser();
+                    return;
+            }
+        }
+
+        private void RecordingControl_ReturnToDash()
+        {
+            HideCurrentScreen();
+            SwitchToDashboard();
+        }
+
         private void DashboardControl_GoBackToDash()
         {
             HideCurrentScreen();
@@ -76,6 +105,13 @@ namespace AnalysystemTakeTwo
                     break;
             }
         }
+
+        new private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
+        {
+            mainFrame.Controls.Clear();
+            mainFrame.Controls.Add(recordingControl);
+            DoLoadMovieInScreen(e.Path, e.Target);
+        }
         #endregion
 
         #region Not Event Handlers
@@ -86,8 +122,19 @@ namespace AnalysystemTakeTwo
 
         public void CreateCaptureScreen()
         {
-            //mainFrame.Controls.Add(base.screenList[0].UI);
+            recordingControl.panel1.Controls.Clear();
             recordingControl.panel1.Controls.Add(base.screenList[0].UI);
+        }
+
+        private void CreateVideoScreen()
+        {
+            recordingControl.panel1.Controls.Clear();
+            recordingControl.panel1.Controls.Add(base.screenList[0].UI);
+        }
+        new private void DoLoadMovieInScreen(string path, int targetScreen)
+        {
+            base.DoLoadMovieInScreen(path, targetScreen);
+            CreateVideoScreen();
         }
 
         new private void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
@@ -115,10 +162,21 @@ namespace AnalysystemTakeTwo
             dashNav.PopulateToolBar(dashboardScr.toolStrip1);
 
             ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
+            //FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
 
+            //dashboardScr.panel1.Controls.Add(fileBrowsUI);
             dashboardScr.panel1.Controls.Add(scrMgUI);
             mainFrame.Controls.Add(dashboardScr);
         }
+
+        private void PrepareFileBrowser()
+        {
+            FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
+            dashboardScr.panel1.Controls.Clear();
+            dashboardScr.panel1.Controls.Add(fileBrowsUI);
+        }
+
+
         #endregion
 
         #region Not Permanent/Not In Use

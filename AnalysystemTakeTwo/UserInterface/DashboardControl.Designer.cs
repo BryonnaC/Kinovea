@@ -32,6 +32,7 @@ namespace AnalysystemTakeTwo
             this.label1 = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label1
@@ -61,11 +62,19 @@ namespace AnalysystemTakeTwo
             this.panel1.Size = new System.Drawing.Size(750, 429);
             this.panel1.TabIndex = 3;
             // 
+            // panel2
+            // 
+            this.panel2.Location = new System.Drawing.Point(0, 506);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(750, 44);
+            this.panel2.TabIndex = 4;
+            // 
             // DashboardControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.label1);
@@ -81,5 +90,6 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.ToolStrip toolStrip1;
         public System.Windows.Forms.Panel panel1;
+        public System.Windows.Forms.Panel panel2;
     }
 }

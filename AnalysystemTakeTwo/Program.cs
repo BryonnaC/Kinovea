@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.Video;
 using Kinovea.Services;
+using Kinovea.FileBrowser;
+using Kinovea.ScreenManager;
 using System.IO;
 
 namespace AnalysystemTakeTwo
@@ -46,9 +48,12 @@ namespace AnalysystemTakeTwo
             Console.WriteLine("Loading camera managers plugins.");
             CameraTypeManager.LoadCameraManagersPlugins(SoftwareManager.camDirectory);
 
+            ToolManager.LoadTools();
+
             // Set up actually just happens in the constructor
             ScreenManager screenManager = new ScreenManager();
             ServiceManager serviceManager = new ServiceManager();
+            FileBrowserKernel fileBrowser = new FileBrowserKernel();
 
             Application.Run();
         }

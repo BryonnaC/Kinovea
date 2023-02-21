@@ -12,6 +12,10 @@ namespace AnalysystemTakeTwo
         private ToolStripMenuItem mnuInfoCollection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrationObject = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDataGraphing = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuFileBrowser = new ToolStripMenuItem();
+
+        public static event EventHandler<ButtonClickedEventArgs> ToolBarClick;
+        private int number = 0;
 
         public DashboardNavigation()
         {
@@ -31,11 +35,25 @@ namespace AnalysystemTakeTwo
             mnuDataGraphing.Text = "Graph Data";
             mnuDataGraphing.Click += MnuDataGraphing_Click;
 
+            mnuFileBrowser.Text = "Open File Browser";
+            mnuFileBrowser.Click += MnuFileBrowser_Click;
+
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuCalibrationObject, mnuDataGraphing });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuCalibrationObject, mnuDataGraphing, mnuFileBrowser });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+
+        private void MnuFileBrowser_Click(object sender, EventArgs e)
+        {
+            number = 4;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+        }
+
+        public void ChangeHelpfulMessage()
+        {
+            //todo: want messages to guide user through basic use of the system
         }
 
         private void MnuDataGraphing_Click(object sender, EventArgs e)

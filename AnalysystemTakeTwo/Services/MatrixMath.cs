@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CodeTranslation
 {
-    class Class1
+    class MatrixMath
     {
         double aFx = 256.98;
         double aFy = -201.43;
