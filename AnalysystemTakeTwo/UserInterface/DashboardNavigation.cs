@@ -14,12 +14,51 @@ namespace AnalysystemTakeTwo
         private ToolStripMenuItem mnuDataGraphing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFileBrowser = new ToolStripMenuItem();
 
+        private Button calibrationTemplate = new Button();
+        private Button leg12pointsTemplate = new Button();
+        private Button trackingMarker = new Button();
+        
+        private ToolStripMenuItem mnucalibrationTemplate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuleg12pointsTemplate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnutrackingMarker = new ToolStripMenuItem();
+
         public static event EventHandler<ButtonClickedEventArgs> ToolBarClick;
         private int number = 0;
 
         public DashboardNavigation()
         {
 
+        }
+
+        public void PopulateButtonToolStrip(ToolStrip toolStrip)
+        {
+            toolStrip.AllowMerge = true;
+
+            mnucalibrationTemplate.Text = "Triangle Template";
+            mnuleg12pointsTemplate.Text = "Leg Tracking Template";
+            mnutrackingMarker.Text = "Individual Tracker";
+
+            MenuStrip thisMenuStrip = new MenuStrip();
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnucalibrationTemplate, mnuleg12pointsTemplate, mnutrackingMarker});
+            thisMenuStrip.AllowMerge = true;
+
+            ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+
+        private void InitButtons()
+        {
+            calibrationTemplate.Text = "Place Triangle Template";
+            leg12pointsTemplate.Text = "Place Leg Tracking Template";
+            trackingMarker.Text = "Place Individual Tracker";
+        }
+
+        public void PlaceButtons(Panel buttonPanel)
+        {
+            InitButtons();
+
+            buttonPanel.Controls.Add(leg12pointsTemplate);
+            buttonPanel.Controls.Add(calibrationTemplate);
+            buttonPanel.Controls.Add(trackingMarker);
         }
 
         public void PopulateToolBar(ToolStrip toolStrip)
@@ -63,13 +102,14 @@ namespace AnalysystemTakeTwo
 
         private void mnuCalibrationObject_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("IMPLEMENT ME!");
+            number = 2;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
         }
 
         private void mnuInfoCollection_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("IMPLEMENT ME!");
-            //throw new NotImplementedException();
+            number = 1;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
         }
     }
 }

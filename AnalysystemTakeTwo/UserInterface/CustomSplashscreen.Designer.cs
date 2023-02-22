@@ -66,7 +66,7 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.label1);
             this.ForeColor = System.Drawing.Color.White;
             this.Name = "CustomSplashscreen";
-            this.Size = new System.Drawing.Size(750, 500);
+            this.Size = new System.Drawing.Size(800, 600);
             this.ResumeLayout(false);
             this.PerformLayout();
 

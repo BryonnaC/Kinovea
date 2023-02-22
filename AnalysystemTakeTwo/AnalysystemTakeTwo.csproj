@@ -88,6 +88,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CalibrationObjectDimensions.Designer.cs">
+      <DependentUpon>CalibrationObjectDimensions.cs</DependentUpon>
+    </Compile>
     <Compile Include="ServiceManager.cs" />
     <Compile Include="UserInterface\ButtonClickedEventArgs.cs" />
     <Compile Include="UserInterface\CameraSourceViewer.cs">
@@ -146,6 +152,9 @@
     <Compile Include="Services\Synchronizer.cs" />
     <Compile Include="Services\Template.cs" />
     <Compile Include="Services\Time.cs" />
+    <EmbeddedResource Include="UserInterface\CalibrationObjectDimensions.resx">
+      <DependentUpon>CalibrationObjectDimensions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\CameraSourceViewer.resx">
       <DependentUpon>CameraSourceViewer.cs</DependentUpon>
     </EmbeddedResource>

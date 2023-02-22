@@ -20,7 +20,8 @@ namespace AnalysystemTakeTwo
         CameraSourceViewer availableCamerasScreen;
         CustomSplashscreen customSplash = new CustomSplashscreen();
         DashboardControl dashboardScr = new DashboardControl();
-        //ScreenManagerKernel smKernel;
+
+        DashboardNavigation dashNav = new DashboardNavigation();
         //CameraSourceViewer availableCamerasScreen;
 
         //TODO should make state machine for UI windows
@@ -35,7 +36,7 @@ namespace AnalysystemTakeTwo
             FormsHelper.SetMainForm(mainFrame);
 
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
-            ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
+            //ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
             DashboardNavigation.ToolBarClick += DashboardNav_ToolBarClick;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
@@ -50,7 +51,11 @@ namespace AnalysystemTakeTwo
             switch (e.buttonNumber)
             {
                 case 1:
+                    ShowSubjectInfoCollection();
+                    return;
                 case 2:
+                    ShowCalibrationObjForm();
+                    return;
                 case 3:
                     return;
                 case 4:
@@ -80,7 +85,7 @@ namespace AnalysystemTakeTwo
         }
 
         //this was for testing
-        private void ChooseAScreen_ButtonClicked(object sender, ButtonClickedEventArgs e)
+/*        private void ChooseAScreen_ButtonClicked(object sender, ButtonClickedEventArgs e)
         {
             switch (e.buttonNumber)
             {
@@ -97,7 +102,7 @@ namespace AnalysystemTakeTwo
                     ShowSubjectInfoScreen();
                     break;
             }
-        }
+        }*/
 
         new private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
         {
@@ -121,6 +126,7 @@ namespace AnalysystemTakeTwo
 
         private void CreateVideoScreen()
         {
+            dashNav.PopulateButtonToolStrip(recordingControl.buttonToolStrip);
             recordingControl.panel1.Controls.Clear();
             recordingControl.panel1.Controls.Add(base.screenList[0].UI);
         }
@@ -137,12 +143,12 @@ namespace AnalysystemTakeTwo
             CreateCaptureScreen();
         }
 
-        public void ShowSubjectInfoScreen()
+/*        public void ShowSubjectInfoScreen()
         {
             SubjectInformationScreen subInfoScr = new SubjectInformationScreen();
             mainFrame.Controls.Remove(chooseScreen);
             mainFrame.Controls.Add(subInfoScr);
-        }
+        }*/
 
         public void HideCurrentScreen()
         {
@@ -151,7 +157,6 @@ namespace AnalysystemTakeTwo
 
         private void FirstSwitchToDashboard()
         {
-            DashboardNavigation dashNav = new DashboardNavigation();
             dashNav.PopulateToolBar(dashboardScr.toolStrip1);
 
             ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
@@ -174,6 +179,20 @@ namespace AnalysystemTakeTwo
             FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
             dashboardScr.panel1.Controls.Clear();
             dashboardScr.panel1.Controls.Add(fileBrowsUI);
+        }
+
+        private void ShowSubjectInfoCollection()
+        {
+            SubjectInformationScreen subjInfoScr = new SubjectInformationScreen();
+            dashboardScr.panel1.Controls.Clear();
+            dashboardScr.panel1.Controls.Add(subjInfoScr);
+        }
+
+        private void ShowCalibrationObjForm()
+        {
+            CalibrationObjectDimensions calibObjControl = new CalibrationObjectDimensions();
+            dashboardScr.panel1.Controls.Clear();
+            dashboardScr.panel1.Controls.Add(calibObjControl);
         }
 
 

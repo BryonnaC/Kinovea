@@ -64,6 +64,7 @@ namespace AnalysystemTakeTwo
             this.maleRadio = new System.Windows.Forms.RadioButton();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -207,6 +208,7 @@ namespace AnalysystemTakeTwo
             // 
             // groupBox4
             // 
+            this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.groupBox4.Controls.Add(this.imperialHeight);
             this.groupBox4.Controls.Add(this.metricHeight);
             this.groupBox4.Location = new System.Drawing.Point(359, 140);
@@ -227,6 +229,7 @@ namespace AnalysystemTakeTwo
             // 
             // groupBox5
             // 
+            this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.groupBox5.Controls.Add(this.maskedTextBox7);
             this.groupBox5.Controls.Add(this.imperialWeight);
             this.groupBox5.Controls.Add(this.metricWeight);
@@ -432,6 +435,7 @@ namespace AnalysystemTakeTwo
             // 
             // groupBox6
             // 
+            this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.groupBox6.Controls.Add(this.femaleRadio);
             this.groupBox6.Controls.Add(this.maleRadio);
             this.groupBox6.Controls.Add(this.declineRadio);
@@ -452,6 +456,14 @@ namespace AnalysystemTakeTwo
             this.textBox1.TabStop = false;
             this.textBox1.Text = "Information Collection";
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
+            this.panel1.Location = new System.Drawing.Point(28, 67);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(561, 320);
+            this.panel1.TabIndex = 39;
+            // 
             // SubjectInformationScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -469,6 +481,7 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.panel1);
             this.Name = "SubjectInformationScreen";
             this.Size = new System.Drawing.Size(672, 536);
             this.groupBox4.ResumeLayout(false);
@@ -523,5 +536,6 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.RadioButton maleRadio;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Panel panel1;
     }
 }

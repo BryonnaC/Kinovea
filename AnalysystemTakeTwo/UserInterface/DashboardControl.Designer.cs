@@ -59,12 +59,12 @@ namespace AnalysystemTakeTwo
             // 
             this.panel1.Location = new System.Drawing.Point(0, 71);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(750, 429);
+            this.panel1.Size = new System.Drawing.Size(750, 479);
             this.panel1.TabIndex = 3;
             // 
             // panel2
             // 
-            this.panel2.Location = new System.Drawing.Point(0, 506);
+            this.panel2.Location = new System.Drawing.Point(3, 556);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(750, 44);
             this.panel2.TabIndex = 4;
@@ -79,7 +79,7 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.label1);
             this.Name = "DashboardControl";
-            this.Size = new System.Drawing.Size(800, 550);
+            this.Size = new System.Drawing.Size(800, 600);
             this.ResumeLayout(false);
             this.PerformLayout();
 

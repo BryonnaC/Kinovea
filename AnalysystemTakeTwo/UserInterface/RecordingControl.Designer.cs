@@ -31,13 +31,16 @@ namespace AnalysystemTakeTwo
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.buttonToolStrip = new System.Windows.Forms.ToolStrip();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(0, 36);
+            this.panel1.Location = new System.Drawing.Point(175, 33);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(750, 429);
+            this.panel1.Size = new System.Drawing.Size(622, 429);
             this.panel1.TabIndex = 4;
             // 
             // button1
@@ -50,14 +53,36 @@ namespace AnalysystemTakeTwo
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.buttonToolStrip);
+            this.panel2.Location = new System.Drawing.Point(0, 36);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(172, 429);
+            this.panel2.TabIndex = 6;
+            // 
+            // buttonToolStrip
+            // 
+            this.buttonToolStrip.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
+            this.buttonToolStrip.Location = new System.Drawing.Point(0, 0);
+            this.buttonToolStrip.Name = "buttonToolStrip";
+            this.buttonToolStrip.Size = new System.Drawing.Size(172, 111);
+            this.buttonToolStrip.TabIndex = 0;
+            this.buttonToolStrip.Text = "buttonToolStrip";
+            // 
             // RecordingControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
             this.Name = "RecordingControl";
-            this.Size = new System.Drawing.Size(750, 500);
+            this.Size = new System.Drawing.Size(800, 600);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -66,5 +91,7 @@ namespace AnalysystemTakeTwo
 
         public System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.Panel panel2;
+        public System.Windows.Forms.ToolStrip buttonToolStrip;
     }
 }
