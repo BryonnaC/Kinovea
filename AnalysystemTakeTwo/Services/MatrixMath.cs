@@ -32,6 +32,32 @@ namespace CodeTranslation
         double dSx = -499.32;
         double dSy = -305.24;
 
+        static double BFx = -312;
+        static double BFy = 0;
+        static double BFz = 22;
+        static double CFx = BFx-410;
+        static double CFy = 0;
+        static double CFz = BFz;
+        static double AFx = ((BFx+CFx)/2);
+        static double AFy = 0;
+        static double AFz = 350 + BFz;
+        static double DFx = ((BFx + CFx) / 2);
+        static double DFy = 0;
+        static double DFz = 248 + BFz;
+
+        static double CSx = 0;
+        static double CSy = -210;
+        static double CSz = 18;
+        static double BSx = 0;
+        static double BSy = CSy-408;
+        static double BSz = CSz;
+        static double ASx = 0;
+        static double ASy = (BSy+CSy)/2;
+        static double ASz = 357+CSz;
+        static double DSx = 0;
+        static double DSy = (BSy+CSy)/2;
+        static double DSz = 260 + CSz;
+
         List<double> frontPx = new List<double> { };
         List<double> frontPy = new List<double> { };
         List<double> sidePx = new List<double> { };
@@ -40,7 +66,11 @@ namespace CodeTranslation
         List<double> frontSideX = new List<double> { };
         List<double> frontSideY = new List<double> { };
 
+        List<double> globalFSX = new List<double> { };
+        List<double> globalFSY = new List<double> { };
+
         double[,] NC1;
+        double[,] NC2;
 
         //This is just a testing method, should be able to get positions from Kinovea tracking
         public void InitLists()
@@ -63,29 +93,65 @@ namespace CodeTranslation
             frontSideY.Add(cSy);
             frontSideY.Add(dSy);
 
+            globalFSX.Add(AFx);
+            globalFSX.Add(BFx);
+            globalFSX.Add(CFx);
+            globalFSX.Add(DFx);
+            globalFSX.Add(ASx);
+            globalFSX.Add(BSx);
+            globalFSX.Add(CSx);
+            globalFSX.Add(DSx);
+
+            globalFSY.Add(AFy);
+            globalFSY.Add(BFy);
+            globalFSY.Add(CFy);
+            globalFSY.Add(DFy);
+            globalFSY.Add(ASy);
+            globalFSY.Add(BSy);
+            globalFSY.Add(CSy);
+            globalFSY.Add(DSy);
         }
 
         public void ImitateMATLAB()
         {
+            double scaledpX;
+            double scaledpY;
+            double centeredpX;
+            double centeredpY;
+
             double scaledX;
             double scaledY;
             double centeredX;
             double centeredY;
 
             InitLists();
-            scaledX = ScalePoints(frontSideX);
-            scaledY = ScalePoints(frontSideY);
+            scaledpX = ScalePoints(frontSideX);
+            scaledpY = ScalePoints(frontSideY);
 
-            centeredX = CenterPoints(frontSideX);
-            centeredY = CenterPoints(frontSideY);
+            centeredpX = CenterPoints(frontSideX);
+            centeredpY = CenterPoints(frontSideY);
 
-            CreateNC1Matrix(scaledX, scaledY, centeredX, centeredY);
+            CreateNC1Matrix(scaledpX, scaledpY, centeredpX, centeredpY);
 
-            MatrixMultiplication(NC1, aFx, aFy);
-            MatrixMultiplication(NC1, bFx, bFy);
-            MatrixMultiplication(NC1, cFx, cFy);
-            MatrixMultiplication(NC1, dFx, dFy);
+            Console.WriteLine("\nMatrix One Results - pixel positions");
+            MatrixMultiplication3x3(NC1, aFx, aFy);
+            MatrixMultiplication3x3(NC1, bFx, bFy);
+            MatrixMultiplication3x3(NC1, cFx, cFy);
+            MatrixMultiplication3x3(NC1, dFx, dFy);
 
+            scaledX = ScalePoints(globalFSX);
+            scaledY = ScalePoints(globalFSY);
+
+            centeredX = CenterPoints(globalFSX);
+            centeredY = CenterPoints(globalFSY);
+
+            CreateNC2Matrix(scaledX, scaledY, centeredX, centeredY);
+
+            Console.WriteLine("\nMatrix Two Results - global positions");
+            MatrixMultiplication4x4(NC2, AFx, AFy, AFz);
+            MatrixMultiplication4x4(NC2, BFx, BFy, BFz);
+            MatrixMultiplication4x4(NC2, CFx, CFy, CFz);
+            MatrixMultiplication4x4(NC2, DFx, DFy, DFz);
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -113,7 +179,18 @@ namespace CodeTranslation
             }*/
         }
 
-        public void MatrixMultiplication(double[,] nc1, double pointX, double pointY)
+        public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
+        {
+            NC2 = new double[4, 4]
+{
+                { scalex, 0, 0, -(centerx * scalex) },
+                { 0, scaley, 0, -(centery * scaley) },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
+};
+        }
+
+        public void MatrixMultiplication3x3(double[,] nc1, double pointX, double pointY)
         {
             double[,] someF = new double[3, 1]{
                 {0},
@@ -127,6 +204,26 @@ namespace CodeTranslation
             }
 
             for(int j=0; j<3; j++)
+            {
+                Console.WriteLine(someF[j, 0]);
+            }
+        }
+
+        public void MatrixMultiplication4x4(double[,] nc2, double pointX, double pointY, double pointZ)
+        {
+            double[,] someF = new double[4, 1]{
+                {0},
+                {0},
+                {0},
+                {0}
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                someF[i, 0] = ((nc2[i, 0] * pointX) + (nc2[i, 1] * pointY) + (nc2[i, 2] * pointZ) + (nc2[i,3]*1));
+            }
+
+            for (int j = 0; j < 4; j++)
             {
                 Console.WriteLine(someF[j, 0]);
             }
@@ -155,8 +252,9 @@ namespace CodeTranslation
             double minPoint;
             double scaledValue;
 
-            maxPoint = GetMax(points);
-            minPoint = GetMin(points);
+            //maxPoint = GetMax(points);
+            maxPoint = points.Max();
+            minPoint = points.Min();
 
             scaledValue = (1 / (maxPoint - minPoint));
             //Console.WriteLine("scaled: " + scaledValue + "\n");

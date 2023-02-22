@@ -55,6 +55,8 @@ namespace AnalysystemTakeTwo
             ServiceManager serviceManager = new ServiceManager();
             FileBrowserKernel fileBrowser = new FileBrowserKernel();
 
+            ServiceManager.DoMath();
+
             Application.Run();
         }
     
