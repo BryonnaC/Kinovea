@@ -17,7 +17,7 @@ namespace AnalysystemTakeTwo
 
         private void CaptureScrView_RecordingStarted()
         {
-            Synchronizer.Record(true);
+            //Synchronizer.Record(true);
         }
 
         public static void DoMath()

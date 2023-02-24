@@ -11,6 +11,7 @@ namespace AnalysystemTakeTwo
     {
         private ToolStripMenuItem mnuInfoCollection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrationObject = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuRecord = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDataGraphing = new ToolStripMenuItem();
         private ToolStripMenuItem mnuFileBrowser = new ToolStripMenuItem();
 
@@ -77,11 +78,20 @@ namespace AnalysystemTakeTwo
             mnuFileBrowser.Text = "Open File Browser";
             mnuFileBrowser.Click += MnuFileBrowser_Click;
 
+            mnuRecord.Text = "Record Live Video";
+            mnuRecord.Click += MnuRecord_Click;
+
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuCalibrationObject, mnuDataGraphing, mnuFileBrowser });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuCalibrationObject, mnuRecord, mnuDataGraphing, mnuFileBrowser });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+
+        private void MnuRecord_Click(object sender, EventArgs e)
+        {
+            number = 5;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
         }
 
         private void MnuFileBrowser_Click(object sender, EventArgs e)

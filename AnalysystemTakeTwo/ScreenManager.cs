@@ -23,6 +23,7 @@ namespace AnalysystemTakeTwo
 
         DashboardNavigation dashNav = new DashboardNavigation();
         //CameraSourceViewer availableCamerasScreen;
+        private int whichScreen = 0;
 
         //TODO should make state machine for UI windows
 
@@ -61,6 +62,11 @@ namespace AnalysystemTakeTwo
                 case 4:
                     PrepareFileBrowser();
                     return;
+                case 5:
+                    dashboardScr.panel1.Controls.Clear();
+                    HideCurrentScreen();
+                    FirstSwitchToDashboard();
+                    return;
             }
         }
 
@@ -81,6 +87,8 @@ namespace AnalysystemTakeTwo
         {
             mainFrame.Controls.Clear();
             mainFrame.Controls.Add(recordingControl);
+            //recordingControl.Controls.Clear();
+            whichScreen = 0;
             DoLoadCameraInScreen(e.Source, e.Target);
         }
 
@@ -108,6 +116,7 @@ namespace AnalysystemTakeTwo
         {
             mainFrame.Controls.Clear();
             mainFrame.Controls.Add(recordingControl);
+            whichScreen = 1;
             DoLoadMovieInScreen(e.Path, e.Target);
         }
         #endregion
@@ -121,14 +130,14 @@ namespace AnalysystemTakeTwo
         public void CreateCaptureScreen()
         {
             recordingControl.panel1.Controls.Clear();
-            recordingControl.panel1.Controls.Add(base.screenList[0].UI);
+            recordingControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
         }
 
         private void CreateVideoScreen()
         {
             dashNav.PopulateButtonToolStrip(recordingControl.buttonToolStrip);
             recordingControl.panel1.Controls.Clear();
-            recordingControl.panel1.Controls.Add(base.screenList[0].UI);
+            recordingControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
         }
         new private void DoLoadMovieInScreen(string path, int targetScreen)
         {
