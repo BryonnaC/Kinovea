@@ -72,6 +72,14 @@ namespace CodeTranslation
         double[,] NC1;
         double[,] NC2;
 
+        List<double> pixelPositionsNormalized;
+        List<double> globalPositionsNormalized;
+
+        List<double> sidePixelPosNormed;
+        List<double> frontPixelPosNormed;
+        List<double> sideGlobalPosNormed;
+        List<double> frontGlobalPosNormed;
+
         //This is just a testing method, should be able to get positions from Kinovea tracking
         public void InitLists()
         {
@@ -134,10 +142,10 @@ namespace CodeTranslation
             CreateNC1Matrix(scaledpX, scaledpY, centeredpX, centeredpY);
 
             Console.WriteLine("\nMatrix One Results - pixel positions");
-            MatrixMultiplication3x3(NC1, aFx, aFy);
-            MatrixMultiplication3x3(NC1, bFx, bFy);
-            MatrixMultiplication3x3(NC1, cFx, cFy);
-            MatrixMultiplication3x3(NC1, dFx, dFy);
+            MatrixMultiplicationPixel(NC1, aFx, aFy);
+            MatrixMultiplicationPixel(NC1, bFx, bFy);
+            MatrixMultiplicationPixel(NC1, cFx, cFy);
+            MatrixMultiplicationPixel(NC1, dFx, dFy);
 
             scaledX = ScalePoints(globalFSX);
             scaledY = ScalePoints(globalFSY);
@@ -148,10 +156,10 @@ namespace CodeTranslation
             CreateNC2Matrix(scaledX, scaledY, centeredX, centeredY);
 
             Console.WriteLine("\nMatrix Two Results - global positions");
-            MatrixMultiplication4x4(NC2, AFx, AFy, AFz);
-            MatrixMultiplication4x4(NC2, BFx, BFy, BFz);
-            MatrixMultiplication4x4(NC2, CFx, CFy, CFz);
-            MatrixMultiplication4x4(NC2, DFx, DFy, DFz);
+            MatrixMultiplicationGlobal(NC2, AFx, AFy, AFz);
+            MatrixMultiplicationGlobal(NC2, BFx, BFy, BFz);
+            MatrixMultiplicationGlobal(NC2, CFx, CFy, CFz);
+            MatrixMultiplicationGlobal(NC2, DFx, DFy, DFz);
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -190,7 +198,18 @@ namespace CodeTranslation
 };
         }
 
-        public void MatrixMultiplication3x3(double[,] nc1, double pointX, double pointY)
+        private List<double> SetNewValues(double[,] newMatrix, List<double> points)
+        {
+            for(int i=0; i<points.Count; i++)
+            {
+                points[i] = newMatrix[i, 0];
+                Console.WriteLine(points[i]);
+            }
+
+            return points;
+        }
+
+        public List<double> MatrixMultiplicationPixel(double[,] nc1, double pointX, double pointY)
         {
             double[,] someF = new double[3, 1]{
                 {0},
@@ -207,9 +226,13 @@ namespace CodeTranslation
             {
                 Console.WriteLine(someF[j, 0]);
             }
+
+            List<double> points = new List<double> { pointX, pointY };
+
+            return SetNewValues(someF, points);
         }
 
-        public void MatrixMultiplication4x4(double[,] nc2, double pointX, double pointY, double pointZ)
+        public List<double> MatrixMultiplicationGlobal(double[,] nc2, double pointX, double pointY, double pointZ)
         {
             double[,] someF = new double[4, 1]{
                 {0},
@@ -227,6 +250,10 @@ namespace CodeTranslation
             {
                 Console.WriteLine(someF[j, 0]);
             }
+
+            List<double> points = new List<double> { pointX, pointY, pointZ };
+
+            return SetNewValues(someF, points);
         }
 
         public double CenterPoints(List<double> points)
@@ -272,6 +299,49 @@ namespace CodeTranslation
             return points.Min();
         }
 
-       
+        //Holy shit this thing is HUGE
+        /*
+         * T=[
+         AFx AFy AFz 1 0 0 0 0 AFx*aFx AFy*aFx AFz*aFx;
+         0 0 0 0 AFx AFy AFz 1 -AFx*aFy -AFy*aFy -AFz*aFy;
+         BFx BFy BFz 1 0 0 0 0 BFx*bFx BFy*bFx BFz*bFx;
+         0 0 0 0 BFx BFy BFz 1 -BFx*bFy -BFy*bFy -BFz*bFy;
+         CFx CFy CFz 1 0 0 0 0 CFx*cFx CFy*cFx CFz*cFx;
+         0 0 0 0 CFx CFy CFz 1 -CFx*cFy -CFy*cFy -CFz*cFy;
+         DFx DFy DFz 1 0 0 0 0 DFx*dFx DFy*dFx DFz*dFx;
+         0 0 0 0 DFx DFy DFz 1 -DFx*dFy -DFy*dFy -DFz*dFy;
+         ASx ASy ASz 1 0 0 0 0 ASx*aSx ASy*aSx ASz*aSx;
+         0 0 0 0 ASx ASy ASz 1 -ASx*aSy -ASy*aSy -ASz*aSy;
+         BSx BSy BSz 1 0 0 0 0 BSx*bSx BSy*bSx BSz*bSx;
+         0 0 0 0 BSx BSy BSz 1 -BSx*bSy -BSy*bSy -BSz*bSy;
+         CSx CSy CSz 1 0 0 0 0 CSx*cSx CSy*cSx CSz*cSx;
+         0 0 0 0 CSx CSy CSz 1 -CSx*cSy -CSy*cSy -CSz*cSy;
+         DSx DSy DSz 1 0 0 0 0 DSx*dSx DSy*dSx DSz*dSx;
+         0 0 0 0 DSx DSy DSz 1 -DSx*dSy -DSy*dSy -DSz*dSy; 
+         ];*/
+
+        private void HomgraphicMatrix(List<double> gobals, List<double> pixels)
+        {
+            double[,] homGraphT = new double[16, 11]{
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+            };
+
+
+        }
     }
 }
