@@ -351,7 +351,7 @@ namespace CodeTranslation
 
             for(int row = 0; row < 16; row++)
             {
-                if (row > 1)
+                if (row > 1 && (row%2==0))
                 {
                     globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
                 }
@@ -397,7 +397,10 @@ namespace CodeTranslation
                         else if (column > 7)
                         {
                             homGraphT[row, column] = -(globalPts[globalPtsTracker]) * pixelPts[row];
-                            globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+                            if(column != 10)
+                            {
+                                globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+                            }
                         }
                     }
 
@@ -418,7 +421,7 @@ namespace CodeTranslation
             return homGraphT;
         }
 
-        private int GlobalPtIdxHelper(int row, int currentIdx) // it looks like row change causes weird stuff to happen sometimes?
+        private int GlobalPtIdxHelper(int row, int currentIdx)
         {
             //AF - 0,1,2
             //BF - 3,4,5
