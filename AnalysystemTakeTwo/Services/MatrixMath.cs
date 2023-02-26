@@ -411,9 +411,10 @@ namespace CodeTranslation
 
             for (int i = 0; i < 16; i++)
             {
+                Console.WriteLine("\n");
                 for (int j = 0; j < 11; j++)
                 {
-                    Console.WriteLine(homGraphT[i, j]);
+                    Console.Write(homGraphT[i, j]);
                 }
             }
             Console.WriteLine("\nEND HOMGRAPH\n");
@@ -492,6 +493,113 @@ namespace CodeTranslation
                     Console.WriteLine(transposeMatrix[i, j]);
                 }
             }
+
+            //CheckLength(originalMatrix);
+            //CheckLength(transposeMatrix);
+            MatrixMultiplication(originalMatrix, transposeMatrix);
+        }
+
+        private void CheckLength(double[,] originalMatrix)
+        {
+            int rows = originalMatrix.GetLength(0);
+            int columns = originalMatrix.GetLength(1);
+
+            Console.WriteLine(rows + " " + columns);
+        }
+
+        private void MatrixMultiplication(double[,] originalMatrix, double[,] transposeMatrix)
+        {
+            int productRows = transposeMatrix.GetLength(0);
+            int productColumns = originalMatrix.GetLength(1);
+            double[,] productMatrix = new double[productRows, productColumns];
+            
+            //Console.WriteLine("\n A^T*A");
+            for(int i=0; i < productRows; i++)
+            {
+                //Console.Write("\n");
+                for(int j=0; j < productColumns; j++)
+                {
+                    productMatrix[i, j] += (transposeMatrix[i, j] * originalMatrix[j, i]);
+                    //Console.Write(productMatrix[i, j] + " ");
+                }
+            }
+        }
+        // should this just be overloaded operators? maybe
+        private void TransposeCrossPixels(double[,] transposeMatrix, List<double> pixelPositions)
+        {
+            int productRows = transposeMatrix.GetLength(0);
+            int productColumns = pixelPositions.Count;
+            double[,] productMatrix = new double[productRows, productColumns];
+
+            try
+            {
+                for (int i = 0; i < productRows; i++)
+                {
+                    Console.Write("\n");
+                    for (int j = 0; j < productColumns; j++)
+                    {
+                        productMatrix[i, j] += (transposeMatrix[i, j] * pixelPositions[j]);
+                        Console.Write(productMatrix[i, j] + " ");
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Are product row and product column equal?");
+            }
+        }
+
+        // Function to get cofactor of A[p,q] in [,]temp. n is current
+        // dimension of [,]A
+        static void getCofactor(int[,] A, int[,] temp, int p, int q, int n)
+        {
+            int i = 0, j = 0;
+
+            // Looping for each element of the matrix
+            for (int row = 0; row < n; row++)
+            {
+                for (int col = 0; col < n; col++)
+                {
+                    // Copying into temporary matrix only those element
+                    // which are not in given row and column
+                    if (row != p && col != q)
+                    {
+                        temp[i, j++] = A[row, col];
+
+                        // Row is filled, so increase row index and
+                        // reset col index
+                        if (j == n - 1)
+                        {
+                            j = 0;
+                            i++;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void GetCofactor(double[,] matrix, int p, int q)
+        {
+            int n = matrix.GetLength(0);
+            int i = 0;
+            int j = 0;
+
+            for (int row=0; row < n; row++)
+            {
+                for (int col = 0; col < n; col++)
+                {
+                    if(row != p && col != q)
+                    {
+                        
+                    }
+                }
+            }
+
+        }
+
+        private void FindDeterminant(double[,] matrix, int n)
+        {
+
         }
     }
 }
