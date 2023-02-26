@@ -181,15 +181,65 @@ namespace CodeTranslation
             sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
 
             matrixT = HomgraphicMatrix(frontGlobalPosNormed, frontPixelPosNormed, sideGlobalPosNormed, sidePixelPosNormed);
+
+            double[,] matrixU = new double[11, 1];
+            matrixU = CalculateMatrix_U(matrixT);
+            Console.WriteLine("\n");
+        }
+
+        private double[,] CalculateMatrix_H(double[,] matrixU)
+        {
+            double[,] matrixH;
+            double[][] nc1_std = new double[3][];
+            nc1_std[0] = new double[] { NC1[0, 0], NC1[0, 1], NC1[0, 2] };
+            nc1_std[1] = new double[] { NC1[1, 0], NC1[1, 1], NC1[1, 2] };
+            nc1_std[2] = new double[] { NC1[2, 0], NC1[2, 1], NC1[2, 2] };
+
+            //invert the NC1
+            double[,] inversedNC1 = new double[nc1_std.Length, 1];
+            inversedNC1 = UseMcCaffreyMatrixInverse(nc1_std);
+
+            //make new matrix from U values according to specs
+            double[,] specialUMatrix = new double[3, 4]
+            {
+                { matrixU[0,0], matrixU[1,0], matrixU[2,0], matrixU[3,0] },
+                { matrixU[4,0], matrixU[5,0], matrixU[6,0], matrixU[7,0] },
+                { matrixU[8,0], matrixU[9,0], matrixU[10,0], 1 }
+            };
+
+            //now multiply this U matrix by NC2
+
+            //and finally multiply that product by the inverted nc1
+
+            return matrixH;
+        }
+
+        private double[,] CalculateMatrix_U(double[,] matrixT)
+        {
+            //find the transpose of matrix T
             matrixT_Transposed = TransposeMatrix(matrixT, 16, 11);
 
+            //multiply the transpose and T together
             double[,] tCrossTtranspose = MatrixMultiplication(matrixT, matrixT_Transposed);
 
+            //take the inverse of that product
+            //but first change type to match matrix inverse found in Visual Studio Magazine
             double[][] standardMatrix = new double[tCrossTtranspose.GetLength(0)][];
             standardMatrix = ChangeArrayType(tCrossTtranspose);
 
-            UseMcCaffreyMatrixInverse(standardMatrix);
+            //then change that matrix back to my preferred format - unneccsary step but the problem is that I'd have to change my initial code and that's not right now's problem
+            double[,] inversedProduct = new double[standardMatrix.Length, standardMatrix[0].Length];
+            inversedProduct = UseMcCaffreyMatrixInverse(standardMatrix);
 
+            //don't forget to multiple T' by the pixel position 16x1 matrix
+            double[,] transposedXpixelpos = new double[inversedProduct.GetLength(0), 1];
+            List<double> allPixelsNormed = new List<double>();
+            allPixelsNormed.AddRange(frontPixelPosNormed);
+            allPixelsNormed.AddRange(sidePixelPosNormed);
+            transposedXpixelpos = TransposeCrossPixels(matrixT_Transposed, allPixelsNormed);
+
+            //now multiply that by the inversed product
+            return MatrixMultiplication(transposedXpixelpos, inversedProduct);
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -206,15 +256,6 @@ namespace CodeTranslation
                 { 0, scalePy, -(centerPy * scalePy) },
                 { 0, 0, 1 }
             };
-
-/*            Console.WriteLine("NC1 Matrix: \n");
-            for(int i = 0; i < 3; i++)
-            {
-                for(int j=0; j<3; j++)
-                {
-                    Console.WriteLine(NC1[i, j]);
-                }
-            }*/
         }
 
         public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
@@ -541,7 +582,7 @@ namespace CodeTranslation
             return productMatrix;
         }
         // should this just be overloaded operators? maybe
-        private void TransposeCrossPixels(double[,] transposeMatrix, List<double> pixelPositions)
+        private double[,] TransposeCrossPixels(double[,] transposeMatrix, List<double> pixelPositions)
         {
             int productRows = transposeMatrix.GetLength(0);
             int productColumns = pixelPositions.Count;
@@ -554,15 +595,25 @@ namespace CodeTranslation
                     Console.Write("\n");
                     for (int j = 0; j < productColumns; j++)
                     {
-                        productMatrix[i, j] += (transposeMatrix[i, j] * pixelPositions[j]);
-                        Console.Write(productMatrix[i, j] + " ");
+                        if (j % 2 == 0)
+                        {
+                            productMatrix[i, 0] += (transposeMatrix[i, j] * -(pixelPositions[j]));
+                        }
+                        else if (j % 2 == 1)
+                        {
+                            productMatrix[i, 0] += (transposeMatrix[i, j] * pixelPositions[j]);
+                        }
+
                     }
+                    Console.Write(productMatrix[i, 0] + " ");
                 }
+                return productMatrix;
             }
             catch
             {
                 Console.WriteLine("Are product row and product column equal?");
             }
+            return null;
         }
 
         private double[][] ChangeArrayType(double[,] matrix)
@@ -578,7 +629,24 @@ namespace CodeTranslation
             return stdMatrix;
         }
 
-        private void UseMcCaffreyMatrixInverse(double[][] matrixToInvert)
+        private double[,] ChangeArrayTypeBACK(double[][] matrix)
+        {
+            int rows = matrix.Length;
+            int columns = matrix[0].Length;
+            double[,] returnMatrix = new double[rows,columns];
+
+            for(int i=0; i<rows; i++)
+            {
+                for(int j=0; j<columns; j++)
+                {
+                    returnMatrix[i, j] = matrix[i][j];
+                }
+            }
+
+            return returnMatrix;
+        }
+
+        private double[,] UseMcCaffreyMatrixInverse(double[][] matrixToInvert)
         {
             double d = MatrixInverseProgram.MatDeterminant(matrixToInvert);
             if (Math.Abs(d) < 1.0e-5)
@@ -590,44 +658,12 @@ namespace CodeTranslation
             Console.WriteLine("\nInverse matrix inv is ");
             MatrixInverseProgram.MatShow(inv, 4, 8);
 
+            //verify that it makes an identity matrix when crossed with original
             double[][] prod = MatrixInverseProgram.MatProduct(matrixToInvert, inv);
             Console.WriteLine("\nThe product of matrixToInvert * inv is ");
             MatrixInverseProgram.MatShow(prod, 1, 6);
 
-/*            double[][] lum;
-            int[] perm;
-            int toggle = MatrixInverseProgram.MatDecompose(matrixToInvert, out lum, out perm);
-            Console.WriteLine("\nThe combined lower-upper decomposition of m is");
-            MatrixInverseProgram.MatShow(lum, 4, 8);
-
-            double[][] lower = MatrixInverseProgram.ExtractLower(lum);
-            double[][] upper = MatrixInverseProgram.ExtractUpper(lum);
-
-            Console.WriteLine("\nThe lower part of LUM is");
-            MatrixInverseProgram.MatShow(lower, 4, 8);
-
-            Console.WriteLine("\nThe upper part of LUM is");
-            MatrixInverseProgram.MatShow(upper, 4, 8);
-
-            Console.WriteLine("\nThe perm[] array is");
-            MatrixInverseProgram.VecShow(perm, 4);
-
-            double[][] lowUp = MatrixInverseProgram.MatProduct(lower, upper);
-            Console.WriteLine("\nThe product of lower * upper is ");
-            MatrixInverseProgram.MatShow(lowUp, 4, 8);
-
-            Console.WriteLine("\nVector b = ");
-            double[] b = new double[] { 12, 7, 7, 13 };
-            MatrixInverseProgram.VecShow(b, 1, 8);
-
-            Console.WriteLine("\nSolving m*x = b");
-            double[] x = MatrixInverseProgram.MatVecProd(inv, b);  // (1, 0, 2, 1)
-
-            Console.WriteLine("\nSolution x = ");
-            MatrixInverseProgram.VecShow(x, 1, 8);
-
-            Console.WriteLine("\nEnd demo");
-            Console.ReadLine();*/
+            return ChangeArrayTypeBACK(inv);
         }
 
         #region Ignore_Me
