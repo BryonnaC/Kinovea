@@ -80,6 +80,8 @@ namespace CodeTranslation
         List<double> sideGlobalPosNormed;
         List<double> frontGlobalPosNormed;
 
+        double[,] matrixT;
+
         #region test method
         //This is just a testing method, should be able to get positions from Kinovea tracking
         public void InitLists()
@@ -148,7 +150,7 @@ namespace CodeTranslation
 
             CreateNC1Matrix(scaledpX, scaledpY, centeredpX, centeredpY);
 
-            Console.WriteLine("\nMatrix One Results - pixel positions");
+            //Console.WriteLine("\nMatrix One Results - pixel positions");
             frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, aFx, aFy));
             frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, bFx, bFy));
             frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, cFx, cFy));
@@ -166,7 +168,7 @@ namespace CodeTranslation
 
             CreateNC2Matrix(scaledX, scaledY, centeredX, centeredY);
 
-            Console.WriteLine("\nMatrix Two Results - global positions");
+            //Console.WriteLine("\nMatrix Two Results - global positions");
             frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, AFx, AFy, AFz));
             frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, BFx, BFy, BFz));
             frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, CFx, CFy, CFz));
@@ -176,7 +178,8 @@ namespace CodeTranslation
             sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, CSx, CSy, CSz));
             sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
 
-            HomgraphicMatrix(frontGlobalPosNormed, frontPixelPosNormed, sideGlobalPosNormed, sidePixelPosNormed);
+            matrixT = HomgraphicMatrix(frontGlobalPosNormed, frontPixelPosNormed, sideGlobalPosNormed, sidePixelPosNormed);
+            //TransposeMatrix(matrixT, 16, 11);
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -220,7 +223,7 @@ namespace CodeTranslation
             for(int i=0; i<points.Count; i++)
             {
                 points[i] = newMatrix[i, 0];
-                Console.WriteLine(points[i]);
+                //Console.WriteLine(points[i]);
             }
 
             return points;
@@ -239,10 +242,10 @@ namespace CodeTranslation
                 someF[i, 0] = ((nc1[i, 0] * pointX) + (nc1[i, 1] * pointY) + (nc1[i, 2] * 1));
             }
 
-            for(int j=0; j<3; j++)
+/*            for(int j=0; j<3; j++)
             {
                 Console.WriteLine(someF[j, 0]);
-            }
+            }*/
 
             List<double> points = new List<double> { pointX, pointY };
 
@@ -263,10 +266,10 @@ namespace CodeTranslation
                 someF[i, 0] = ((nc2[i, 0] * pointX) + (nc2[i, 1] * pointY) + (nc2[i, 2] * pointZ) + (nc2[i,3]*1));
             }
 
-            for (int j = 0; j < 4; j++)
+/*            for (int j = 0; j < 4; j++)
             {
                 Console.WriteLine(someF[j, 0]);
-            }
+            }*/
 
             List<double> points = new List<double> { pointX, pointY, pointZ };
 
@@ -306,16 +309,6 @@ namespace CodeTranslation
             return scaledValue;
         }
 
-        public double GetMax(List<double> points)
-        {
-            return points.Max();
-        }
-
-        public double GetMin(List<double> points)
-        {
-            return points.Min();
-        }
-
         //Holy shit this thing is HUGE
         /*
          * T=[
@@ -337,7 +330,7 @@ namespace CodeTranslation
          0 0 0 0 DSx DSy DSz 1 -DSx*dSy -DSy*dSy -DSz*dSy; 
          ];*/
 
-        private void HomgraphicMatrix(List<double> globalsFront, List<double> pixelsFront, List<double> globalsSide, List<double> pixelsSide)
+        private double[,] HomgraphicMatrix(List<double> globalsFront, List<double> pixelsFront, List<double> globalsSide, List<double> pixelsSide)
         {
             List<double> globalPts = new List<double>();
             globalPts.AddRange(globalsFront);
@@ -347,24 +340,7 @@ namespace CodeTranslation
             pixelPts.AddRange(pixelsFront);
             pixelPts.AddRange(pixelsSide);
 
-            double[,] homGraphT = new double[16, 11]{
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-            };
+            double[,] homGraphT = new double[16, 11];
 
             int globalPtsTracker = 0;
 
@@ -375,6 +351,10 @@ namespace CodeTranslation
 
             for(int row = 0; row < 16; row++)
             {
+                if (row > 1)
+                {
+                    globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+                }
                 for(int column = 0; column < 11; column++)
                 {
                     if (row % 2 == 0)
@@ -382,6 +362,7 @@ namespace CodeTranslation
                         if(column < 3)
                         {
                             homGraphT[row, column] = globalPts[globalPtsTracker];
+                            globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
                         }
                         else if(column == 3)
                         {
@@ -394,7 +375,9 @@ namespace CodeTranslation
                         else if(column > 7)
                         {
                             homGraphT[row, column] = globalPts[globalPtsTracker] * pixelPts[row];
+                            globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
                         }
+                        //Console.WriteLine(globalPtsTracker);
                     }
                     else if (row % 2 == 1)
                     {
@@ -405,6 +388,7 @@ namespace CodeTranslation
                         else if (4 <= column && column < 7)
                         {
                             homGraphT[row, column] = globalPts[globalPtsTracker];
+                            globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
                         }
                         else if (column == 7)
                         {
@@ -413,22 +397,35 @@ namespace CodeTranslation
                         else if (column > 7)
                         {
                             homGraphT[row, column] = -(globalPts[globalPtsTracker]) * pixelPts[row];
+                            globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
                         }
                     }
 
-                    globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+                    //globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+                }
+                //globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+            }
+
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 11; j++)
+                {
+                    Console.WriteLine(homGraphT[i, j]);
                 }
             }
+            Console.WriteLine("\nEND HOMGRAPH\n");
+
+            return homGraphT;
         }
 
-        private int GlobalPtIdxHelper(int row, int currentIdx)
+        private int GlobalPtIdxHelper(int row, int currentIdx) // it looks like row change causes weird stuff to happen sometimes?
         {
             //AF - 0,1,2
             //BF - 3,4,5
             //etc
             int baseIdx = 0;
 
-            if((currentIdx + 1) % 3 == 0)
+            if(((currentIdx + 1) % 3) == 0)
             {
                 switch (row)
                 {
@@ -469,7 +466,28 @@ namespace CodeTranslation
             }
             else
             {
-                return currentIdx++;
+                return (currentIdx+1);
+            }
+        }
+
+        private void TransposeMatrix(double[,] originalMatrix, int origRows, int origColumns)
+        {
+            double[,] transposeMatrix = new double[origColumns, origRows];
+
+            for(int i=0; i < origColumns; i++)
+            {
+                for(int j=0; j < origRows; j++)
+                {
+                    transposeMatrix[i, j] = originalMatrix[j, i];
+                }
+            }
+
+            for (int i = 0; i < origColumns; i++)
+            {
+                for (int j = 0; j < origRows; j++)
+                {
+                    Console.WriteLine(transposeMatrix[i, j]);
+                }
             }
         }
     }
