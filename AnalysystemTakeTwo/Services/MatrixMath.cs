@@ -179,7 +179,7 @@ namespace CodeTranslation
             sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
 
             matrixT = HomgraphicMatrix(frontGlobalPosNormed, frontPixelPosNormed, sideGlobalPosNormed, sidePixelPosNormed);
-            //TransposeMatrix(matrixT, 16, 11);
+            TransposeMatrix(matrixT, 16, 11);
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
