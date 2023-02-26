@@ -149,14 +149,14 @@ namespace CodeTranslation
             CreateNC1Matrix(scaledpX, scaledpY, centeredpX, centeredpY);
 
             Console.WriteLine("\nMatrix One Results - pixel positions");
-            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, aFx, aFy));
-            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, bFx, bFy));
-            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, cFx, cFy));
-            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, dFx, dFy));
-            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, aSx, aSy));
-            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, bSx, bSy));
-            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, cSx, cSy));
-            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, dSx, dSy));
+            frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, aFx, aFy));
+            frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, bFx, bFy));
+            frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, cFx, cFy));
+            frontPixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, dFx, dFy));
+            sidePixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, aSx, aSy));
+            sidePixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, bSx, bSy));
+            sidePixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, cSx, cSy));
+            sidePixelPosNormed.AddRange(MatrixMultiplicationPixel(NC1, dSx, dSy));
 
             scaledX = ScalePoints(globalFSX);
             scaledY = ScalePoints(globalFSY);
@@ -167,14 +167,16 @@ namespace CodeTranslation
             CreateNC2Matrix(scaledX, scaledY, centeredX, centeredY);
 
             Console.WriteLine("\nMatrix Two Results - global positions");
-            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, AFx, AFy, AFz));
-            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, BFx, BFy, BFz));
-            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, CFx, CFy, CFz));
-            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, DFx, DFy, DFz));
-            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, ASx, ASy, ASz));
-            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, BSx, BSy, BSz));
-            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, CSx, CSy, CSz));
-            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
+            frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, AFx, AFy, AFz));
+            frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, BFx, BFy, BFz));
+            frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, CFx, CFy, CFz));
+            frontGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, DFx, DFy, DFz));
+            sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, ASx, ASy, ASz));
+            sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, BSx, BSy, BSz));
+            sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, CSx, CSy, CSz));
+            sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
+
+            HomgraphicMatrix(frontGlobalPosNormed, frontPixelPosNormed, sideGlobalPosNormed, sidePixelPosNormed);
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -338,12 +340,12 @@ namespace CodeTranslation
         private void HomgraphicMatrix(List<double> globalsFront, List<double> pixelsFront, List<double> globalsSide, List<double> pixelsSide)
         {
             List<double> globalPts = new List<double>();
-            globalPts.Concat(globalsFront);
-            globalPts.Concat(globalsSide);
+            globalPts.AddRange(globalsFront);
+            globalPts.AddRange(globalsSide);
 
             List<double> pixelPts = new List<double>();
-            pixelPts.Concat(pixelsFront);
-            pixelPts.Concat(pixelsSide);
+            pixelPts.AddRange(pixelsFront);
+            pixelPts.AddRange(pixelsSide);
 
             double[,] homGraphT = new double[16, 11]{
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
