@@ -10,12 +10,18 @@ using System.Windows.Forms;
 
 namespace AnalysystemTakeTwo
 {
-    public partial class LiveCaptureWindow : UserControl
+    public partial class RecordingControl : UserControl
     {
-        public LiveCaptureWindow()
+        public static event Action ReturnToDash;
+
+        public RecordingControl()
         {
             InitializeComponent();
+        }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ReturnToDash?.Invoke();
         }
     }
 }

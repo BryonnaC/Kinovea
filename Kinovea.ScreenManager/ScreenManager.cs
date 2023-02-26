@@ -709,7 +709,7 @@ namespace Kinovea.ScreenManager
                 dualCapture.ExecuteDualCommand(e.Value);
         }
 
-        private void Player_OpenVideoAsked(object sender, EventArgs e)
+        protected void Player_OpenVideoAsked(object sender, EventArgs e)
         {
             string filename = FilePicker.OpenVideo();
             if (string.IsNullOrEmpty(filename))
@@ -718,7 +718,7 @@ namespace Kinovea.ScreenManager
             int index = sender == screenList[0] ? 0 : 1;
             VideoTypeManager.LoadVideo(filename, index);
         }
-        private void Player_OpenReplayWatcherAsked(object sender, EventArgs e)
+        protected void Player_OpenReplayWatcherAsked(object sender, EventArgs e)
         {
             string path = FilePicker.OpenReplayWatcher();
             if (string.IsNullOrEmpty(path))
@@ -2347,12 +2347,12 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Services
-        private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
+        protected void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
         {
             DoLoadMovieInScreen(e.Path, e.Target);
         }
         
-        private void DoLoadMovieInScreen(string path, int targetScreen)
+        protected void DoLoadMovieInScreen(string path, int targetScreen)
         {
             if (FilesystemHelper.IsReplayWatcher(path))
             {

@@ -25,7 +25,7 @@ namespace AnalysystemTakeTwo
 
         private void MainFrame_FormClosed(object sender, FormClosedEventArgs e)
         {
-
+            //Application.Exit();
         }
     }
 }

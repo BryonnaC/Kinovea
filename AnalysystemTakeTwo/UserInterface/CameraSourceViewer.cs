@@ -47,13 +47,30 @@ namespace AnalysystemTakeTwo
 
         }
 
-        private void camOption_Click(object sender, EventArgs e)
+        private void camOption_Click (object sender, EventArgs e) 
         {
             //CameraTypeManager.LoadCamera();
             //DoLoadCameraInScreen(e.Source, e.Target);
 
             //I want to launch camera here by pressing button
-            CameraTypeManager.LoadCamera(summaries[0], -1);
+            if(summaries != null)
+            {
+                CameraTypeManager.LoadCamera(summaries[0], -1);
+            }
+            else
+            {
+                
+            }
+
+            try{
+                CameraTypeManager.LoadCamera(summaries[0], -1);
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("You don't have a camera plugged in, do you?");
+                throw;
+            }
+
         }
     }
 }

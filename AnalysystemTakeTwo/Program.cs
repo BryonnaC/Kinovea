@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using Kinovea.Camera;
 using Kinovea.Video;
 using Kinovea.Services;
+using Kinovea.FileBrowser;
+using Kinovea.ScreenManager;
 using System.IO;
 
 namespace AnalysystemTakeTwo
@@ -19,44 +21,53 @@ namespace AnalysystemTakeTwo
         [STAThread]
         static void Main()
         {
+            // C# winforms default
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Set up essential to mimicking Kinovea
             Assembly assembly = Assembly.GetExecutingAssembly();
-
-            /*Console.WriteLine(Application.StartupPath);
-            Console.WriteLine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-
-            string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string specificFolder = Path.Combine(folder, "AnalysisApp");
-            Directory.CreateDirectory(specificFolder);
-            string camDirectory = Path.Combine(specificFolder, "Plugins", "Camera");
-            Directory.CreateDirectory(camDirectory);*/
-
             Software.Initialize(assembly.GetName().Version);
             Console.WriteLine("Loading video readers.");
             List<Type> videoReaders = new List<Type>();
             videoReaders.Add(typeof(Kinovea.Video.Bitmap.VideoReaderBitmap));
-            //videoReaders.Add(typeof(Kinovea.Video.FFMpeg.VideoReaderFFMpeg));
+            videoReaders.Add(typeof(Kinovea.Video.FFMpeg.VideoReaderFFMpeg));
             videoReaders.Add(typeof(Kinovea.Video.GIF.VideoReaderGIF));
             videoReaders.Add(typeof(Kinovea.Video.SVG.VideoReaderSVG));
             videoReaders.Add(typeof(Kinovea.Video.Synthetic.VideoReaderSynthetic));
             VideoTypeManager.LoadVideoReaders(videoReaders);
 
             SoftwareManager.StartUp();
+
             Console.WriteLine("Loading built-in camera managers.");
             CameraTypeManager.LoadCameraManager(typeof(Kinovea.Camera.DirectShow.CameraManagerDirectShow));
             CameraTypeManager.LoadCameraManager(typeof(Kinovea.Camera.HTTP.CameraManagerHTTP));
             CameraTypeManager.LoadCameraManager(typeof(Kinovea.Camera.FrameGenerator.CameraManagerFrameGenerator));
 
-            // Do camera shit
+            // Load camera plugins to OUR library, not Kinovea library
             Console.WriteLine("Loading camera managers plugins.");
             CameraTypeManager.LoadCameraManagersPlugins(SoftwareManager.camDirectory);
 
+            ToolManager.LoadTools();
+
+            // Set up actually just happens in the constructor
             ScreenManager screenManager = new ScreenManager();
-            screenManager.ShowInitialScreen();
+            ServiceManager serviceManager = new ServiceManager();
+            FileBrowserKernel fileBrowser = new FileBrowserKernel();
+
+            ServiceManager.DoMath();
 
             Application.Run();
         }
+    
+        // NO LONGER USED STUFF
+        /*Console.WriteLine(Application.StartupPath);
+        Console.WriteLine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+        string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        string specificFolder = Path.Combine(folder, "AnalysisApp");
+        Directory.CreateDirectory(specificFolder);
+        string camDirectory = Path.Combine(specificFolder, "Plugins", "Camera");
+        Directory.CreateDirectory(camDirectory);*/
     }
 }

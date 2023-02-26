@@ -54,7 +54,7 @@ namespace Kinovea.Camera
         #endregion
 
         #region Members
-        private static List<CameraManager> cameraManagers = new List<CameraManager>(); // NEED THIS - THIS IS WHY WE HAVE NULL
+        private static List<CameraManager> cameraManagers = new List<CameraManager>(); 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static Timer timerDiscovery = new Timer();
         #endregion

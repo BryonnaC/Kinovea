@@ -49,6 +49,8 @@ namespace Kinovea.ScreenManager
 
         #region Events
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+        //NEW EVENT -Bryonna
+        public static event Action RecordingStarted;
         #endregion
 
         #region Members
@@ -348,6 +350,8 @@ namespace Kinovea.ScreenManager
         private void BtnRecordClick(object sender, EventArgs e)
         {
             presenter.View_ToggleRecording();
+            // I added this event handler - Bryonna
+            RecordingStarted?.Invoke();
         }
         private void btnArm_Click(object sender, EventArgs e)
         {

@@ -35,14 +35,48 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Debug\</OutputPath>
+    <FileAlignment>1024</FileAlignment>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AnalysystemTakeTwo.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Emgu.CV, Version=4.6.0.5131, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.6.0.5131\lib\netstandard2.0\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Bitmap, Version=4.6.0.5131, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.Bitmap.4.6.0.5131\lib\netstandard2.0\Emgu.CV.Bitmap.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Platform.NetFramework, Version=4.6.0.5131, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.UI.4.6.0.5131\lib\net461\Emgu.CV.Platform.NetFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,52 +88,86 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraSourceViewer.cs">
+    <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CameraSourceViewer.Designer.cs">
+    <Compile Include="UserInterface\CalibrationObjectDimensions.Designer.cs">
+      <DependentUpon>CalibrationObjectDimensions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceManager.cs" />
+    <Compile Include="UserInterface\ButtonClickedEventArgs.cs" />
+    <Compile Include="UserInterface\CameraSourceViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CameraSourceViewer.Designer.cs">
       <DependentUpon>CameraSourceViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="ChooseAScreen.cs">
+    <Compile Include="UserInterface\ChooseAScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ChooseAScreen.Designer.cs">
+    <Compile Include="UserInterface\ChooseAScreen.Designer.cs">
       <DependentUpon>ChooseAScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomCaptureScreen.cs" />
-    <Compile Include="LiveCaptureWindow.cs">
+    <Compile Include="Services\Csv.cs" />
+    <Compile Include="Services\FakeUser.cs" />
+    <Compile Include="Services\FileHandler.cs" />
+    <Compile Include="Services\Math.cs" />
+    <Compile Include="Services\MatrixMath.cs" />
+    <Compile Include="UserInterface\CustomSplashscreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LiveCaptureWindow.Designer.cs">
-      <DependentUpon>LiveCaptureWindow.cs</DependentUpon>
+    <Compile Include="UserInterface\CustomSplashscreen.Designer.cs">
+      <DependentUpon>CustomSplashscreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainFrame.cs">
+    <Compile Include="UserInterface\DashboardControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\DashboardControl.Designer.cs">
+      <DependentUpon>DashboardControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\DashboardNavigation.cs" />
+    <Compile Include="UserInterface\MainFrame.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainFrame.Designer.cs">
+    <Compile Include="UserInterface\MainFrame.Designer.cs">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScreenManager.cs" />
-    <Compile Include="SoftwareManager.cs" />
-    <Compile Include="SubjectInformationScreen.cs">
+    <Compile Include="UserInterface\NaviClickEventArgs.cs" />
+    <Compile Include="UserInterface\RecordingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SubjectInformationScreen.Designer.cs">
+    <Compile Include="UserInterface\RecordingControl.Designer.cs">
+      <DependentUpon>RecordingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScreenManager.cs" />
+    <Compile Include="SoftwareManager.cs" />
+    <Compile Include="UserInterface\SubjectInformationScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\SubjectInformationScreen.Designer.cs">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="WindowPreparer.cs" />
-    <EmbeddedResource Include="CameraSourceViewer.resx">
+    <Compile Include="Services\Synchronizer.cs" />
+    <Compile Include="Services\Template.cs" />
+    <Compile Include="Services\Time.cs" />
+    <EmbeddedResource Include="UserInterface\CalibrationObjectDimensions.resx">
+      <DependentUpon>CalibrationObjectDimensions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\CameraSourceViewer.resx">
       <DependentUpon>CameraSourceViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ChooseAScreen.resx">
+    <EmbeddedResource Include="UserInterface\ChooseAScreen.resx">
       <DependentUpon>ChooseAScreen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LiveCaptureWindow.resx">
-      <DependentUpon>LiveCaptureWindow.cs</DependentUpon>
+    <EmbeddedResource Include="UserInterface\CustomSplashscreen.resx">
+      <DependentUpon>CustomSplashscreen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainFrame.resx">
+    <EmbeddedResource Include="UserInterface\DashboardControl.resx">
+      <DependentUpon>DashboardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -111,9 +179,13 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="SubjectInformationScreen.resx">
+    <EmbeddedResource Include="UserInterface\RecordingControl.resx">
+      <DependentUpon>RecordingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\SubjectInformationScreen.resx">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
