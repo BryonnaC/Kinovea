@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MatrixInverse;
 
 namespace CodeTranslation
 {
@@ -81,6 +82,7 @@ namespace CodeTranslation
         List<double> frontGlobalPosNormed;
 
         double[,] matrixT;
+        double[,] matrixT_Transposed;
 
         #region test method
         //This is just a testing method, should be able to get positions from Kinovea tracking
@@ -179,7 +181,15 @@ namespace CodeTranslation
             sideGlobalPosNormed.AddRange(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
 
             matrixT = HomgraphicMatrix(frontGlobalPosNormed, frontPixelPosNormed, sideGlobalPosNormed, sidePixelPosNormed);
-            TransposeMatrix(matrixT, 16, 11);
+            matrixT_Transposed = TransposeMatrix(matrixT, 16, 11);
+
+            double[,] tCrossTtranspose = MatrixMultiplication(matrixT, matrixT_Transposed);
+
+            double[][] standardMatrix = new double[tCrossTtranspose.GetLength(0)][];
+            standardMatrix = ChangeArrayType(tCrossTtranspose);
+
+            UseMcCaffreyMatrixInverse(standardMatrix);
+
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -210,12 +220,12 @@ namespace CodeTranslation
         public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
         {
             NC2 = new double[4, 4]
-{
+            {
                 { scalex, 0, 0, -(centerx * scalex) },
                 { 0, scaley, 0, -(centery * scaley) },
                 { 0, 0, 1, 0 },
                 { 0, 0, 0, 1 }
-};
+            };
         }
 
         private List<double> SetNewValues(double[,] newMatrix, List<double> points)
@@ -414,7 +424,7 @@ namespace CodeTranslation
                 Console.WriteLine("\n");
                 for (int j = 0; j < 11; j++)
                 {
-                    Console.Write(homGraphT[i, j]);
+                    Console.Write(homGraphT[i, j] + " ");
                 }
             }
             Console.WriteLine("\nEND HOMGRAPH\n");
@@ -474,7 +484,7 @@ namespace CodeTranslation
             }
         }
 
-        private void TransposeMatrix(double[,] originalMatrix, int origRows, int origColumns)
+        private double[,] TransposeMatrix(double[,] originalMatrix, int origRows, int origColumns)
         {
             double[,] transposeMatrix = new double[origColumns, origRows];
 
@@ -488,15 +498,17 @@ namespace CodeTranslation
 
             for (int i = 0; i < origColumns; i++)
             {
+                Console.WriteLine("\n");
                 for (int j = 0; j < origRows; j++)
                 {
-                    Console.WriteLine(transposeMatrix[i, j]);
+                    Console.Write(transposeMatrix[i, j] + " ");
                 }
             }
 
+            return transposeMatrix;
             //CheckLength(originalMatrix);
             //CheckLength(transposeMatrix);
-            MatrixMultiplication(originalMatrix, transposeMatrix);
+            //MatrixMultiplication(originalMatrix, transposeMatrix);
         }
 
         private void CheckLength(double[,] originalMatrix)
@@ -507,22 +519,26 @@ namespace CodeTranslation
             Console.WriteLine(rows + " " + columns);
         }
 
-        private void MatrixMultiplication(double[,] originalMatrix, double[,] transposeMatrix)
+        private double[,] MatrixMultiplication(double[,] originalMatrix, double[,] transposeMatrix)
         {
             int productRows = transposeMatrix.GetLength(0);
             int productColumns = originalMatrix.GetLength(1);
             double[,] productMatrix = new double[productRows, productColumns];
             
-            //Console.WriteLine("\n A^T*A");
+            Console.WriteLine("\n A^T*A");
             for(int i=0; i < productRows; i++)
             {
-                //Console.Write("\n");
+                Console.Write("\n");
                 for(int j=0; j < productColumns; j++)
                 {
-                    productMatrix[i, j] += (transposeMatrix[i, j] * originalMatrix[j, i]);
-                    //Console.Write(productMatrix[i, j] + " ");
+                    for(int k=0; k<originalMatrix.GetLength(0); k++)
+                    {
+                        productMatrix[i, j] += (transposeMatrix[i, k] * originalMatrix[k, j]);
+                    }
+                    Console.Write(productMatrix[i, j] + " ");
                 }
             }
+            return productMatrix;
         }
         // should this just be overloaded operators? maybe
         private void TransposeCrossPixels(double[,] transposeMatrix, List<double> pixelPositions)
@@ -549,6 +565,137 @@ namespace CodeTranslation
             }
         }
 
+        private double[][] ChangeArrayType(double[,] matrix)
+        {
+            int rows = matrix.GetLength(0);
+            double[][] stdMatrix = new double[rows][];
+
+            for(int i=0; i<rows; i++)
+            {
+                stdMatrix[i] = new double[] { matrix[i, 0], matrix[i, 1], matrix[i, 2], matrix[i, 3], matrix[i, 4], matrix[i, 5], matrix[i, 6], matrix[i, 7], matrix[i, 8], matrix[i, 9], matrix[i, 10] };
+            }
+
+            return stdMatrix;
+        }
+
+        private void UseMcCaffreyMatrixInverse(double[][] matrixToInvert)
+        {
+            double d = MatrixInverseProgram.MatDeterminant(matrixToInvert);
+            if (Math.Abs(d) < 1.0e-5)
+                Console.WriteLine("\nMatrix has no inverse");
+            else
+                Console.WriteLine("\nDet(m) = " + d.ToString("F4"));
+
+            double[][] inv = MatrixInverseProgram.MatInverse(matrixToInvert);
+            Console.WriteLine("\nInverse matrix inv is ");
+            MatrixInverseProgram.MatShow(inv, 4, 8);
+
+            double[][] prod = MatrixInverseProgram.MatProduct(matrixToInvert, inv);
+            Console.WriteLine("\nThe product of matrixToInvert * inv is ");
+            MatrixInverseProgram.MatShow(prod, 1, 6);
+
+/*            double[][] lum;
+            int[] perm;
+            int toggle = MatrixInverseProgram.MatDecompose(matrixToInvert, out lum, out perm);
+            Console.WriteLine("\nThe combined lower-upper decomposition of m is");
+            MatrixInverseProgram.MatShow(lum, 4, 8);
+
+            double[][] lower = MatrixInverseProgram.ExtractLower(lum);
+            double[][] upper = MatrixInverseProgram.ExtractUpper(lum);
+
+            Console.WriteLine("\nThe lower part of LUM is");
+            MatrixInverseProgram.MatShow(lower, 4, 8);
+
+            Console.WriteLine("\nThe upper part of LUM is");
+            MatrixInverseProgram.MatShow(upper, 4, 8);
+
+            Console.WriteLine("\nThe perm[] array is");
+            MatrixInverseProgram.VecShow(perm, 4);
+
+            double[][] lowUp = MatrixInverseProgram.MatProduct(lower, upper);
+            Console.WriteLine("\nThe product of lower * upper is ");
+            MatrixInverseProgram.MatShow(lowUp, 4, 8);
+
+            Console.WriteLine("\nVector b = ");
+            double[] b = new double[] { 12, 7, 7, 13 };
+            MatrixInverseProgram.VecShow(b, 1, 8);
+
+            Console.WriteLine("\nSolving m*x = b");
+            double[] x = MatrixInverseProgram.MatVecProd(inv, b);  // (1, 0, 2, 1)
+
+            Console.WriteLine("\nSolution x = ");
+            MatrixInverseProgram.VecShow(x, 1, 8);
+
+            Console.WriteLine("\nEnd demo");
+            Console.ReadLine();*/
+        }
+
+        #region Ignore_Me
+        /*private int MatrixDecomposition(double[,] matrix, double[,] lum, int[] perm)
+        {
+            int toggle = +1;
+            int n = matrix.GetLength(0); //n is row /and/ column bc it's a square matrix
+
+            //make a copy of matrix into lum
+            lum = new double[n, n];
+            for (int i = 0; i<n; ++i)
+            {
+                for(int j=0; j<n; ++j)
+                {
+                    lum[i, j] = matrix[i, j];
+                }
+            }
+
+            //make perm
+            perm = new int[n];
+            for(int i=0; i<n; ++i)
+            {
+                perm[i] = i;
+            }
+
+            for(int j=0; j<n-1; ++j)
+            {
+                double max = Math.Abs(lum[j, j]);
+                int piv = j;
+
+                for (int i = j + 1; i < n; ++i) // find pivot index
+                {
+                    double xij = Math.Abs(lum[i, j]);
+                    if (xij > max)
+                    {
+                        max = xij;
+                        piv = i;
+                    }
+                } // i
+
+                if (piv != j)
+                {
+                    double[] tmp = lum[piv]; // swap rows j, piv
+                    lum[piv] = lum[j];
+                    lum[j] = tmp;
+
+                    int t = perm[piv]; // swap perm elements
+                    perm[piv] = perm[j];
+                    perm[j] = t;
+
+                    toggle = -toggle;
+                }
+
+                double xjj = lum[j,j];
+                if (xjj != 0.0)
+                {
+                    for (int i = j + 1; i < n; ++i)
+                    {
+                        double xij = lum[i,j] / xjj;
+                        lum[i,j] = xij;
+                        for (int k = j + 1; k < n; ++k)
+                            lum[i,k] -= xij * lum[j,k];
+                    }
+                }
+            }
+
+            return toggle;
+        }*/
         // Function to get cofactor of A[p,q] in [,]temp. n is current
         // dimension of [,]A
         static void getCofactor(int[,] A, int[,] temp, int p, int q, int n)
@@ -599,7 +746,11 @@ namespace CodeTranslation
 
         private void FindDeterminant(double[,] matrix, int n)
         {
-
+            double[,] lum;
+            int perm;
+            double result = 0;
         }
+        #endregion 
+
     }
 }
