@@ -80,6 +80,7 @@ namespace CodeTranslation
         List<double> sideGlobalPosNormed;
         List<double> frontGlobalPosNormed;
 
+        #region test method
         //This is just a testing method, should be able to get positions from Kinovea tracking
         public void InitLists()
         {
@@ -119,6 +120,7 @@ namespace CodeTranslation
             globalFSY.Add(CSy);
             globalFSY.Add(DSy);
         }
+#endregion
 
         public void ImitateMATLAB()
         {
@@ -132,6 +134,11 @@ namespace CodeTranslation
             double centeredX;
             double centeredY;
 
+            sidePixelPosNormed = new List<double>();
+            frontPixelPosNormed = new List<double>();
+            sideGlobalPosNormed = new List<double>();
+            frontGlobalPosNormed = new List<double>();
+
             InitLists();
             scaledpX = ScalePoints(frontSideX);
             scaledpY = ScalePoints(frontSideY);
@@ -142,10 +149,14 @@ namespace CodeTranslation
             CreateNC1Matrix(scaledpX, scaledpY, centeredpX, centeredpY);
 
             Console.WriteLine("\nMatrix One Results - pixel positions");
-            MatrixMultiplicationPixel(NC1, aFx, aFy);
-            MatrixMultiplicationPixel(NC1, bFx, bFy);
-            MatrixMultiplicationPixel(NC1, cFx, cFy);
-            MatrixMultiplicationPixel(NC1, dFx, dFy);
+            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, aFx, aFy));
+            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, bFx, bFy));
+            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, cFx, cFy));
+            frontPixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, dFx, dFy));
+            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, aSx, aSy));
+            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, bSx, bSy));
+            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, cSx, cSy));
+            sidePixelPosNormed.Concat(MatrixMultiplicationPixel(NC1, dSx, dSy));
 
             scaledX = ScalePoints(globalFSX);
             scaledY = ScalePoints(globalFSY);
@@ -156,10 +167,14 @@ namespace CodeTranslation
             CreateNC2Matrix(scaledX, scaledY, centeredX, centeredY);
 
             Console.WriteLine("\nMatrix Two Results - global positions");
-            MatrixMultiplicationGlobal(NC2, AFx, AFy, AFz);
-            MatrixMultiplicationGlobal(NC2, BFx, BFy, BFz);
-            MatrixMultiplicationGlobal(NC2, CFx, CFy, CFz);
-            MatrixMultiplicationGlobal(NC2, DFx, DFy, DFz);
+            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, AFx, AFy, AFz));
+            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, BFx, BFy, BFz));
+            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, CFx, CFy, CFz));
+            frontGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, DFx, DFy, DFz));
+            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, ASx, ASy, ASz));
+            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, BSx, BSy, BSz));
+            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, CSx, CSy, CSz));
+            sideGlobalPosNormed.Concat(MatrixMultiplicationGlobal(NC2, DSx, DSy, DSz));
         }
 
         public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
@@ -320,8 +335,16 @@ namespace CodeTranslation
          0 0 0 0 DSx DSy DSz 1 -DSx*dSy -DSy*dSy -DSz*dSy; 
          ];*/
 
-        private void HomgraphicMatrix(List<double> gobals, List<double> pixels)
+        private void HomgraphicMatrix(List<double> globalsFront, List<double> pixelsFront, List<double> globalsSide, List<double> pixelsSide)
         {
+            List<double> globalPts = new List<double>();
+            globalPts.Concat(globalsFront);
+            globalPts.Concat(globalsSide);
+
+            List<double> pixelPts = new List<double>();
+            pixelPts.Concat(pixelsFront);
+            pixelPts.Concat(pixelsSide);
+
             double[,] homGraphT = new double[16, 11]{
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -341,7 +364,111 @@ namespace CodeTranslation
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
             };
 
+            int globalPtsTracker = 0;
 
+            //so it looks like, if the row is even it starts with points
+            //if row is odd, starts with 0 0 0 0 and ends with 1
+            //also if row is even, globals are multiplied by pixel x's
+            //whereas if row is odd, globals are multiplied by pixel y's
+
+            for(int row = 0; row < 16; row++)
+            {
+                for(int column = 0; column < 11; column++)
+                {
+                    if (row % 2 == 0)
+                    {
+                        if(column < 3)
+                        {
+                            homGraphT[row, column] = globalPts[globalPtsTracker];
+                        }
+                        else if(column == 3)
+                        {
+                            homGraphT[row, column] = 1;
+                        }
+                        else if(3 < column && column <= 7)
+                        {
+                            homGraphT[row, column] = 0;
+                        }
+                        else if(column > 7)
+                        {
+                            homGraphT[row, column] = globalPts[globalPtsTracker] * pixelPts[row];
+                        }
+                    }
+                    else if (row % 2 == 1)
+                    {
+                        if (column < 4)
+                        {
+                            homGraphT[row, column] = 0;
+                        }
+                        else if (4 <= column && column < 7)
+                        {
+                            homGraphT[row, column] = globalPts[globalPtsTracker];
+                        }
+                        else if (column == 7)
+                        {
+                            homGraphT[row, column] = 1;
+                        }
+                        else if (column > 7)
+                        {
+                            homGraphT[row, column] = -(globalPts[globalPtsTracker]) * pixelPts[row];
+                        }
+                    }
+
+                    globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
+                }
+            }
+        }
+
+        private int GlobalPtIdxHelper(int row, int currentIdx)
+        {
+            //AF - 0,1,2
+            //BF - 3,4,5
+            //etc
+            int baseIdx = 0;
+
+            if((currentIdx + 1) % 3 == 0)
+            {
+                switch (row)
+                {
+                    case 0:
+                    case 1:
+                        baseIdx = 0;
+                        break;
+                    case 2:
+                    case 3:
+                        baseIdx = 3;
+                        break;
+                    case 4:
+                    case 5:
+                        baseIdx = 6;
+                        break;
+                    case 6:
+                    case 7:
+                        baseIdx = 9;
+                        break;
+                    case 8:
+                    case 9:
+                        baseIdx = 12;
+                        break;
+                    case 10:
+                    case 11:
+                        baseIdx = 15;
+                        break;
+                    case 12:
+                    case 13:
+                        baseIdx = 18;
+                        break;
+                    case 14:
+                    case 15:
+                        baseIdx = 21;
+                        break;
+                }
+                return baseIdx;
+            }
+            else
+            {
+                return currentIdx++;
+            }
         }
     }
 }
