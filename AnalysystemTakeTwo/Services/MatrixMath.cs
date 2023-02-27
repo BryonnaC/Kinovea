@@ -185,6 +185,12 @@ namespace CodeTranslation
             double[,] matrixU = new double[11, 1];
             matrixU = CalculateMatrix_U(matrixT);
             Console.WriteLine("\n");
+
+            double[,] matrixH = new double[3, 4];
+            matrixH = CalculateMatrix_H(matrixU);
+
+            double[,] matrixR = new double[3, 3];
+            matrixR = globalToCameraTheta(matrixH);
         }
 
         private double[,] CalculateMatrix_H(double[,] matrixU)
@@ -208,11 +214,38 @@ namespace CodeTranslation
             };
 
             //now multiply this U matrix by NC2
+            double[,] uByNC2 = new double[specialUMatrix.GetLength(0),NC2.GetLength(1)];
+            uByNC2 = MatrixMultiplication(NC2, specialUMatrix);
 
-            //and finally multiply that product by the inverted nc1
+            //and finally multiply that product by the inversed nc1
+            matrixH = MatrixMultiplication(uByNC2, inversedNC1);
 
             return matrixH;
         }
+
+        private double[,] globalToCameraTheta(double[,] h)
+        {
+            double theta1;
+            double theta2;
+            double theta3;
+
+            theta3 = Math.Atan2(h[1,0], h[0,0]);
+            theta1 = Math.Atan2(h[2, 1], h[2, 2]);
+            theta2 = Math.Atan2(-(h[2, 0]), (h[2, 2] / Math.Cos(theta1)));
+
+            double[,] matrixR = new double[3, 3]
+            {
+                { Math.Cos(theta2)*Math.Cos(theta3), -Math.Sin(theta3)*Math.Cos(theta1)+Math.Sin(theta1)*Math.Sin(theta2)*Math.Cos(theta3), Math.Sin(theta1)*Math.Sin(theta3)+Math.Cos(theta1)*Math.Sin(theta2)*Math.Cos(theta3) },
+                { Math.Cos(theta2)*Math.Sin(theta3), Math.Cos(theta1)*Math.Cos(theta3)+Math.Sin(theta1)*Math.Sin(theta2)*Math.Sin(theta3), -Math.Sin(theta1)*Math.Cos(theta3)+Math.Cos(theta1)*Math.Sin(theta2)*Math.Sin(theta3) },
+                { -Math.Sin(theta2), Math.Sin(theta1)*Math.Cos(theta2), Math.Cos(theta1)*Math.Cos(theta2) }
+            };
+            return matrixR;
+        }
+
+/*        R=[cosd(theta2)*cosd(theta3) -sind(theta3)*cosd(theta1)+sind(theta1)*sind(theta2)*cosd(theta3) sind(theta1)*sind(theta3)+cosd(theta1)*sind(theta2)*cosd(theta3);
+             cosd(theta2)*sind(theta3) cosd(theta1)*cosd(theta3)+sind(theta1)*sind(theta2)*sind(theta3) -sind(theta1)*cosd(theta3)+cosd(theta1)*sind(theta2)*sind(theta3);
+             -sind(theta2) sind(theta1)*cosd(theta2) cosd(theta1)*cosd(theta2)
+        ];*/
 
         private double[,] CalculateMatrix_U(double[,] matrixT)
         {
@@ -566,17 +599,17 @@ namespace CodeTranslation
             int productColumns = originalMatrix.GetLength(1);
             double[,] productMatrix = new double[productRows, productColumns];
             
-            Console.WriteLine("\n A^T*A");
+            //Console.WriteLine("\n A^T*A");
             for(int i=0; i < productRows; i++)
             {
-                Console.Write("\n");
+                //Console.Write("\n");
                 for(int j=0; j < productColumns; j++)
                 {
                     for(int k=0; k<originalMatrix.GetLength(0); k++)
                     {
                         productMatrix[i, j] += (transposeMatrix[i, k] * originalMatrix[k, j]);
                     }
-                    Console.Write(productMatrix[i, j] + " ");
+                    //Console.Write(productMatrix[i, j] + " ");
                 }
             }
             return productMatrix;
