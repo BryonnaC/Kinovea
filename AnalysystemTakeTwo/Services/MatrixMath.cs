@@ -124,7 +124,7 @@ namespace CodeTranslation
             globalFSY.Add(CSy);
             globalFSY.Add(DSy);
         }
-#endregion
+        #endregion
 
         public void ImitateMATLAB()
         {
@@ -193,6 +193,72 @@ namespace CodeTranslation
             matrixR = globalToCameraTheta(matrixH);
         }
 
+        private void PrepareListsFromCSVfile(double[][] dataHorizontal, double[][] dataVertical)
+        {
+            // Tibia Markers
+            double t1x = dataHorizontal[1][10];
+            double t1y = dataVertical[1][10];
+            double t2x = dataHorizontal[1][2];
+            double t2y = dataVertical[1][2];
+            double t3x = dataHorizontal[1][3];
+            double t3y = dataVertical[1][3];
+            double t4x = dataHorizontal[1][4];
+            double t4y = dataVertical[1][4];
+            double t5x = dataHorizontal[1][5];
+            double t5y = dataVertical[1][5];
+            double t6x = dataHorizontal[1][6];
+            double t6y = dataVertical[1][6];
+            // Femur Markers
+            double t7x = dataHorizontal[1][7];
+            double t7y = dataVertical[1][7];
+            double t8x = dataHorizontal[1][8];
+            double t8y = dataVertical[1][8];
+            double t9x = dataHorizontal[1][9];
+            double t9y = dataVertical[1][9];
+            double t10x = dataHorizontal[1][11];
+            double t10y = dataVertical[1][11];
+            double t11x = dataHorizontal[1][12];
+            double t11y = dataVertical[1][12];
+            double t12x = dataHorizontal[1][13];
+            double t12y = dataVertical[1][13];
+
+            List<double> tibiaList = new List<double>();
+            List<double> femurList = new List<double>();
+
+            tibiaList.Add(t1x);
+            tibiaList.Add(t1y);
+            tibiaList.Add(t2x);
+            tibiaList.Add(t2y);
+            tibiaList.Add(t3x);
+            tibiaList.Add(t3y);
+            tibiaList.Add(t4x);
+            tibiaList.Add(t4y);
+            tibiaList.Add(t5x);
+            tibiaList.Add(t5y);
+            tibiaList.Add(t6x);
+            tibiaList.Add(t6y);
+
+            femurList.Add(t7x);
+            femurList.Add(t7y);
+            femurList.Add(t8x);
+            femurList.Add(t8y);
+            femurList.Add(t9x);
+            femurList.Add(t9y);
+            femurList.Add(t10x);
+            femurList.Add(t10y);
+            femurList.Add(t11x);
+            femurList.Add(t11y);
+            femurList.Add(t12x);
+            femurList.Add(t12y);
+        }
+        // in prog
+        private void FindGlobalCoords_Tibia(List<double> tibiaPoints)
+        {
+            double[][] matrixT = new double[2][];
+            matrixT[0] = new double[] { 0, 0 };
+            matrixT[1] = new double[] { 0, 0 };
+        }
+
         private double[,] CalculateMatrix_H(double[,] matrixU)
         {
             double[,] matrixH;
@@ -203,7 +269,7 @@ namespace CodeTranslation
 
             //invert the NC1
             double[,] inversedNC1 = new double[nc1_std.Length, 1];
-            inversedNC1 = UseMcCaffreyMatrixInverse(nc1_std);
+            inversedNC1 = McCaffreyMatrixInverse(nc1_std);
 
             //make new matrix from U values according to specs
             double[,] specialUMatrix = new double[3, 4]
@@ -262,7 +328,7 @@ namespace CodeTranslation
 
             //then change that matrix back to my preferred format - unneccsary step but the problem is that I'd have to change my initial code and that's not right now's problem
             double[,] inversedProduct = new double[standardMatrix.Length, standardMatrix[0].Length];
-            inversedProduct = UseMcCaffreyMatrixInverse(standardMatrix);
+            inversedProduct = McCaffreyMatrixInverse(standardMatrix);
 
             //don't forget to multiple T' by the pixel position 16x1 matrix
             double[,] transposedXpixelpos = new double[inversedProduct.GetLength(0), 1];
@@ -487,10 +553,7 @@ namespace CodeTranslation
                             }
                         }
                     }
-
-                    //globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
                 }
-                //globalPtsTracker = GlobalPtIdxHelper(row, globalPtsTracker);
             }
 
             for (int i = 0; i < 16; i++)
@@ -580,17 +643,6 @@ namespace CodeTranslation
             }
 
             return transposeMatrix;
-            //CheckLength(originalMatrix);
-            //CheckLength(transposeMatrix);
-            //MatrixMultiplication(originalMatrix, transposeMatrix);
-        }
-
-        private void CheckLength(double[,] originalMatrix)
-        {
-            int rows = originalMatrix.GetLength(0);
-            int columns = originalMatrix.GetLength(1);
-
-            Console.WriteLine(rows + " " + columns);
         }
 
         private double[,] MatrixMultiplication(double[,] originalMatrix, double[,] transposeMatrix)
@@ -679,7 +731,7 @@ namespace CodeTranslation
             return returnMatrix;
         }
 
-        private double[,] UseMcCaffreyMatrixInverse(double[][] matrixToInvert)
+        private double[,] McCaffreyMatrixInverse(double[][] matrixToInvert)
         {
             double d = MatrixInverseProgram.MatDeterminant(matrixToInvert);
             if (Math.Abs(d) < 1.0e-5)
@@ -698,128 +750,6 @@ namespace CodeTranslation
 
             return ChangeArrayTypeBACK(inv);
         }
-
-        #region Ignore_Me
-        /*private int MatrixDecomposition(double[,] matrix, double[,] lum, int[] perm)
-        {
-            int toggle = +1;
-            int n = matrix.GetLength(0); //n is row /and/ column bc it's a square matrix
-
-            //make a copy of matrix into lum
-            lum = new double[n, n];
-            for (int i = 0; i<n; ++i)
-            {
-                for(int j=0; j<n; ++j)
-                {
-                    lum[i, j] = matrix[i, j];
-                }
-            }
-
-            //make perm
-            perm = new int[n];
-            for(int i=0; i<n; ++i)
-            {
-                perm[i] = i;
-            }
-
-            for(int j=0; j<n-1; ++j)
-            {
-                double max = Math.Abs(lum[j, j]);
-                int piv = j;
-
-                for (int i = j + 1; i < n; ++i) // find pivot index
-                {
-                    double xij = Math.Abs(lum[i, j]);
-                    if (xij > max)
-                    {
-                        max = xij;
-                        piv = i;
-                    }
-                } // i
-
-                if (piv != j)
-                {
-                    double[] tmp = lum[piv]; // swap rows j, piv
-                    lum[piv] = lum[j];
-                    lum[j] = tmp;
-
-                    int t = perm[piv]; // swap perm elements
-                    perm[piv] = perm[j];
-                    perm[j] = t;
-
-                    toggle = -toggle;
-                }
-
-                double xjj = lum[j,j];
-                if (xjj != 0.0)
-                {
-                    for (int i = j + 1; i < n; ++i)
-                    {
-                        double xij = lum[i,j] / xjj;
-                        lum[i,j] = xij;
-                        for (int k = j + 1; k < n; ++k)
-                            lum[i,k] -= xij * lum[j,k];
-                    }
-                }
-            }
-
-            return toggle;
-        }*/
-        // Function to get cofactor of A[p,q] in [,]temp. n is current
-        // dimension of [,]A
-        static void getCofactor(int[,] A, int[,] temp, int p, int q, int n)
-        {
-            int i = 0, j = 0;
-
-            // Looping for each element of the matrix
-            for (int row = 0; row < n; row++)
-            {
-                for (int col = 0; col < n; col++)
-                {
-                    // Copying into temporary matrix only those element
-                    // which are not in given row and column
-                    if (row != p && col != q)
-                    {
-                        temp[i, j++] = A[row, col];
-
-                        // Row is filled, so increase row index and
-                        // reset col index
-                        if (j == n - 1)
-                        {
-                            j = 0;
-                            i++;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void GetCofactor(double[,] matrix, int p, int q)
-        {
-            int n = matrix.GetLength(0);
-            int i = 0;
-            int j = 0;
-
-            for (int row=0; row < n; row++)
-            {
-                for (int col = 0; col < n; col++)
-                {
-                    if(row != p && col != q)
-                    {
-                        
-                    }
-                }
-            }
-
-        }
-
-        private void FindDeterminant(double[,] matrix, int n)
-        {
-            double[,] lum;
-            int perm;
-            double result = 0;
-        }
-        #endregion 
 
     }
 }
