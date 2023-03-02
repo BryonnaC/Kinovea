@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MatrixInverse;
+using Accord.Math;
 
 namespace CodeTranslation
 {
@@ -191,9 +192,304 @@ namespace CodeTranslation
 
             double[,] matrixR = new double[3, 3];
             matrixR = globalToCameraTheta(matrixH);
+
+            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
+            string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";
+            AnalysystemTakeTwo.CsvFile csvFile1 = new AnalysystemTakeTwo.CsvFile(path1);
+            AnalysystemTakeTwo.CsvFile csvFile2 = new AnalysystemTakeTwo.CsvFile(path2);
+
+            double[][] horizCSV = new double[csvFile1.columns.Count][];
+            horizCSV = StringToDouble(csvFile1.columns);
+
+            double[][] vertCSV = new double[csvFile2.columns.Count][];
+            vertCSV = StringToDouble(csvFile2.columns);
+
+            List<double> dataHorizontal = new List<double> { horizCSV[1][0], horizCSV[2][0], horizCSV[3][0],
+                horizCSV[4][0], horizCSV[5][0], horizCSV[6][0], horizCSV[7][0], horizCSV[8][0], horizCSV[9][0],
+                horizCSV[10][0], horizCSV[11][0], horizCSV[12][0]};
+            List<double> dataVertical = new List<double> { vertCSV[1][0], vertCSV[2][0], vertCSV[3][0],
+                vertCSV[4][0], vertCSV[5][0], vertCSV[6][0], vertCSV[7][0], vertCSV[8][0], vertCSV[9][0],
+                vertCSV[10][0], vertCSV[11][0], vertCSV[12][0]};
+
+            HandleLegMarkerData(dataHorizontal, dataVertical, matrixH);
+
+            Console.WriteLine("yay no errors");
         }
 
-        private void PrepareListsFromCSVfile(double[][] dataHorizontal, double[][] dataVertical)
+        public double[][] StringToDouble(List<List<string>> loadedCSV)
+        {
+            double[][] csvAsDoubleMatrix = new double[loadedCSV.Count][];
+
+            for (int row = 0; row < loadedCSV.Count; row++)
+            {
+                for (int col = 0; col < loadedCSV[row].Count; col++)
+                {
+                    if (col == 0)
+                    {
+                        csvAsDoubleMatrix[row] = new double[loadedCSV[row].Count];
+                    }
+
+                    csvAsDoubleMatrix[row][col] = double.Parse(loadedCSV[row][col]);
+                }
+            }
+
+            return csvAsDoubleMatrix;
+        }
+
+        public double[,] ListToArray(List<double> list)
+        {
+            double[,] array = new double[list.Count, 1];
+
+            for (int i=0; i < list.Count; i++)
+            {
+                array[i, 0] = list[i];
+            }
+            return array;
+        }
+
+        private void HandleLegMarkerData(List<double> dataHoriz, List<double> dataVert, double[,] matrixH)
+        {
+            double[,] tempMatrixT = new double[2, 1];
+
+            List<double> tibia1 = new List<double>();
+            List<double> tibia2 = new List<double>();
+            List<double> tibia3 = new List<double>();
+            List<double> tibia4 = new List<double>();
+            List<double> tibia5 = new List<double>();
+            List<double> tibia6 = new List<double>();
+
+            double[,] tibia_1 = new double[2, 1];
+            double[,] tibia_2 = new double[2, 1];
+            double[,] tibia_3 = new double[2, 1];
+            double[,] tibia_4 = new double[2, 1];
+            double[,] tibia_5 = new double[2, 1];
+            double[,] tibia_6 = new double[2, 1];
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[0], dataVert[0], matrixH);
+            tibia1.Add(tempMatrixT[0, 0]);
+            tibia1.Add(0);
+            tibia1.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[1], dataVert[1], matrixH);
+            tibia2.Add(tempMatrixT[0, 0]);
+            tibia2.Add(0);
+            tibia2.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[2], dataVert[2], matrixH);
+            tibia3.Add(tempMatrixT[0, 0]);
+            tibia3.Add(0);
+            tibia3.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[3], dataVert[3], matrixH);
+            tibia4.Add(tempMatrixT[0, 0]);
+            tibia4.Add(0);
+            tibia4.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(dataHoriz[4], dataVert[4], matrixH);
+            tibia5.Add(0);
+            tibia5.Add(tempMatrixT[0, 0]);
+            tibia5.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(dataHoriz[5], dataVert[5], matrixH);
+            tibia6.Add(0);
+            tibia6.Add(tempMatrixT[0, 0]);
+            tibia6.Add(tempMatrixT[1, 0]);
+
+            tibia_1 = ListToArray(tibia1);
+            tibia_2 = ListToArray(tibia2);
+            tibia_3 = ListToArray(tibia3);
+            tibia_4 = ListToArray(tibia4);
+            tibia_5 = ListToArray(tibia5);
+            tibia_6 = ListToArray(tibia6);
+
+            double length1_2 = Norm.Norm2(MatrixSubtraction(tibia_1, tibia_2));
+            double length2_3 = Norm.Norm2(MatrixSubtraction(tibia_2, tibia_3));
+            double length3_4 = Norm.Norm2(MatrixSubtraction(tibia_3, tibia_4));
+            double length1_4 = Norm.Norm2(MatrixSubtraction(tibia_1, tibia_4));
+            double length4_5 = Norm.Norm2(MatrixSubtraction(tibia_4, tibia_5));
+            double length5_6 = Norm.Norm2(MatrixSubtraction(tibia_5, tibia_6));
+            double length3_6 = Norm.Norm2(MatrixSubtraction(tibia_3, tibia_6));
+
+            List<double> femur1 = new List<double>();
+            List<double> femur2 = new List<double>();
+            List<double> femur3 = new List<double>();
+            List<double> femur4 = new List<double>();
+            List<double> femur5 = new List<double>();
+            List<double> femur6 = new List<double>();
+
+/*            double[,] femur_1 = new double[2, 1];
+            double[,] femur_2 = new double[2, 1];
+            double[,] femur_3 = new double[2, 1];
+            double[,] femur_4 = new double[2, 1];
+            double[,] femur_5 = new double[2, 1];
+            double[,] femur_6 = new double[2, 1];*/
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[6], dataVert[6], matrixH);
+            femur1.Add(tempMatrixT[0, 0]);
+            femur1.Add(0);
+            femur1.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[7], dataVert[7], matrixH);
+            femur2.Add(tempMatrixT[0, 0]);
+            femur2.Add(0);
+            femur2.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[8], dataVert[8], matrixH);
+            femur3.Add(tempMatrixT[0, 0]);
+            femur3.Add(0);
+            femur3.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(dataHoriz[9], dataVert[9], matrixH);
+            femur4.Add(tempMatrixT[0, 0]);
+            femur4.Add(0);
+            femur4.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(dataHoriz[10], dataVert[10], matrixH);
+            femur5.Add(0);
+            femur5.Add(tempMatrixT[0, 0]);
+            femur5.Add(tempMatrixT[1, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(dataHoriz[11], dataVert[11], matrixH);
+            femur6.Add(0);
+            femur6.Add(tempMatrixT[0, 0]);
+            femur6.Add(tempMatrixT[1, 0]);
+
+            /*            femur_1 = ListToArray(femur1);
+                        femur_2 = ListToArray(femur2);
+                        femur_3 = ListToArray(femur3);
+                        femur_4 = ListToArray(femur4);
+                        femur_5 = ListToArray(femur5);
+                        femur_6 = ListToArray(femur6);*/ // well it looks like right now she isn't getting length for these guys
+
+            //now we normalize and centralize the global coords
+
+            //scale x, center x - tibia
+            List<double> xpoints = new List<double> { tibia1[0], tibia2[0], tibia3[0], tibia4[0], tibia5[0], tibia6[0]};
+            double scalex = ScalePoints(xpoints);
+            double centerx = CenterPoints(xpoints);
+
+            //scale y, center y - tibia
+            List<double> ypoints = new List<double> { tibia1[1], tibia2[1], tibia3[1], tibia4[1], tibia5[1], tibia6[1] };
+            double scaley = ScalePoints(ypoints);
+            double centery = CenterPoints(ypoints);
+
+            //scale z, center z - tibia
+            List<double> zpoints = new List<double> { tibia1[2], tibia2[2], tibia3[2], tibia4[2], tibia5[2], tibia6[2] };
+            double scalez = ScalePoints(zpoints);
+            double centerz = CenterPoints(zpoints);
+
+            //create new nc2 matrix
+            double[,] nc2 = new double[4, 4];
+            nc2 = CreateNC2(scalex, scaley, centerx, centery);
+
+            List<double> finalT1 = new List<double>();
+            finalT1 = MatrixMultiplicationGlobal(nc2, tibia1[0], tibia1[1], tibia1[2]);
+
+            List<double> finalT2 = new List<double>();
+            finalT2 = MatrixMultiplicationGlobal(nc2, tibia2[0], tibia2[1], tibia2[2]);
+
+            List<double> finalT3 = new List<double>();
+            finalT3 = MatrixMultiplicationGlobal(nc2, tibia3[0], tibia3[1], tibia3[2]);
+
+            List<double> finalT4 = new List<double>();
+            finalT4 = MatrixMultiplicationGlobal(nc2, tibia4[0], tibia4[1], tibia4[2]);
+
+            List<double> finalT5 = new List<double>();
+            finalT5 = MatrixMultiplicationGlobal(nc2, tibia5[0], tibia5[1], tibia5[2]);
+
+            List<double> finalT6 = new List<double>();
+            finalT6 = MatrixMultiplicationGlobal(nc2, tibia6[0], tibia6[1], tibia6[2]);
+
+            List<double> finalT7 = new List<double>();
+            finalT7 = MatrixMultiplicationGlobal(nc2, femur1[0], femur1[1], femur1[2]);
+
+            List<double> finalT8 = new List<double>();
+            finalT8 = MatrixMultiplicationGlobal(nc2, femur2[0], femur2[1], femur2[2]);
+
+            List<double> finalT9 = new List<double>();
+            finalT9 = MatrixMultiplicationGlobal(nc2, femur3[0], femur3[1], femur3[2]);
+
+            List<double> finalT10 = new List<double>();
+            finalT10 = MatrixMultiplicationGlobal(nc2, femur4[0], femur4[1], femur4[2]);
+
+            List<double> finalT11 = new List<double>();
+            finalT11 = MatrixMultiplicationGlobal(nc2, femur5[0], femur5[1], femur5[2]);
+
+            List<double> finalT12 = new List<double>();
+            finalT12 = MatrixMultiplicationGlobal(nc2, femur6[0], femur6[1], femur6[2]);
+
+            //norm and cent pixel coords
+            //scale x, center x - tibia
+            List<double> pxpoints = new List<double> { dataHoriz[0], dataHoriz[1], dataHoriz[2], dataHoriz[3], dataHoriz[4], dataHoriz[5] };
+            double scalepx = ScalePoints(xpoints);
+            double centerpx = CenterPoints(xpoints);
+
+            //scale y, center y - tibia
+            List<double> pypoints = new List<double> { dataVert[0], dataVert[1], dataVert[2], dataVert[3], dataVert[4], dataVert[5] };
+            double scalepy = ScalePoints(ypoints);
+            double centerpy = CenterPoints(ypoints);
+
+            //create new nc1 matrix
+            double[,] nc1 = new double[3, 4];
+            nc1 = CreateNC1(scalepx, scalepy, centerpx, centerpy);
+
+
+            List<double> finalt1 = new List<double>();
+            finalt1 = MatrixMultiplicationPixel(nc1, dataHoriz[0], dataVert[0]);
+
+            List<double> finalt2 = new List<double>();
+            finalt2 = MatrixMultiplicationPixel(nc1, dataHoriz[1], dataVert[1]);
+
+            List<double> finalt3 = new List<double>();
+            finalt3 = MatrixMultiplicationPixel(nc1, dataHoriz[2], dataVert[2]);
+
+            List<double> finalt4 = new List<double>();
+            finalt4 = MatrixMultiplicationPixel(nc1, dataHoriz[3], dataVert[3]);
+
+            List<double> finalt5 = new List<double>();
+            finalt5 = MatrixMultiplicationPixel(nc1, dataHoriz[4], dataVert[4]);
+
+            List<double> finalt6 = new List<double>();
+            finalt6 = MatrixMultiplicationPixel(nc1, dataHoriz[5], dataVert[5]);
+
+            //now make that big matrix T again
+            List<double> allGlobalMarkers = new List<double>();
+            allGlobalMarkers.AddRange(finalT1);
+            allGlobalMarkers.AddRange(finalT2);
+            allGlobalMarkers.AddRange(finalT3);
+            allGlobalMarkers.AddRange(finalT4);
+            allGlobalMarkers.AddRange(finalT5);
+            allGlobalMarkers.AddRange(finalT6);
+
+            List<double> allPixelMarkers = new List<double>();
+            allPixelMarkers.AddRange(finalt1);
+            allPixelMarkers.AddRange(finalt2);
+            allPixelMarkers.AddRange(finalt3);
+            allPixelMarkers.AddRange(finalt4);
+            allPixelMarkers.AddRange(finalt5);
+            allPixelMarkers.AddRange(finalt6);
+
+            double[,] matrixT_leg;
+            matrixT_leg = HomgraphicMatrixLeg(allGlobalMarkers, allPixelMarkers);
+        }
+
+        private double[,] MatrixSubtraction(double[,] matrix1, double[,] matrix2)
+        {
+            double[,] matrixSub = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
+            
+            for(int i=0; i<matrix1.GetLength(0); i++)
+            {
+                for(int j=0; j<matrix1.GetLength(1); j++)
+                {
+                    matrixSub[i, j] = matrix1[i, j] - matrix2[i, j];
+                }
+            }
+            return matrixSub;
+        }
+
+        #region Deprecated(lmao)
+        //don't need the matrices here anymore, but i'll keep it in case I do one day
+        private void WorkWithLegMarkerDataFromCSV(double[][] dataHorizontal, double[][] dataVertical, double[,] matrixH) //this needs to be refactored - but a lot of stuff does tbh 
         {
             // Tibia Markers
             double t1x = dataHorizontal[1][10];
@@ -250,13 +546,144 @@ namespace CodeTranslation
             femurList.Add(t11y);
             femurList.Add(t12x);
             femurList.Add(t12y);
+
+            double[,] tempMatrixT = new double[2, 1];
+
+            List<double> tibia1 = new List<double>();
+            List<double> tibia2 = new List<double>();
+            List<double> tibia3 = new List<double>();
+            List<double> tibia4 = new List<double>();
+            List<double> tibia5 = new List<double>();
+            List<double> tibia6 = new List<double>();
+
+            tempMatrixT = FindGlobalCoordsF1(t1x, t1y, matrixH);
+            tibia1.Add(tempMatrixT[1, 0]);
+            tibia1.Add(0);
+            tibia1.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(t2x, t2y, matrixH);
+            tibia2.Add(tempMatrixT[1, 0]);
+            tibia2.Add(0);
+            tibia2.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(t3x, t3y, matrixH);
+            tibia3.Add(tempMatrixT[1, 0]);
+            tibia3.Add(0);
+            tibia3.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(t4x, t4y, matrixH);
+            tibia4.Add(tempMatrixT[1, 0]);
+            tibia4.Add(0);
+            tibia4.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(t5x, t5y, matrixH);
+            tibia5.Add(0);
+            tibia5.Add(tempMatrixT[1, 0]);
+            tibia5.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(t6x, t6y, matrixH);
+            tibia6.Add(0);
+            tibia6.Add(tempMatrixT[1, 0]);
+            tibia6.Add(tempMatrixT[2, 0]);
+
+            List<double> femur1 = new List<double>();
+            List<double> femur2 = new List<double>();
+            List<double> femur3 = new List<double>();
+            List<double> femur4 = new List<double>();
+            List<double> femur5 = new List<double>();
+            List<double> femur6 = new List<double>();
+
+            tempMatrixT = FindGlobalCoordsF1(t7x, t7y, matrixH);
+            femur1.Add(tempMatrixT[1, 0]);
+            femur1.Add(0);
+            femur1.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(t8x, t8y, matrixH);
+            femur2.Add(tempMatrixT[1, 0]);
+            femur2.Add(0);
+            femur2.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(t9x, t9y, matrixH);
+            femur3.Add(tempMatrixT[1, 0]);
+            femur3.Add(0);
+            femur3.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF1(t10x, t10y, matrixH);
+            femur4.Add(tempMatrixT[1, 0]);
+            femur4.Add(0);
+            femur4.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(t11x, t11y, matrixH);
+            femur5.Add(0);
+            femur5.Add(tempMatrixT[1, 0]);
+            femur5.Add(tempMatrixT[2, 0]);
+
+            tempMatrixT = FindGlobalCoordsF2(t12x, t12y, matrixH);
+            femur6.Add(0);
+            femur6.Add(tempMatrixT[1, 0]);
+            femur6.Add(tempMatrixT[2, 0]);
         }
-        // in prog
-        private void FindGlobalCoords_Tibia(List<double> tibiaPoints)
+        #endregion
+
+        // formula 1 - used for first 4 of 6 markers
+        private double[,] FindGlobalCoordsF1(double tn_x, double tn_y, double[,] matrixH)
         {
             double[][] matrixT = new double[2][];
-            matrixT[0] = new double[] { 0, 0 };
-            matrixT[1] = new double[] { 0, 0 };
+            //the formula for each T matrix, given a marker with coordinates tn_x and tn_y (used on markers 1-4)
+            /*          matrixT[0] = new double[] { matrixH[0, 0] + matrixH[2, 0] * tn_x, matrixH[0, 2] + matrixH[2, 2] * tn_x };
+                        matrixT[1] = new double[] { matrixH[1, 0] - matrixH[2, 0] * tn_y, matrixH[1, 2] - matrixH[2, 2] * tn_y };*/
+
+            //multiplicant matrix
+            double[][] matrixMultBy = new double[2][];
+            /*          matrixMultBy[0] = new double[] { -matrixH[0, 3] - matrixH[2, 3] * tn_x};
+                        matrixMultBy[1] = new double[] { -matrixH[1, 3] + matrixH[2, 3] * tn_y };*/
+
+            //prepare T matrix
+            matrixT[0] = new double[] { matrixH[0, 0] + matrixH[2, 0] * tn_x, matrixH[0, 2] + matrixH[2, 2] * tn_x };
+            matrixT[1] = new double[] { matrixH[1, 0] - matrixH[2, 0] * tn_y, matrixH[1, 2] - matrixH[2, 2] * tn_y };
+            //prepare secondary matrix
+            matrixMultBy[0] = new double[] { -matrixH[0, 3] - matrixH[2, 3] * tn_x };
+            matrixMultBy[1] = new double[] { -matrixH[1, 3] + matrixH[2, 3] * tn_y };
+            double[,] matrixM = new double[2, 1];
+            matrixM = ChangeArrayTypeBACK(matrixMultBy);
+            //then we need to inverse T and multiply it by another matrix
+            double[,] matrixT_inv = new double[2,2];
+            matrixT_inv = McCaffreyMatrixInverse(matrixT);
+
+            double[,] matrixFinal = new double[2, 1];
+            matrixFinal = MatrixMultiplication(matrixM, matrixT_inv);
+
+            return matrixFinal;
+        }
+        //formula 2 - used for last 2 of 6 markers
+        private double[,] FindGlobalCoordsF2(double tn_x, double tn_y, double[,] matrixH)
+        {
+            double[][] matrixT = new double[2][];
+            //the formula for the other T matrix (used on markers 5 and 6)
+            /*          matrixT[0] = new double[] { matrixH[0, 1] + matrixH[2, 1] * tn_x, matrixH[0, 2] + matrixH[2, 2] * tn_x };
+                        matrixT[1] = new double[] { matrixH[1, 1] - matrixH[2, 1] * tn_y, matrixH[1, 2] - matrixH[2, 2] * tn_y };*/
+
+            //multiplicant matrix
+            double[][] matrixMultBy = new double[2][];
+            /*          matrixMultBy[0] = new double[] { -matrixH[0, 3] - matrixH[2, 3] * tn_x};
+                        matrixMultBy[1] = new double[] { -matrixH[1, 3] + matrixH[2, 3] * tn_y };*/
+
+            //prepare T matrix
+            matrixT[0] = new double[] { matrixH[0, 1] + matrixH[2, 1] * tn_x, matrixH[0, 2] + matrixH[2, 2] * tn_x };
+            matrixT[1] = new double[] { matrixH[1, 1] - matrixH[2, 1] * tn_y, matrixH[1, 2] - matrixH[2, 2] * tn_y };
+            //prepare secondary matrix
+            matrixMultBy[0] = new double[] { -matrixH[0, 3] - matrixH[2, 3] * tn_x };
+            matrixMultBy[1] = new double[] { -matrixH[1, 3] + matrixH[2, 3] * tn_y };
+            double[,] matrixM = new double[2, 1];
+            matrixM = ChangeArrayTypeBACK(matrixMultBy);
+            //then we need to inverse T and multiply it by another matrix
+            double[,] matrixT_inv = new double[2, 2];
+            matrixT_inv = McCaffreyMatrixInverse(matrixT);
+
+            double[,] matrixFinal = new double[2, 1];
+            matrixFinal = MatrixMultiplication(matrixM, matrixT_inv);
+
+            return matrixFinal;
         }
 
         private double[,] CalculateMatrix_H(double[,] matrixU)
@@ -357,6 +784,17 @@ namespace CodeTranslation
             };
         }
 
+        public double[,] CreateNC1(double scalePx, double scalePy, double centerPx, double centerPy)
+        {
+            double[,] nc1 = new double[3, 3]
+            {
+                { scalePx, 0, -(centerPx * scalePx) },
+                { 0, scalePy, -(centerPy * scalePy) },
+                { 0, 0, 1 }
+            };
+            return nc1;
+        }
+
         public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
         {
             NC2 = new double[4, 4]
@@ -366,6 +804,19 @@ namespace CodeTranslation
                 { 0, 0, 1, 0 },
                 { 0, 0, 0, 1 }
             };
+        }
+
+        public double[,] CreateNC2(double scalex, double scaley, double centerx, double centery)
+        {
+            double[,] nc2 = new double[4, 4]
+            {
+                { scalex, 0, 0, -(centerx * scalex) },
+                { 0, scaley, 0, -(centery * scaley) },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
+            };
+
+            return nc2;
         }
 
         private List<double> SetNewValues(double[,] newMatrix, List<double> points)
@@ -567,6 +1018,126 @@ namespace CodeTranslation
             Console.WriteLine("\nEND HOMGRAPH\n");
 
             return homGraphT;
+        }
+
+        private double[,] HomgraphicMatrixLeg(List<double> globalMarkers, List<double> pixelMarkers)
+        {
+            double[,] matrixT = new double[12, 11];
+
+            int globalPtsTracker = 0;
+
+            for (int row = 0; row < 12; row++)
+            {
+                if (row > 1 && (row % 2 == 0))
+                {
+                    globalPtsTracker = LegGlobalIdxHelper(row, globalPtsTracker);
+                }
+                for (int column = 0; column < 11; column++)
+                {
+                    if (row % 2 == 0)
+                    {
+                        if (column < 3)
+                        {
+                            matrixT[row, column] = globalMarkers[globalPtsTracker];
+                            globalPtsTracker = LegGlobalIdxHelper(row, globalPtsTracker);
+                        }
+                        else if (column == 3)
+                        {
+                            matrixT[row, column] = 1;
+                        }
+                        else if (3 < column && column <= 7)
+                        {
+                            matrixT[row, column] = 0;
+                        }
+                        else if (column > 7)
+                        {
+                            matrixT[row, column] = globalMarkers[globalPtsTracker] * pixelMarkers[row];
+                            globalPtsTracker = LegGlobalIdxHelper(row, globalPtsTracker);
+                        }
+                        //Console.WriteLine(globalPtsTracker);
+                    }
+                    else if (row % 2 == 1)
+                    {
+                        if (column < 4)
+                        {
+                            matrixT[row, column] = 0;
+                        }
+                        else if (4 <= column && column < 7)
+                        {
+                            matrixT[row, column] = globalMarkers[globalPtsTracker];
+                            globalPtsTracker = LegGlobalIdxHelper(row, globalPtsTracker);
+                        }
+                        else if (column == 7)
+                        {
+                            matrixT[row, column] = 1;
+                        }
+                        else if (column > 7)
+                        {
+                            matrixT[row, column] = -(globalMarkers[globalPtsTracker]) * pixelMarkers[row];
+                            if (column != 10)
+                            {
+                                globalPtsTracker = LegGlobalIdxHelper(row, globalPtsTracker);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < 12; i++)
+            {
+                Console.WriteLine("\n");
+                for (int j = 0; j < 11; j++)
+                {
+                    Console.Write(matrixT[i, j] + " ");
+                }
+            }
+            Console.WriteLine("\nEND HOMGRAPH\n");
+
+            return matrixT;
+        }
+
+        private int LegGlobalIdxHelper(int row, int currentIdx)
+        {
+            //AF - 0,1,2
+            //BF - 3,4,5
+            //etc
+            int baseIdx = 0;
+
+            if (((currentIdx + 1) % 3) == 0)
+            {
+                switch (row)
+                {
+                    case 0:
+                    case 1:
+                        baseIdx = 0;
+                        break;
+                    case 2:
+                    case 3:
+                        baseIdx = 3;
+                        break;
+                    case 4:
+                    case 5:
+                        baseIdx = 6;
+                        break;
+                    case 6:
+                    case 7:
+                        baseIdx = 9;
+                        break;
+                    case 8:
+                    case 9:
+                        baseIdx = 12;
+                        break;
+                    case 10:
+                    case 11:
+                        baseIdx = 15;
+                        break;
+                }
+                return baseIdx;
+            }
+            else
+            {
+                return (currentIdx + 1);
+            }
         }
 
         private int GlobalPtIdxHelper(int row, int currentIdx)
