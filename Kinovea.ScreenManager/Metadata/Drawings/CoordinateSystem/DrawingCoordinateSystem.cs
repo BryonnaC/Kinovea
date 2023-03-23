@@ -37,11 +37,11 @@ using Kinovea.Services;
 namespace Kinovea.ScreenManager
 {
     [XmlType ("CoordinateSystem")]
-    public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable
+    public class DrawingCoordinateSystem : AbstractDrawing, IScalable, ITrackable, IMeasurable, IDecorable, IKvaSerializable
     {
         #region Events
         public event EventHandler<TrackablePointMovedEventArgs> TrackablePointMoved;
-        public event EventHandler<EventArgs<TrackExtraData>> ShowMeasurableInfoChanged = delegate {}; // not used.
+        public event EventHandler<EventArgs<MeasureLabelType>> ShowMeasurableInfoChanged = delegate {}; // not used.
         
         #endregion
 
@@ -96,7 +96,6 @@ namespace Kinovea.ScreenManager
                 return contextMenu; 
             }
         }
-        
         public bool Visible { get; set; }
         public CalibrationHelper CalibrationHelper {get; set;}
         #endregion
@@ -112,17 +111,19 @@ namespace Kinovea.ScreenManager
         private StyleHelper styleHelper = new StyleHelper();
         private DrawingStyle style;
 
-        // Context menu
-        private ToolStripMenuItem menuShowAxis = new ToolStripMenuItem();
-        private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
-        private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
-        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         
         private bool trackingUpdate;
 
         private const int defaultBackgroundAlpha = 92;
         private const int gridAlpha = 255;
         private const int textMargin = 8;
+
+        // Context menu
+        private ToolStripMenuItem menuShowAxis = new ToolStripMenuItem();
+        private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
+        private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
+        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
+        
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -163,6 +164,9 @@ namespace Kinovea.ScreenManager
                 return;
             
             CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
+            if (grid == null)
+                return;
+
             using (Pen penLine = styleHelper.GetBackgroundPen(255))
             {
                 DrawGrid(canvas, distorter, transformer, grid);
@@ -194,34 +198,13 @@ namespace Kinovea.ScreenManager
             Font font = styleHelper.GetFont(1.0F);
 
             foreach (TickMark tick in grid.TickMarks)
-            {
-                DrawTickMark(canvas, distorter, transformer, tick, brushFill, fontBrush, font);
-            }
+                tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin, false);
             
             font.Dispose();
             fontBrush.Dispose();
             brushFill.Dispose();
 
             p.Dispose();
-        }
-
-        private void DrawTickMark(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, TickMark tick, SolidBrush brushFill, SolidBrush fontBrush, Font font)
-        {
-            string label = String.Format("{0}", Math.Round(tick.Value, 3));
-            
-            PointF location;
-            if (distorter != null && distorter.Initialized)
-                location = distorter.Distort(tick.ImageLocation);
-            else
-                location = tick.ImageLocation;
-
-            PointF transformed = transformer.Transform(location);
-            SizeF labelSize = canvas.MeasureString(label, font);
-            PointF textPosition = GetTextPosition(transformed, tick.TextAlignment, labelSize);
-            RectangleF backRectangle = new RectangleF(textPosition, labelSize);
-
-            RoundedRectangle.Draw(canvas, backRectangle, brushFill, font.Height / 4, false, false, null);
-            canvas.DrawString(label, font, fontBrush, backRectangle.Location);
         }
 
         private void DrawGridLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
@@ -248,7 +231,7 @@ namespace Kinovea.ScreenManager
             
             int result = -1;
             
-            if (HitTester.HitTest(points["0"], point, transformer))
+            if (HitTester.HitPoint(point, points["0"], transformer))
                 return 1;
             
             if(showGrid || showGraduations || showAxis)
@@ -257,9 +240,9 @@ namespace Kinovea.ScreenManager
                 if (grid == null)
                     return -1;
 
-                if (grid.HorizontalAxis != null && IsPointOnRectifiedLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
+                if (grid.HorizontalAxis != null && HitTester.HitLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
                     result = 2;
-                else if (grid.VerticalAxis != null && IsPointOnRectifiedLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
+                else if (grid.VerticalAxis != null && HitTester.HitLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
                     result = 3;
             }
             
@@ -335,24 +318,28 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Context menu
+        #region Custom menu handlers
         private void menuShowAxis_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             showAxis = !showAxis;
             InvalidateFromMenu(sender);
         }
         private void menuShowGrid_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             showGrid = !showGrid;
             InvalidateFromMenu(sender);
         }
         private void menuShowGraduations_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             showGraduations = !showGraduations;
             InvalidateFromMenu(sender);
         }
         private void menuHide_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             Visible = false;
             InvalidateFromMenu(sender);
         }
@@ -363,6 +350,7 @@ namespace Kinovea.ScreenManager
         {
             if (ShouldSerializeCore(filter))
             {
+                w.WriteElementString("Position", XmlHelper.WritePointF(points["0"]));
                 w.WriteElementString("Visible", Visible.ToString().ToLower());
             }
 
@@ -373,6 +361,13 @@ namespace Kinovea.ScreenManager
                 w.WriteEndElement();
             }
         }
+
+        public void ReadXml(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper)
+        {
+            // This method is just to conform to the IKvaSerializable interface and support undo/redo.
+            ReadXml(xmlReader);
+        }
+        
         public void ReadXml(XmlReader r)
         {
             if (r.MoveToAttribute("id"))
@@ -384,6 +379,10 @@ namespace Kinovea.ScreenManager
             {
                 switch (r.Name)
                 {
+                    case "Position":
+                        PointF p = XmlHelper.ParsePointF(r.ReadElementContentAsString());
+                        points["0"] = p;
+                        break;
                     case "Visible":
                         Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
@@ -396,6 +395,9 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
+
+            CalibrationHelper.SetOrigin(points["0"]);
+            SignalTrackablePointMoved();
 
             r.ReadEndElement();
         }
@@ -417,7 +419,7 @@ namespace Kinovea.ScreenManager
                     SignalTrackablePointMoved();
             }
         }
-        public void InitializeMeasurableData(TrackExtraData trackExtraData)
+        public void InitializeMeasurableData(MeasureLabelType measureLabelType)
         {
         }
         #endregion
@@ -427,51 +429,7 @@ namespace Kinovea.ScreenManager
         {
             style.Bind(styleHelper, "Bicolor", "line color");
         }
-        private PointF GetTextPosition(PointF tickPosition, TextAlignment textAlignment, SizeF textSize)
-        {
-            PointF textPosition = tickPosition;
-            
-            switch (textAlignment)
-            {
-                case TextAlignment.Top: 
-                    textPosition = new PointF(tickPosition.X - textSize.Width / 2, tickPosition.Y - textSize.Height - textMargin);
-                    break;
-                case TextAlignment.Left:
-                    textPosition = new PointF(tickPosition.X - textSize.Width - textMargin, tickPosition.Y - textSize.Height / 2);
-                    break;
-                case TextAlignment.Right:
-                    textPosition = new PointF(tickPosition.X + textMargin, tickPosition.Y - textSize.Height / 2);
-                    break;
-                case TextAlignment.Bottom:
-                    textPosition = new PointF(tickPosition.X - textSize.Width / 2, tickPosition.Y + textMargin);
-                    break;
-                case TextAlignment.BottomRight:
-                    textPosition = new PointF(tickPosition.X + textMargin, tickPosition.Y + textMargin);
-                    break;
-            }
-            
-            return textPosition;
-        }
-        private bool IsPointOnRectifiedLine(PointF p, PointF a, PointF b, DistortionHelper distorter, IImageToViewportTransformer transformer)
-        {
-            if (a == b)
-                return false;
-
-            using (GraphicsPath path = new GraphicsPath())
-            {
-                if (distorter != null && distorter.Initialized)
-                {
-                    List<PointF> curve = distorter.DistortRectifiedLine(a, b);
-                    path.AddCurve(curve.ToArray());
-                }
-                else
-                {
-                    path.AddLine(a, b);
-                }
-
-                return HitTester.HitTest(path, p, 1, false, transformer);
-            }
-        }
+        
         private void MoveHorizontalAxis(PointF p)
         {
             PointF point = CalibrationHelper.GetPoint(p);
@@ -481,6 +439,15 @@ namespace Kinovea.ScreenManager
         {
             PointF point = CalibrationHelper.GetPoint(p);
             points["0"] = CalibrationHelper.GetImagePoint(new PointF(point.X, 0));
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
         }
         #endregion
     }

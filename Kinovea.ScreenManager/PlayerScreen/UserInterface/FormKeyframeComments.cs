@@ -172,15 +172,35 @@ namespace Kinovea.ScreenManager
             }
             picker.Dispose();
         }
+        private void btnFrameColor_Click(object sender, EventArgs e)
+        {
+            FormColorPicker picker = new FormColorPicker(m_Keyframe.Color);
+            FormsHelper.Locate(picker);
+            if (picker.ShowDialog() == DialogResult.OK)
+            {
+                m_Keyframe.Color = picker.PickedColor;
+                LoadColor();
+                m_psui.OnKeyframeNameChanged();
+            }
+            picker.Dispose();
+        }
         #endregion
 
         #region Lower level helpers
         private void LoadInfos()
         {
             // Update
-            txtTitle.Text = m_Keyframe.Title;
+            tbName.Text = m_Keyframe.Title;
+            lblTimecode.Text = m_Keyframe.TimeCode;
             rtbComment.Clear();
             rtbComment.Rtf = m_Keyframe.Comments;
+            LoadColor();
+        }
+        private void LoadColor()
+        {
+            btnFrameColor.BackColor = m_Keyframe.Color;
+            btnFrameColor.FlatAppearance.MouseDownBackColor = m_Keyframe.Color;
+            btnFrameColor.FlatAppearance.MouseOverBackColor = m_Keyframe.Color;
         }
         private void SaveInfos()
         {
@@ -192,10 +212,10 @@ namespace Kinovea.ScreenManager
             {
                 m_Keyframe.Comments = rtbComment.Rtf;
     
-                if(m_Keyframe.Title != txtTitle.Text)
+                if(m_Keyframe.Title != tbName.Text)
                 {
-                    m_Keyframe.Title = txtTitle.Text;	
-                    m_psui.OnKeyframesTitleChanged();
+                    m_Keyframe.Title = tbName.Text;	
+                    m_psui.OnKeyframeNameChanged();
                 }
             }
         }
@@ -210,6 +230,5 @@ namespace Kinovea.ScreenManager
             return bold + italic + underline + strikeout;
         }
         #endregion
-
     }
 }

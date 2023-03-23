@@ -71,8 +71,11 @@ namespace Kinovea.ScreenManager
 
         public DrawingToolTestGrid()
         {
-            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.CornflowerBlue));
-            defaultStylePreset.Elements.Add("divisions", new StyleElementGridDivisions(12));
+            defaultStylePreset.Elements.Add("color", new StyleElementColor(Color.Red));
+            defaultStylePreset.Elements.Add("horizontalAxis", new StyleElementToggle(true, StyleToggleVariant.HorizontalLine));
+            defaultStylePreset.Elements.Add("verticalAxis", new StyleElementToggle(true, StyleToggleVariant.VerticalLine));
+            defaultStylePreset.Elements.Add("frame", new StyleElementToggle(true, StyleToggleVariant.Frame));
+            defaultStylePreset.Elements.Add("thirds", new StyleElementToggle(false, StyleToggleVariant.Thirds));
             stylePreset = defaultStylePreset.Clone();
         }
 

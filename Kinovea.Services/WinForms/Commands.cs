@@ -87,6 +87,8 @@ namespace Kinovea.Services
         DeleteDrawing,
         CopyImage,
         ValidateDrawing,
+        ChronometerStartStop,
+        ChronometerSplit,
 
         IncreaseSpeed1,
         IncreaseSpeedRoundTo10,
@@ -95,7 +97,18 @@ namespace Kinovea.Services
         DecreaseSpeedRoundTo10,
         DecreaseSpeedRoundTo25,
 
-        Close
+        Close,
+
+        Preset1,
+        Preset2,
+        Preset3,
+        Preset4,
+        Preset5,
+        Preset6,
+        Preset7,
+        Preset8,
+        Preset9,
+        Preset10,
     }
 
     public enum DualCaptureCommands

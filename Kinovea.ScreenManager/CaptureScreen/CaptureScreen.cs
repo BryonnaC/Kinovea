@@ -115,12 +115,18 @@ namespace Kinovea.ScreenManager
             get { return metadata.Mirrored; }
             set { ChangeMirror(value); }
         }
-        public bool TestGridVisible
+        public override bool CoordinateSystemVisible
+        {
+            get { return metadata.DrawingCoordinateSystem.Visible; }
+            set { metadata.DrawingCoordinateSystem.Visible = value; }
+        }
+        public override bool TestGridVisible
         {
             get { return metadata.TestGridVisible; }
             set { metadata.TestGridVisible = value; }
         }
-        public HistoryStack HistoryStack
+
+        public override HistoryStack HistoryStack
         {
             get { return historyStack; }
         }
@@ -461,7 +467,7 @@ namespace Kinovea.ScreenManager
                 // Make sure we have at least one keyframe.
                 // This can happen when we reload the existing KVA after changes from the player side 
                 // and the user has deleted all keyframes.
-                Keyframe kf = new Keyframe(0, "", metadata);
+                Keyframe kf = new Keyframe(0, "", metadata, "", Keyframe.DefaultColor);
                 metadata.AddKeyframe(kf);
             }
         }

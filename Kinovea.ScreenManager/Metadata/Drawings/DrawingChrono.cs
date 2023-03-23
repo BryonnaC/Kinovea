@@ -1,12 +1,12 @@
 #region License
 /*
-Copyright © Joan Charmant 2008-2009.
-jcharmant@gmail.com 
- 
+Copyright ï¿½ Joan Charmant 2008-2009.
+jcharmant@gmail.com
+
 This file is part of Kinovea.
 
 Kinovea is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2 
+it under the terms of the GNU General Public License version 2
 as published by the Free Software Foundation.
 
 Kinovea is distributed in the hope that it will be useful,
@@ -36,8 +36,15 @@ using Kinovea.Services;
 
 namespace Kinovea.ScreenManager
 {
+    /// <summary>
+    /// This is the original Chronometer object. 
+    /// Chronometer mode: single time span.
+    /// Clock mode: video time based on the time origin or a drawing specific time origin.
+    /// 
+    /// The chronometer mode is superceded by the ChronoMulti object.
+    /// </summary>
     [XmlType ("Chrono")]
-    public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable
+    public class DrawingChrono : AbstractDrawing, IDecorable, IKvaSerializable, ITimeable
     {
         #region Properties
         public override string ToolDisplayName
@@ -46,23 +53,26 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get 
-            { 
+            get
+            {
                 int iHash = visibleTimestamp.GetHashCode();
                 iHash ^= invisibleTimestamp.GetHashCode();
                 iHash ^= startCountingTimestamp.GetHashCode();
                 iHash ^= stopCountingTimestamp.GetHashCode();
                 iHash ^= clockOriginTimestamp.GetHashCode();
-
                 iHash ^= styleHelper.ContentHash;
                 iHash ^= showLabel.GetHashCode();
-    
+
                 return iHash;
             }
-        } 
+        }
         public DrawingStyle DrawingStyle
         {
             get { return style;}
+        }
+        public Color Color
+        {
+            get { return styleHelper.GetBackgroundColor(255); }
         }
         public override InfosFading  InfosFading
         {
@@ -80,37 +90,33 @@ namespace Kinovea.ScreenManager
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-
-                mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
-                mnuHideBefore.Text = ScreenManagerLang.mnuHideBefore;
-                mnuShowBefore.Text = ScreenManagerLang.mnuShowBefore;
-                mnuHideAfter.Text = ScreenManagerLang.mnuHideAfter;
-                mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
+                ReloadMenusCulture();
 
                 if (styleHelper.Clock)
                 {
-                    mnuMarkOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOriginClock;
-                    contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuMarkOrigin });
+                    contextMenu.AddRange(new ToolStripItem[] {
+                    mnuVisibility,
+                    mnuMarkOrigin,
+                    mnuShowLabel
+                });
                 }
                 else
                 {
-                    mnuStart.Text = ScreenManagerLang.mnuChronoStart;
-                    mnuStop.Text = ScreenManagerLang.mnuChronoStop;
-                    contextMenu.AddRange(new ToolStripItem[] { mnuVisibility, mnuStart, mnuStop });
+                    contextMenu.AddRange(new ToolStripItem[] {
+                    mnuVisibility,
+                    mnuStart,
+                    mnuStop,
+                    mnuDeleteSection,
+                    mnuShowLabel,
+                });
                 }
 
-                mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
                 mnuShowLabel.Checked = showLabel;
-                contextMenu.Add(mnuShowLabel);
 
                 return contextMenu;
             }
         }
-        public Metadata ParentMetadata
-        {
-            get { return parentMetadata; }    // unused.
-            set { parentMetadata = value; }
-        }
+        
         public long TimeStart
         {
             get { return startCountingTimestamp; }
@@ -126,7 +132,7 @@ namespace Kinovea.ScreenManager
         private long visibleTimestamp;               	// chrono becomes visible.
         private long invisibleTimestamp;             	// chrono stops being visible.
         private long startCountingTimestamp;         	// chrono starts counting.
-        private long stopCountingTimestamp;          	// chrono stops counting. 
+        private long stopCountingTimestamp;          	// chrono stops counting.
         private long clockOriginTimestamp;              // time origin for clock mode.
         private string timecode;
         private bool showLabel;
@@ -137,20 +143,21 @@ namespace Kinovea.ScreenManager
         private static readonly int allowedFramesOver = 12;  // Number of frames the chrono stays visible after the 'Hiding' point.
         private RoundedRectangle mainBackground = new RoundedRectangle();
         private RoundedRectangle lblBackground = new RoundedRectangle();
+        private int backgroundOpacity = 225;
 
+        #region Menu
         private ToolStripMenuItem mnuVisibility = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuMarkOrigin = new ToolStripMenuItem();
-
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
+        #endregion
 
-        private Metadata parentMetadata;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -172,10 +179,10 @@ namespace Kinovea.ScreenManager
             styleHelper.Clock = false;
             if (preset == null)
                 preset = ToolManager.GetStylePreset("Chrono");
-            
+
             style = preset.Clone();
             BindStyle();
-            
+
             // We use the InfosFading utility to fade the chrono away.
             // The refererence frame will be the frame at which fading start.
             // Must be updated on "Hide" menu.
@@ -188,20 +195,29 @@ namespace Kinovea.ScreenManager
             mnuShowAfter.Image = Properties.Drawings.showafter;
             mnuHideBefore.Image = Properties.Drawings.hidebefore;
             mnuHideAfter.Image = Properties.Drawings.hideafter;
+            mnuShowLabel.Image = Properties.Drawings.label;
+            mnuStart.Image = Properties.Drawings.chronostart;
+            mnuStop.Image = Properties.Drawings.chronostop;
+            mnuDeleteSection.Image = Properties.Resources.bin_empty;
+            mnuMarkOrigin.Image = Properties.Resources.marker;
+
             mnuShowBefore.Click += MnuShowBefore_Click;
             mnuShowAfter.Click += MnuShowAfter_Click;
             mnuHideBefore.Click += MnuHideBefore_Click;
             mnuHideAfter.Click += MnuHideAfter_Click;
-            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { mnuShowBefore, mnuShowAfter, new ToolStripSeparator(),  mnuHideBefore, mnuHideAfter });
-
-            mnuStart.Image = Properties.Drawings.chronostart;
-            mnuStop.Image = Properties.Drawings.chronostop;
-            mnuMarkOrigin.Image = Properties.Resources.marker;
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
+            mnuDeleteSection.Click += mnuDeleteSection_Click;
             mnuMarkOrigin.Click += mnuMarkOrigin_Click;
-
             mnuShowLabel.Click += mnuShowLabel_Click;
+            
+            mnuVisibility.DropDownItems.AddRange(new ToolStripItem[] { 
+                mnuShowBefore, 
+                mnuShowAfter, 
+                new ToolStripSeparator(),  
+                mnuHideBefore, 
+                mnuHideAfter 
+            });
         }
 
         public DrawingChrono(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
@@ -216,7 +232,7 @@ namespace Kinovea.ScreenManager
         {
             if (currentTimestamp < visibleTimestamp)
                 return;
-            
+
             double opacityFactor = 1.0;
             if (currentTimestamp > invisibleTimestamp)
                 opacityFactor = infosFading.GetOpacityFactor(currentTimestamp);
@@ -227,7 +243,7 @@ namespace Kinovea.ScreenManager
             timecode = GetTimecode(currentTimestamp);
             string text = timecode;
 
-            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * 128)))
+            using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacityFactor * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacityFactor * 255)))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
@@ -254,6 +270,9 @@ namespace Kinovea.ScreenManager
                         Rectangle lblRect = new Rectangle(rect.Location.X, top, (int)lblTextSize.Width, (int)lblTextSize.Height);
                         RoundedRectangle.Draw(canvas, lblRect, brushBack, labelRoundingRadius, true, false, null);
                         canvas.DrawString(name, fontLabel, brushText, lblRect.Location);
+
+                        // Update the rectangle for hit testing.
+                        lblBackground.Rectangle = transformer.Untransform(lblRect);
                     }
                 }
             }
@@ -273,8 +292,8 @@ namespace Kinovea.ScreenManager
                     int roundingRadius = fontText.Height / 4;
                     result = mainBackground.HitTest(point, true, (int)(roundingRadius * 1.8f), transformer);
                 }
-               
-                if(result < 0) 
+
+                if(result < 0)
                     result = lblBackground.HitTest(point, false, 0, transformer);
             }
 
@@ -307,7 +326,7 @@ namespace Kinovea.ScreenManager
                 w.WriteElementString("Position", XmlHelper.WritePointF(mainBackground.Rectangle.Location));
 
                 w.WriteStartElement("Values");
-                
+
                 w.WriteElementString("Visible", (visibleTimestamp == long.MaxValue) ? "-1" : visibleTimestamp.ToString());
                 w.WriteElementString("Invisible", (invisibleTimestamp == long.MaxValue) ? "-1" : invisibleTimestamp.ToString());
                 w.WriteElementString("StartCounting", (startCountingTimestamp == long.MaxValue) ? "-1" : startCountingTimestamp.ToString());
@@ -345,6 +364,7 @@ namespace Kinovea.ScreenManager
                 mdt.Start = userStart;
                 mdt.Stop = userStop;
                 mdt.Duration = userDuration;
+                mdt.Cumul = userDuration;
             }
             else if (styleHelper.Clock)
             {
@@ -371,7 +391,7 @@ namespace Kinovea.ScreenManager
                 name = xmlReader.ReadContentAsString();
 
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
@@ -396,7 +416,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
             SanityCheckValues();
         }
@@ -405,11 +425,11 @@ namespace Kinovea.ScreenManager
             if(timestampMapper == null)
             {
                 xmlReader.ReadOuterXml();
-                return;                
+                return;
             }
-            
+
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
@@ -419,10 +439,10 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Invisible":
                         long hide = xmlReader.ReadElementContentAsLong();
-                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);                        
+                        invisibleTimestamp = (hide == -1) ? long.MaxValue : timestampMapper(hide);
                         break;
                     case "StartCounting":
-                        long start = xmlReader.ReadElementContentAsLong(); 
+                        long start = xmlReader.ReadElementContentAsLong();
                         startCountingTimestamp = (start == -1) ? long.MaxValue : timestampMapper(start);
                         break;
                     case "StopCounting":
@@ -442,7 +462,7 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
         }
         private void SanityCheckValues()
@@ -461,7 +481,7 @@ namespace Kinovea.ScreenManager
         private void ParseLabel(XmlReader xmlReader)
         {
             xmlReader.ReadStartElement();
-            
+
             while(xmlReader.NodeType == XmlNodeType.Element)
             {
                 switch(xmlReader.Name)
@@ -484,20 +504,89 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }
-            
+
             xmlReader.ReadEndElement();
         }
         #endregion
 
-        #region Specific context menu
+        # region ITimeable
+        
+        public void StartStop(long timestamp)
+        {
+            if (styleHelper.Clock)
+                return;
+
+            if (timestamp < visibleTimestamp || timestamp > invisibleTimestamp)
+                return;
+
+            // There are two general approaches to deal with existing data.
+            // 1. respect: ignore the command if there is already the same event in the future.
+            // 2. overwrite: move existing start/stop points to the current time.
+            //
+            // Current approach: respect.
+            // The rationale is that we can't really do a proper overwrite just with the shortcut anyway, 
+            // we can't move the start further for example, as it's a combo start/stop command, when we are on the live section
+            // we don't know if the user wants to push the start or pull the end.
+            if (startCountingTimestamp == long.MaxValue)
+            {
+                // There is no section yet.
+                CaptureMemento(SerializationFilter.Core);
+                startCountingTimestamp = timestamp;
+            }
+            else if (timestamp < startCountingTimestamp)
+            {
+                // We already have a live section in the future.
+                return;
+            }
+            else
+            {
+                // We are on the live section.
+                if (stopCountingTimestamp != long.MaxValue)
+                {
+                    // We already have an ending.
+                    return;
+                }
+                else
+                {
+                    CaptureMemento(SerializationFilter.Core);
+                    stopCountingTimestamp = timestamp;
+                }
+            }
+        }
+
+        public void Split(long timestamp)
+        {
+            // Nothing to do, the basic chronometer doesn't support split times.
+        }
+
+        #endregion
+
+        #region Tool-specific context menu
+
+        private void ReloadMenusCulture()
+        {
+            mnuVisibility.Text = ScreenManagerLang.Generic_Visibility;
+            mnuHideBefore.Text = ScreenManagerLang.mnuHideBefore;
+            mnuShowBefore.Text = ScreenManagerLang.mnuShowBefore;
+            mnuHideAfter.Text = ScreenManagerLang.mnuHideAfter;
+            mnuShowAfter.Text = ScreenManagerLang.mnuShowAfter;
+            mnuStart.Text = ScreenManagerLang.mnuChronoStart;
+            mnuStop.Text = ScreenManagerLang.mnuChronoStop;
+            mnuDeleteSection.Text = "Delete times";
+            mnuMarkOrigin.Text = ScreenManagerLang.mnuMarkTimeAsOriginClock;
+            mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
+        }
+
         private void MnuShowBefore_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = 0;
             InvalidateFromMenu(sender);
         }
 
         private void MnuShowAfter_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = long.MaxValue;
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
@@ -505,12 +594,14 @@ namespace Kinovea.ScreenManager
 
         private void MnuHideBefore_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             visibleTimestamp = CurrentTimestampFromMenu(sender);
             InvalidateFromMenu(sender);
         }
 
         private void MnuHideAfter_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             invisibleTimestamp = CurrentTimestampFromMenu(sender);
             infosFading.ReferenceTimestamp = invisibleTimestamp;
             InvalidateFromMenu(sender);
@@ -518,6 +609,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuStart_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             startCountingTimestamp = CurrentTimestampFromMenu(sender);
 
             if (stopCountingTimestamp < startCountingTimestamp)
@@ -529,6 +621,7 @@ namespace Kinovea.ScreenManager
 
         private void mnuStop_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             stopCountingTimestamp = CurrentTimestampFromMenu(sender);
 
             if (stopCountingTimestamp <= startCountingTimestamp)
@@ -541,14 +634,27 @@ namespace Kinovea.ScreenManager
             UpdateFramesMarkersFromMenu(sender);
         }
 
+        private void mnuDeleteSection_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            
+            startCountingTimestamp = long.MaxValue;
+            stopCountingTimestamp = long.MaxValue;
+
+            InvalidateFromMenu(sender);
+            UpdateFramesMarkersFromMenu(sender);
+        }
+
         private void mnuMarkOrigin_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Core);
             clockOriginTimestamp = CurrentTimestampFromMenu(sender);
             InvalidateFromMenu(sender);
         }
 
         private void mnuShowLabel_Click(object sender, EventArgs e)
         {
+            CaptureMemento(SerializationFilter.Style);
             showLabel = !mnuShowLabel.Checked;
             InvalidateFromMenu(sender);
         }
@@ -560,7 +666,7 @@ namespace Kinovea.ScreenManager
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("Chrono"));
             style.Bind(styleHelper, "Bicolor", "color");
             style.Bind(styleHelper, "Font", "font size");
-            style.Bind(styleHelper, "Clock", "clock");
+            style.Bind(styleHelper, "Toggles/Clock", "clock");
         }
         private void UpdateLabelRectangle()
         {
@@ -601,6 +707,15 @@ namespace Kinovea.ScreenManager
             }
 
             return parentMetadata.TimeCodeBuilder(durationTimestamps, TimeType.Absolute, TimecodeFormat.Unknown, true);
+        }
+
+        /// <summary>
+        /// Capture the current state to the undo/redo stack.
+        /// </summary>
+        private void CaptureMemento(SerializationFilter filter)
+        {
+            var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.ChronoManager.Id, this.Id, this.Name, filter);
+            parentMetadata.HistoryStack.PushNewCommand(memento);
         }
         #endregion
     }

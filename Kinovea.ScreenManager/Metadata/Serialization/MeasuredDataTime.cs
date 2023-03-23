@@ -10,6 +10,7 @@ namespace Kinovea.ScreenManager
     {
         public string Name { get; set; }
         public float Duration { get; set; }
+        public float Cumul { get; set; }
         public float Start { get; set; }
         public float Stop { get; set; }
     }

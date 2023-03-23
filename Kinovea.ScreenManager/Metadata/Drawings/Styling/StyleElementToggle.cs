@@ -57,6 +57,14 @@ namespace Kinovea.ScreenManager
         {
             get { return "Toggle"; }
         }
+
+        /// <summary>
+        /// Returns true if this option should be hidden from the user interface.
+        /// </summary>
+        public bool IsHidden
+        {
+            get { return DrawingStyle.IsHiddenToggle(variant); }
+        }
         #endregion
 
         public static readonly bool defaultValue = false;
@@ -158,6 +166,26 @@ namespace Kinovea.ScreenManager
                 case StyleToggleVariant.Clock:
                     icon = Properties.Drawings.stopwatch;
                     displayName = ScreenManagerLang.Generic_Clock;
+                    break;
+                case StyleToggleVariant.DistanceGrid:
+                    icon = Properties.Drawings.plane;
+                    displayName = "Distance grid";
+                    break;
+                case StyleToggleVariant.HorizontalLine:
+                    icon = Properties.Drawings.curve;
+                    displayName = "Horizontal line";//ScreenManagerLang.Generic_Clock;
+                    break;
+                case StyleToggleVariant.VerticalLine:
+                    icon = Properties.Drawings.curve;
+                    displayName = "Vertical line";
+                    break;
+                case StyleToggleVariant.Frame:
+                    icon = Properties.Drawings.curve;
+                    displayName = "Framing";
+                    break;
+                case StyleToggleVariant.Thirds:
+                    icon = Properties.Drawings.curve;
+                    displayName = "3X3 grid";
                     break;
                 case StyleToggleVariant.Curved:
                 default:

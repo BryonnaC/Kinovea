@@ -174,7 +174,6 @@ namespace Kinovea.ScreenManager
             this.getCalibrationQuad = getCalibrationQuad;
             this.hasTrackingData = hasTrackingData;
             Reset();
-            initialized = true;
         }
 
         public void Reset()
@@ -184,11 +183,11 @@ namespace Kinovea.ScreenManager
 
             PointF center = imageSize.Center();
             calibrator.Initialize(100, center, new PointF(center.X + 100, center.Y), CalibrationAxis.LineHorizontal);
-
             distortionHelper = new DistortionHelper();
-
             lengthUnit = LengthUnit.Pixels;
             
+            initialized = true;
+
             ComputeCoordinateSystemGrid();
         }
         
@@ -452,7 +451,7 @@ namespace Kinovea.ScreenManager
             string valueTemplate = precise ? "{0:0.00} ; {1:0.00}" : "{0:0} ; {1:0}";
             string text = String.Format(valueTemplate, a.X, a.Y);
             
-            if(abbreviation)
+            if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
@@ -467,7 +466,7 @@ namespace Kinovea.ScreenManager
             string valueTemplate = precise ? "{0:0.00}" : "{0:0}";
             string text = String.Format(valueTemplate, length);
             
-            if(abbreviation)
+            if (abbreviation)
                 text = text + " " + String.Format("{0}", UnitHelper.LengthAbbreviation(lengthUnit));
             
             return text;
@@ -703,7 +702,6 @@ namespace Kinovea.ScreenManager
             return fileInterval;
         }
         #endregion
-
 
         #region Private helpers
         private void AfterCalibrationChanged()
