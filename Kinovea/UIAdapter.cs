@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -45,7 +45,7 @@ namespace Kinovea.Root
 
         private UserControl informationForm;
 
-        public UIAdapter(int version) : base(version)
+        public UIAdapter() : base()
         {
             log.Debug("Loading video readers.");
             List<Type> videoReaders = new List<Type>();
@@ -187,10 +187,10 @@ namespace Kinovea.Root
 
         }
 
- /*       private new void GetModuleMenus(ToolStrip menu)
+ *//*       private new void GetModuleMenus(ToolStrip menu)
         {
 
-        }*/
+        }*//*
 
         private new void mnuToggleFileExplorerOnClick(object sender, EventArgs e)
         {
@@ -206,4 +206,4 @@ namespace Kinovea.Root
         #endregion
 
     }
-}
+}*/
