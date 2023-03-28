@@ -1322,5 +1322,34 @@ namespace CodeTranslation
             return ChangeArrayTypeBACK(inv);
         }
 
+
+        //Correct Radial Distortion
+        //% k1, k2 are the distortion coefficents
+        //% fx, fy are the scaling factors along x and y direction
+        //% x_measured, y_measured are the measured pixels reading along x, y direction
+        public double[] CorrectRadialDistortion(double k1, double k2, double fx, double fy, double x_measured, double y_measured)
+        {
+            double[] x = new double[10];
+            double[] y = new double[10];
+            x[0] = x_measured;
+            y[0] = y_measured;
+
+            for(int i=0; i<8; i++)
+            {
+                x[i + 1] = x_measured - (x[i] * k1 * ((Math.Pow(x[i], 2)/Math.Pow(fx, 2)) + (Math.Pow(y[i],2)/Math.Pow(fy, 2) ) )- ( x[i] * k2 * ( Math.Pow(x[i], 2)/Math.Pow(fx,2) ) + ( Math.Pow(y[i], 2)/Math.Pow(fy, 2) ) ) );
+                y[i + 1] = y_measured - (y[i] * k1 * ((Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))) - (y[i] * k2 * (Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))));
+            }
+
+            //x_cor = x(9)
+            //y_cor = y(9)
+            double[] cor_double = new double[2];
+            cor_double[0] = x[9];
+            cor_double[1] = y[9];
+
+            return cor_double;
+        }
+
+        //Tune Side Coordinates
+
     }
 }
