@@ -45,16 +45,7 @@ namespace Kinovea.ScreenManager
         }
         public override int ContentHash
         {
-            get 
-            {
-                int hash = Visible.GetHashCode();
-                hash ^= styleHelper.ContentHash;
-                hash ^= showHorizontalAxis.GetHashCode();
-                hash ^= showVerticalAxis.GetHashCode();
-                hash ^= showFraming.GetHashCode();
-                hash ^= showThirds.GetHashCode();
-                return hash; 
-            }
+            get { return 0; }
         }
         public DrawingStyle DrawingStyle
         {
@@ -70,19 +61,8 @@ namespace Kinovea.ScreenManager
             get 
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReloadMenusCulture();
-
-                contextMenu.AddRange(new ToolStripItem[] {
-                    mnuOptions,
-                    new ToolStripSeparator(),
-                    mnuHide,
-                });
-
-                mnuShowHorizontalAxis.Checked = showHorizontalAxis;
-                mnuShowVerticalAxis.Checked = showVerticalAxis;
-                mnuShowFraming.Checked = showFraming;
-                mnuShowThirds.Checked = showThirds;
-
+                menuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
+                contextMenu.Add(menuHide);
                 return contextMenu;
             }
         }
@@ -100,20 +80,7 @@ namespace Kinovea.ScreenManager
         private DrawingStyle style;
         private Dictionary<string, GridLine> gridLines = new Dictionary<string, GridLine>();
 
-        // Options
-        private bool showHorizontalAxis = true;
-        private bool showVerticalAxis = true;
-        private bool showFraming = true;
-        private bool showThirds = false;
-
-        #region Menus
-        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowHorizontalAxis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowVerticalAxis = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowFraming = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowThirds = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
-        #endregion
+        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -124,31 +91,18 @@ namespace Kinovea.ScreenManager
 
             // Decoration
             styleHelper.Color = Color.Red;
+            styleHelper.HorizontalAxis = false;
+            styleHelper.VerticalAxis = false;
+            styleHelper.Frame = false;
+            styleHelper.Thirds = false;
             if (preset != null)
             {
                 style = preset.Clone();
                 BindStyle();
             }
-
-            InitializeMenus();
-        }
-
-        private void InitializeMenus()
-        {
-            mnuOptions.Image = Properties.Resources.equalizer;
-            mnuShowHorizontalAxis.Click += MnuShowHorizontalAxis_Click;
-            mnuShowVerticalAxis.Click += MnuShowVerticalAxis_Click;
-            mnuShowFraming.Click += MnuShowFraming_Click;
-            mnuShowThirds.Click += MnuShowThirds_Click;
-            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuShowHorizontalAxis,
-                mnuShowVerticalAxis,
-                mnuShowFraming,
-                mnuShowThirds,
-            });
-
-            mnuHide.Image = Properties.Drawings.hide;
-            mnuHide.Click += MnuHide_Click;
+                
+            menuHide.Click += menuHide_Click;
+            menuHide.Image = Properties.Drawings.hide;
         }
         #endregion
 
@@ -165,13 +119,13 @@ namespace Kinovea.ScreenManager
             //Pen pen = new Pen(Color.Red, 1);
             Pen p = styleHelper.GetPen(255);
 
-            if (showHorizontalAxis)
+            if (styleHelper.HorizontalAxis)
                 DrawLine(canvas, transformer, p, gridLines["horizontal"]);
             
-            if (showVerticalAxis)    
+            if (styleHelper.VerticalAxis)    
                 DrawLine(canvas, transformer, p, gridLines["vertical"]);
             
-            if (showFraming)
+            if (styleHelper.Frame)
             {
                 DrawLine(canvas, transformer, p, gridLines["frameLeft"]);
                 DrawLine(canvas, transformer, p, gridLines["frameTop"]);
@@ -179,7 +133,7 @@ namespace Kinovea.ScreenManager
                 DrawLine(canvas, transformer, p, gridLines["frameBottom"]);
             }
             
-            if (showThirds)
+            if (styleHelper.Thirds)
             {
                 DrawLine(canvas, transformer, p, gridLines["thirdsLeft"]);
                 DrawLine(canvas, transformer, p, gridLines["thirdsTop"]);
@@ -213,13 +167,13 @@ namespace Kinovea.ScreenManager
             List<GridLine> visibleGridLines = new List<GridLine>();
             using (GraphicsPath path = new GraphicsPath())
             {
-                if (showHorizontalAxis)
+                if (styleHelper.HorizontalAxis)
                     addGridLine(path, gridLines["horizontal"]);
 
-                if (showVerticalAxis)
+                if (styleHelper.VerticalAxis)
                     addGridLine(path, gridLines["vertical"]);
                 
-                if (showFraming)
+                if (styleHelper.Frame)
                 {
                     addGridLine(path, gridLines["frameLeft"]);
                     addGridLine(path, gridLines["frameTop"]);
@@ -227,7 +181,7 @@ namespace Kinovea.ScreenManager
                     addGridLine(path, gridLines["frameBottom"]);
                 }
 
-                if (showThirds)
+                if (styleHelper.Thirds)
                 {
                     addGridLine(path, gridLines["thirdsLeft"]);
                     addGridLine(path, gridLines["thirdsTop"]);
@@ -260,16 +214,21 @@ namespace Kinovea.ScreenManager
         }
         #endregion
 
+        #region Custom menu handlers
+        private void menuHide_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            Visible = false;
+            InvalidateFromMenu(sender);
+        }
+        #endregion
+
         #region Serialization
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             if (ShouldSerializeCore(filter))
             {
-                w.WriteElementString("Visible", XmlHelper.WriteBoolean(Visible));
-                w.WriteElementString("ShowHorizontalAxis", XmlHelper.WriteBoolean(showHorizontalAxis));
-                w.WriteElementString("ShowVerticalAxis", XmlHelper.WriteBoolean(showVerticalAxis));
-                w.WriteElementString("ShowFraming", XmlHelper.WriteBoolean(showFraming));
-                w.WriteElementString("ShowThirds", XmlHelper.WriteBoolean(showThirds));
+                w.WriteElementString("Visible", Visible.ToString().ToLower());
             }
 
             if (ShouldSerializeStyle(filter))
@@ -300,18 +259,6 @@ namespace Kinovea.ScreenManager
                     case "Visible":
                         Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
-                    case "ShowHorizontalAxis":
-                        showHorizontalAxis = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
-                    case "ShowVerticalAxis":
-                        showVerticalAxis = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
-                    case "ShowFraming":
-                        showFraming = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
-                    case "ShowThirds":
-                        showThirds = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
                     case "DrawingStyle":
                         style = new DrawingStyle(r);
                         BindStyle();
@@ -327,56 +274,16 @@ namespace Kinovea.ScreenManager
 
         #endregion
 
-        #region Context menu
-        private void MnuHide_Click(object sender, EventArgs e)
-        {
-            CaptureMemento(SerializationFilter.Core);
-            Visible = false;
-            InvalidateFromMenu(sender);
-        }
-        private void MnuShowHorizontalAxis_Click(object sender, EventArgs e)
-        {
-            CaptureMemento(SerializationFilter.Core);
-            showHorizontalAxis = !mnuShowHorizontalAxis.Checked;
-            if (IsInvisible())
-                showHorizontalAxis = true;
-            InvalidateFromMenu(sender);
-        }
-
-        private void MnuShowVerticalAxis_Click(object sender, EventArgs e)
-        {
-            CaptureMemento(SerializationFilter.Core);
-            showVerticalAxis = !mnuShowVerticalAxis.Checked;
-            if (IsInvisible())
-                showVerticalAxis = true;
-            InvalidateFromMenu(sender);
-        }
-
-        private void MnuShowFraming_Click(object sender, EventArgs e)
-        {
-            CaptureMemento(SerializationFilter.Core);
-            showFraming = !mnuShowFraming.Checked;
-            if (IsInvisible())
-                showFraming = true;
-            InvalidateFromMenu(sender);
-        }
-
-        private void MnuShowThirds_Click(object sender, EventArgs e)
-        {
-            CaptureMemento(SerializationFilter.Core);
-            showThirds = !mnuShowThirds.Checked;
-            if (IsInvisible())
-                showThirds = true;
-            InvalidateFromMenu(sender);
-        }
-        #endregion
-
 
         #region Private methods
         private void BindStyle()
         {
             DrawingStyle.SanityCheck(style, ToolManager.GetStylePreset("TestGrid"));
             style.Bind(styleHelper, "Color", "color");
+            style.Bind(styleHelper, "Toggles/HorizontalAxis", "horizontalAxis");
+            style.Bind(styleHelper, "Toggles/VerticalAxis", "verticalAxis");
+            style.Bind(styleHelper, "Toggles/Frame", "frame");
+            style.Bind(styleHelper, "Toggles/Thirds", "thirds");
         }
         
 
@@ -423,27 +330,6 @@ namespace Kinovea.ScreenManager
         {
             var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
             parentMetadata.HistoryStack.PushNewCommand(memento);
-        }
-
-        /// <summary>
-        /// Return true if all the visible elements are disabled.
-        /// We should always have at least one element visible to access the context menu.
-        /// This is not the same as the "Hide" function. In the case of Hide we can bring back the 
-        /// object via the top level menu, but it needs to draw *something*.
-        /// </summary>
-        private bool IsInvisible()
-        {
-            return !showHorizontalAxis && !showVerticalAxis && !showFraming && !showThirds;
-        }
-
-        private void ReloadMenusCulture()
-        {
-            mnuOptions.Text = "Options";
-            mnuShowHorizontalAxis.Text = "Show horizontal axis";
-            mnuShowVerticalAxis.Text = "Show vertical axis";
-            mnuShowFraming.Text = "Show frame";
-            mnuShowThirds.Text = "Show 3x3 grid";
-            mnuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
         }
         #endregion
     }

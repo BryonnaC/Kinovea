@@ -50,7 +50,6 @@ namespace Kinovea.ScreenManager
         private bool m_bUserActivated;
         private Keyframe m_Keyframe;
         private PlayerScreenUserInterface m_psui;
-        private bool manualUpdate;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
@@ -88,14 +87,14 @@ namespace Kinovea.ScreenManager
 
             if (m_Keyframe != _keyframe)
             {
-                CommitInternal();
+                SaveInfos();
                 m_Keyframe = _keyframe;
                 LoadInfos();
             }
         }
         public void CommitChanges()
         {
-            CommitInternal();  
+            SaveInfos();  
         }
         public void RefreshUICulture()
         {
@@ -117,7 +116,7 @@ namespace Kinovea.ScreenManager
                 // If the user close the mini window we only hide it.
                 e.Cancel = true;
                 m_bUserActivated = false;
-                CommitInternal();
+                SaveInfos();
             }
             else
             {
@@ -128,7 +127,7 @@ namespace Kinovea.ScreenManager
         }
         #endregion
         
-        #region Controls event handlers
+        #region Styling event handlers
         private void btnBold_Click(object sender, EventArgs e)
         {
             int style = GetSelectionStyle();
@@ -175,50 +174,27 @@ namespace Kinovea.ScreenManager
         }
         private void btnFrameColor_Click(object sender, EventArgs e)
         {
-            if (m_Keyframe == null || manualUpdate)
-                return;
-
             FormColorPicker picker = new FormColorPicker(m_Keyframe.Color);
             FormsHelper.Locate(picker);
             if (picker.ShowDialog() == DialogResult.OK)
             {
                 m_Keyframe.Color = picker.PickedColor;
                 LoadColor();
-                CommitInternal();
+                m_psui.OnKeyframeNameChanged();
             }
             picker.Dispose();
-        }
-
-        private void rtbComment_TextChanged(object sender, EventArgs e)
-        {
-            if (m_Keyframe == null || manualUpdate)
-                return;
-
-            m_Keyframe.Comments = rtbComment.Rtf;
-            CommitInternal();
-        }
-
-        private void tbName_TextChanged(object sender, EventArgs e)
-        {
-            if (m_Keyframe == null || manualUpdate)
-                return;
-
-            m_Keyframe.Title = tbName.Text;
-            CommitInternal();
         }
         #endregion
 
         #region Lower level helpers
         private void LoadInfos()
         {
-            manualUpdate = true;
             // Update
             tbName.Text = m_Keyframe.Title;
             lblTimecode.Text = m_Keyframe.TimeCode;
             rtbComment.Clear();
             rtbComment.Rtf = m_Keyframe.Comments;
             LoadColor();
-            manualUpdate = false;
         }
         private void LoadColor()
         {
@@ -226,19 +202,21 @@ namespace Kinovea.ScreenManager
             btnFrameColor.FlatAppearance.MouseDownBackColor = m_Keyframe.Color;
             btnFrameColor.FlatAppearance.MouseOverBackColor = m_Keyframe.Color;
         }
-        private void CommitInternal()
+        private void SaveInfos()
         {
             // Commit changes to the keyframe
-            // This must not be called at each modification otherwise the update routine breaks.
-            if (m_Keyframe == null)
-                return;
+            // This must not be called at each info modification otherwise the update routine breaks...
             
-            m_Keyframe.Comments = rtbComment.Rtf;
-    
-            if(m_Keyframe.Title != tbName.Text)
+            log.Debug("Saving comment and title");
+            if (m_Keyframe != null)
             {
-                m_Keyframe.Title = tbName.Text;
-                m_psui.OnKeyframeNameChanged();
+                m_Keyframe.Comments = rtbComment.Rtf;
+    
+                if(m_Keyframe.Title != tbName.Text)
+                {
+                    m_Keyframe.Title = tbName.Text;	
+                    m_psui.OnKeyframeNameChanged();
+                }
             }
         }
         private int GetSelectionStyle()
@@ -251,7 +229,6 @@ namespace Kinovea.ScreenManager
             
             return bold + italic + underline + strikeout;
         }
-
         #endregion
     }
 }

@@ -41,8 +41,6 @@ namespace Kinovea.ScreenManager
         private void InitValues()
         {
             nudWidth.Value = width;
-            NudHelper.FixNudScroll(nudWidth);
-            NudHelper.FixNudScroll(nudHeight);
         }
 
         private void InitCulture()

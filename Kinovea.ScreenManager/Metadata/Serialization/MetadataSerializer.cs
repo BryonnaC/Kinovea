@@ -322,17 +322,14 @@ namespace Kinovea.ScreenManager
                         ParseChronos(r, scaling);
                         break;
                     case "Spotlights":
-                        metadata.DrawingSpotlight.ReadXml(r, scaling, RemapTimestamp);
+                        metadata.DrawingSpotlight.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "AutoNumbers":
                     case "NumberSequence":
-                        metadata.DrawingNumberSequence.ReadXml(r, scaling, RemapTimestamp);
+                        metadata.DrawingNumberSequence.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);
-                        break;
-                    case "TestGrid":
-                        metadata.DrawingTestGrid.ReadXml(r);
                         break;
                     case "Trackability":
                         metadata.TrackabilityManager.ReadXml(r, scaling, RemapTimestamp);
@@ -460,15 +457,11 @@ namespace Kinovea.ScreenManager
             
             WriteGeneralInformation(w);
             WriteKeyframes(w, SerializationFilter.KVA);
-            
             WriteChronos(w, SerializationFilter.KVA);
             WriteTracks(w, SerializationFilter.KVA);
-
             WriteSpotlights(w);
             WriteNumberSequence(w);
             WriteCoordinateSystem(w);
-            WriteTestGrid(w);
-
             WriteTrackablePoints(w);
             WriteVideoFilters(w);
 
@@ -586,14 +579,6 @@ namespace Kinovea.ScreenManager
             w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.Id.ToString());
             w.WriteAttributeString("name", metadata.DrawingCoordinateSystem.Name);
             metadata.DrawingCoordinateSystem.WriteXml(w, SerializationFilter.KVA);
-            w.WriteEndElement();
-        }
-        private void WriteTestGrid(XmlWriter w)
-        {
-            w.WriteStartElement("TestGrid");
-            w.WriteAttributeString("id", metadata.DrawingTestGrid.Id.ToString());
-            w.WriteAttributeString("name", metadata.DrawingTestGrid.Name);
-            metadata.DrawingTestGrid.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteCalibrationHelp(XmlWriter w)

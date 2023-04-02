@@ -223,7 +223,6 @@ namespace Kinovea.ScreenManager
             log.DebugFormat("Switching from {0} to {1}.", currentViewerType, viewerType);
             
             ClearContent();
-            ShowHideAddressBar(false);
             this.splitMain.Panel2.Controls.Clear();
             
             switch(viewerType)
@@ -232,14 +231,12 @@ namespace Kinovea.ScreenManager
                     {
                         viewerFiles.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerFiles;
-                        ShowHideAddressBar(true);
                         break;
                     }
                 case ThumbnailViewerType.Shortcuts:
                     {
                         viewerShortcuts.UpdateThumbnailsSize(sizeSelector.SelectedSize);
                         viewer = viewerShortcuts;
-                        ShowHideAddressBar(true);
                         break;
                     }
                 case ThumbnailViewerType.Cameras:
@@ -272,13 +269,6 @@ namespace Kinovea.ScreenManager
                  CameraTypeManager.StopDiscoveringCameras();
             }
 
-        }
-        private void ShowHideAddressBar(bool visible)
-        {
-            btnBack.Visible = visible;
-            btnForward.Visible = visible;
-            btnUp.Visible = visible;
-            lblAddress.Visible = visible;
         }
         private ActiveFileBrowserTab Convert(ThumbnailViewerType content)
         {

@@ -32,5 +32,11 @@ namespace Kinovea.ScreenManager
         /// Chrono: specialization for single time point clock.
         /// </summary>
         Clock,
+
+        // Options of camera test grid.
+        HorizontalLine,
+        VerticalLine,
+        Frame,
+        Thirds,
     }
 }

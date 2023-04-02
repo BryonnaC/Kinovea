@@ -30,10 +30,7 @@ namespace Kinovea.Root
         {
             InitializeComponent();
             Version v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            if (v.Build == 0)
-                lblVersion.Text = v.Major + "." + v.Minor;
-            else
-                lblVersion.Text = v.Major + "." + v.Minor + "." + v.Build;
+            lblVersion.Text = v.Major + "." + v.Minor + "." + v.Build;
         }
     }
 }

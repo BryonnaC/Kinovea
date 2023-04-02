@@ -55,9 +55,9 @@ namespace Kinovea.Video
         {
             return m_Cache.MoveBy(_skip + 1);
         }
-        public override bool MoveTo(long from, long target)
+        public override bool MoveTo(long _timestamp)
         {
-            return m_Cache.MoveTo(target);
+            return m_Cache.MoveTo(_timestamp);
         }
         public override void Close()
         {

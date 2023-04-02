@@ -37,11 +37,6 @@ namespace Kinovea.Video.Synthetic
             get { return OriginalSize; }
         }
 
-        public ImageRotation ImageRotation
-        {
-            get { return ImageRotation.Rotate0; }
-        }
-
         private SyntheticVideo video;
         private Bitmap errorBitmap;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

@@ -120,9 +120,9 @@ namespace Kinovea.Video.Bitmap
         {
             return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
         }
-        public override bool MoveTo(long from, long target)
+        public override bool MoveTo(long timestamp)
         {
-            return UpdateCurrent(target);
+            return UpdateCurrent(timestamp);
         }
         public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxMemory, Action<DoWorkEventHandler> workerFn)
         {
@@ -185,7 +185,6 @@ namespace Kinovea.Video.Bitmap
             videoInfo.OriginalSize = generator.OriginalSize;
             videoInfo.AspectRatioSize = generator.ReferenceSize;
             videoInfo.ReferenceSize = generator.ReferenceSize;
-            videoInfo.ImageRotation = generator.ImageRotation;
         }
 
         private bool UpdateCurrent(long timestamp)

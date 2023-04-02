@@ -25,7 +25,6 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml;
 using System.Linq;
-using System.Xml.Serialization;
 
 using Kinovea.ScreenManager.Languages;
 using Kinovea.Services;
@@ -36,8 +35,7 @@ namespace Kinovea.ScreenManager
     /// Number sequence.
     /// This is a proxy object dispatching to individual number objects in the sequence.
     /// </summary>
-    [XmlType("AutoNumbers")]
-    public class DrawingNumberSequence : AbstractMultiDrawing, IDecorable, IKvaSerializable
+    public class DrawingNumberSequence : AbstractMultiDrawing, IDecorable
     {
         #region Properties
         public override string ToolDisplayName
@@ -180,16 +178,13 @@ namespace Kinovea.ScreenManager
             numberSequence.Clear();
             selected = -1;
         }
-
-        public int IndexOf(Guid id)
-        {
-            return numberSequence.FindIndex(item => item.Id == id);
-        }
         #endregion
         
         #region Public methods
-        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper)
+        public void ReadXml(XmlReader r, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
         {
+            Clear();
+
             r.ReadStartElement();
             
             while(r.NodeType == XmlNodeType.Element)
@@ -201,13 +196,10 @@ namespace Kinovea.ScreenManager
                         BindStyle();
                         break;
                     case "AutoNumber":
-                        AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, parentMetadata);
+                        AbstractMultiDrawingItem item = MultiDrawingItemSerializer.Deserialize(r, scale, timestampMapper, metadata);
                         DrawingNumberSequenceItem number = item as DrawingNumberSequenceItem;
-                        int index = IndexOf(number.Id);
-                        if (index == -1)
-                            parentMetadata.AddMultidrawingItem(this, number);
-                        else
-                            numberSequence[index] = number;
+                        if (number != null)
+                            metadata.AddMultidrawingItem(this, number);
                         break;
                     default:
                         string unparsed = r.ReadOuterXml();
@@ -215,18 +207,15 @@ namespace Kinovea.ScreenManager
                         break;
                 }
             }	
- 
+            
             r.ReadEndElement();
         }
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
-            if (ShouldSerializeCore(filter))
-            {
-                foreach (DrawingNumberSequenceItem number in numberSequence)
-                    DrawingSerializer.Serialize(w, number as IKvaSerializable, filter);
-            }
-
-            if (ShouldSerializeStyle(filter))
+            foreach(DrawingNumberSequenceItem number in numberSequence)
+                DrawingSerializer.Serialize(w, number as IKvaSerializable, filter);
+            
+            if ((filter & SerializationFilter.Style) == SerializationFilter.Style)
             {
                 w.WriteStartElement("DrawingStyle");
                 style.WriteXml(w);

@@ -60,16 +60,6 @@ namespace Kinovea.ScreenManager
         bool RotatedCanvas { get; }
 
         /// <summary>
-        /// Whether we should draw the keyframe-attached drawings on top of the bitmap rendered by this filter.
-        /// </summary>
-        bool DrawAttachedDrawings { get; }
-
-        /// <summary>
-        /// Whether we should draw the detached drawings on top of the bitmap rendered by this filter.
-        /// </summary>
-        bool DrawDetachedDrawings { get; }
-
-        /// <summary>
         /// Whether this filter is capable of exporting video.
         /// If this is true a "Save video" menu will be shown 
         /// and the `ExportVideo` callback should be implemented.
@@ -131,7 +121,7 @@ namespace Kinovea.ScreenManager
         /// Draw extra graphics on top of the current image.
         /// These may be dependent on the current time while the main image might not.
         /// </summary>
-        void DrawExtra(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, long timestamp, bool export);
+        void DrawExtra(Graphics canvas, IImageToViewportTransformer transformer, long timestamp);
 
         /// <summary>
         /// Called when the user wants to export the video using images created by the filter.

@@ -200,33 +200,35 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             // Keyframe only support two kind of serialization, KVA or Spreadsheet.
-            w.WriteStartElement("Position");
-            w.WriteString(position.ToString());
-            w.WriteEndElement();
-
-            if (!string.IsNullOrEmpty(Title))
-                w.WriteElementString("Title", Title);
-
-            w.WriteElementString("Color", XmlHelper.WriteColor(color, false));
-
-            if (!string.IsNullOrEmpty(comments))
-                w.WriteElementString("Comment", comments);
-
-            if (drawings.Count == 0)
-                return;
-
-            // Drawings are written in reverse order to match order of addition.
-            w.WriteStartElement("Drawings");
-            for (int i = drawings.Count - 1; i >= 0; i--)
+            if ((filter & SerializationFilter.KVA) == SerializationFilter.KVA)
             {
-                IKvaSerializable serializableDrawing = drawings[i] as IKvaSerializable;
-                if (serializableDrawing == null)
-                    continue;
+                w.WriteStartElement("Position");
+                w.WriteString(position.ToString());
+                w.WriteEndElement();
 
-                DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.KVA);
+                if (!string.IsNullOrEmpty(Title))
+                    w.WriteElementString("Title", Title);
+
+                w.WriteElementString("Color", XmlHelper.WriteColor(color, false));
+
+                if (!string.IsNullOrEmpty(comments))
+                    w.WriteElementString("Comment", comments);
+
+                if (drawings.Count == 0)
+                    return;
+
+                // Drawings are written in reverse order to match order of addition.
+                w.WriteStartElement("Drawings");
+                for (int i = drawings.Count - 1; i >= 0; i--)
+                {
+                    IKvaSerializable serializableDrawing = drawings[i] as IKvaSerializable;
+                    if (serializableDrawing == null)
+                        continue;
+
+                    DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.KVA);
+                }
+                w.WriteEndElement();
             }
-
-            w.WriteEndElement();
         }
 
         public MeasuredDataKeyframe CollectMeasuredData()
@@ -260,11 +262,6 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Comment":
                         comments = r.ReadElementContentAsString();
-
-                        // Note: XML spec specifies that any CRLF must be converted to single LF.
-                        // This breaks the comparison between saved data and read data.
-                        // Force CRLF back.
-                        comments = comments.Replace("\n", "\r\n");
                         break;
                     case "Drawings":
                         ParseDrawings(r, scale);
@@ -328,17 +325,14 @@ namespace Kinovea.ScreenManager
 
             if(comments != null)
                 hash ^= comments.GetHashCode();
-
-            if (!string.IsNullOrEmpty(title))
+            
+            if(!string.IsNullOrEmpty(title))
                 hash ^= title.GetHashCode();
-
-            hash ^= color.GetHashCode();
-
+            
             if (!string.IsNullOrEmpty(timecode))
                 hash ^= timecode.GetHashCode();
 
             return hash;
-
         }
         #endregion
     }

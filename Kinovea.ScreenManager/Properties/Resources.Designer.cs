@@ -63,16 +63,6 @@ namespace Kinovea.ScreenManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap action {
-            get {
-                object obj = ResourceManager.GetObject("action", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap arrow_inout {
             get {
                 object obj = ResourceManager.GetObject("arrow_inout", resourceCulture);
@@ -126,16 +116,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap bin_empty {
             get {
                 object obj = ResourceManager.GetObject("bin_empty", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap border_all {
-            get {
-                object obj = ResourceManager.GetObject("border_all", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -426,26 +406,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap dualplayback {
             get {
                 object obj = ResourceManager.GetObject("dualplayback", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap equalizer {
-            get {
-                object obj = ResourceManager.GetObject("equalizer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap exit_filter {
-            get {
-                object obj = ResourceManager.GetObject("exit_filter", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1276,16 +1236,6 @@ namespace Kinovea.ScreenManager.Properties {
         internal static System.Drawing.Bitmap rotate90 {
             get {
                 object obj = ResourceManager.GetObject("rotate90", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap rtl {
-            get {
-                object obj = ResourceManager.GetObject("rtl", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

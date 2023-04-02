@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Globalization;
-using System.ComponentModel;
 
 namespace Kinovea.Services
 {
@@ -42,23 +41,6 @@ namespace Kinovea.Services
         public List<PointF> CropPositions { get; set; } = new List<PointF>();
 
         /// <summary>
-        /// Set of indices of crop positions that were set manually.
-        /// This is used to support interpolation.
-        /// </summary>
-        public HashSet<int> ManualPositions { get; set; } = new HashSet<int>();
-
-        /// <summary>
-        /// Whether to automatically interpolate non-manually placed positions.
-        /// When this is true moving a single tile will also move all the other tiles
-        /// to interpolate between the manually anchored ones.
-        /// If this is false the other tiles won't be interpolated until we use the 
-        /// interpolate menu manually.
-        /// When using the Reset tile menu, if this is true the reset tile will 
-        /// be interpolated, if this is false it will be reset to empty.
-        /// </summary>
-        public bool AutoInterpolate { get; set; } = true;
-
-        /// <summary>
         /// Wether time progresses from left to right or right to left.
         /// </summary>
         public bool LeftToRight { get; set; } = true;
@@ -74,16 +56,12 @@ namespace Kinovea.Services
         /// </summary>
         public bool BorderVisible { get; set; } = true;
 
-        /// <summary>
-        /// Type of measurement used in the labels.
-        /// Supported: None, Time, Frame.
-        /// </summary>
-        public MeasureLabelType MeasureLabelType { get; set; } = MeasureLabelType.None;
-        
         // TODO:
-        // legend type (none, time, tile number).
+        // legend visibility.
         // legend placement.
+        // legend type (time, tile number).
         // Direction bullets (small arrows between tiles).
+        // Oversampling factor: to improve quality when viewport zooming.
 
         #endregion
 
@@ -102,15 +80,9 @@ namespace Kinovea.Services
             foreach (PointF p in this.CropPositions)
                 clone.CropPositions.Add(p);
 
-            clone.ManualPositions = new HashSet<int>();
-            foreach (int index in this.ManualPositions)
-                clone.ManualPositions.Add(index);
-
-            clone.AutoInterpolate = this.AutoInterpolate;
             clone.LeftToRight = this.LeftToRight;
             clone.BorderColor = this.BorderColor;
             clone.BorderVisible = this.BorderVisible;
-            clone.MeasureLabelType = this.MeasureLabelType;
 
             return clone;
         }
@@ -123,15 +95,10 @@ namespace Kinovea.Services
             hash ^= CropSize.GetHashCode();
             foreach (PointF cropPosition in CropPositions)
                 hash ^= cropPosition.GetHashCode();
-            
-            foreach (int index in ManualPositions)
-                hash ^= index.GetHashCode();
-            
-            hash ^= AutoInterpolate.GetHashCode();
+
             hash ^= LeftToRight.GetHashCode();
             hash ^= BorderColor.GetHashCode();
             hash ^= BorderVisible.GetHashCode();
-            hash ^= MeasureLabelType.GetHashCode();
             return hash;
         }
 
@@ -156,9 +123,6 @@ namespace Kinovea.Services
                     case "CropPositions":
                         ParseCropPositions(r);
                         break;
-                    case "AutoInterpolate":
-                        AutoInterpolate = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
                     case "LeftToRight":
                         LeftToRight = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
@@ -167,10 +131,6 @@ namespace Kinovea.Services
                         break;
                     case "BorderVisible":
                         BorderVisible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
-                    case "MeasureLabelType":
-                        TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
-                        MeasureLabelType = (MeasureLabelType)enumConverter.ConvertFromString(r.ReadElementContentAsString());
                         break;
                     default:
                         string outerXml = r.ReadOuterXml();
@@ -191,30 +151,12 @@ namespace Kinovea.Services
             if (empty)
                 return;
 
-            while (r.NodeType == XmlNodeType.Element)
+            while(r.NodeType == XmlNodeType.Element)
             {
-                switch (r.Name)
-                {
-                    case "CropPosition":
-                        bool isAnchor = false;
-                        if (r.MoveToAttribute("anchor"))
-                            isAnchor = XmlHelper.ParseBoolean(r.ReadContentAsString());
-
-                        r.ReadStartElement();
-                        CropPositions.Add(XmlHelper.ParsePointF(r.ReadContentAsString()));
-                        
-                        if (isAnchor)
-                            ManualPositions.Add(CropPositions.Count - 1);
-
-                        r.ReadEndElement();
-                        break;
-
-                    default:
-                        string unparsed = r.ReadOuterXml();
-                        log.DebugFormat("Unparsed content in KVA XML: {0}", unparsed);
-                        r.ReadOuterXml();
-                        break;
-                }
+                if (r.Name == "CropPosition")
+                    CropPositions.Add(XmlHelper.ParsePointF(r.ReadElementContentAsString()));
+                else
+                    r.ReadOuterXml();
             }
 
             r.ReadEndElement();
@@ -229,25 +171,12 @@ namespace Kinovea.Services
 
             w.WriteStartElement("CropPositions");
             for (int i = 0; i < CropPositions.Count; i++)
-            {
-                w.WriteStartElement("CropPosition");
-
-                if (ManualPositions.Contains(i))
-                    w.WriteAttributeString("anchor", "true");
-
-                w.WriteString(XmlHelper.WritePointF(CropPositions[i]));
-                w.WriteEndElement();
-            }
+                w.WriteElementString("CropPosition", XmlHelper.WritePointF(CropPositions[i]));
             w.WriteEndElement();
 
-            w.WriteElementString("AutoInterpolate", XmlHelper.WriteBoolean(AutoInterpolate));
             w.WriteElementString("LeftToRight", XmlHelper.WriteBoolean(LeftToRight));
             w.WriteElementString("BorderColor", XmlHelper.WriteColor(BorderColor, false));
             w.WriteElementString("BorderVisible", XmlHelper.WriteBoolean(BorderVisible));
-
-            TypeConverter enumConverter = TypeDescriptor.GetConverter(typeof(MeasureLabelType));
-            string xmlMeasureLabelType = enumConverter.ConvertToString(MeasureLabelType);
-            w.WriteElementString("MeasureLabelType", xmlMeasureLabelType);
         }
         #endregion
     }

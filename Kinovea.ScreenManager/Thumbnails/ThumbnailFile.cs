@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         private Bitmap currentThumbnail;
         private FileDetails details = new FileDetails();
         private bool m_bIsImage;
+        private bool hasKva;
         private int currentThumbnailIndex;
         private bool m_Hovering;
         private Bitmap bmpKvaAnalysis = Resources.bullet_white;
@@ -227,20 +228,12 @@ namespace Kinovea.ScreenManager
                     details.Details[FileProperty.Size] = "";
                 else
                     details.Details[FileProperty.Size] = string.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
-
-                // Filesystem level properties.
-                bool hasKva = false;
-                DateTime creation = DateTime.Now;
-                if (!string.IsNullOrEmpty(summary.Filename) && File.Exists(summary.Filename))
-                {
-                    hasKva = VideoSummary.HasCompanionKva(summary.Filename);
-                    creation = File.GetCreationTime(summary.Filename);
-                }
-
+                
+                hasKva = summary.HasKva;
                 if (hasKva)
                     details.Details[FileProperty.HasKva] = "kva";
 
-                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", creation);
+                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", summary.Creation);
 
                 SetSize(this.Width, this.Height);
             }

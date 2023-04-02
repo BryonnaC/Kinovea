@@ -55,9 +55,6 @@ namespace Kinovea.ScreenManager
             get 
             { 
                 int hash = Visible.GetHashCode();
-                hash ^= styleHelper.ContentHash;
-                hash ^= showGrid.GetHashCode();
-                hash ^= showGraduations.GetHashCode();
                 return hash;
             }
         } 
@@ -78,17 +75,23 @@ namespace Kinovea.ScreenManager
         {
             get 
             { 
+                // Rebuild the menu to get the localized text.
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReloadMenusCulture();
-
-                contextMenu.AddRange(new ToolStripItem[] {
-                    mnuOptions,
-                    new ToolStripSeparator(),
-                    mnuHide
-                });
                 
-                mnuShowGrid.Checked = showGrid;
-                mnuShowGraduations.Checked = showGraduations;
+                //menuShowAxis.Text = ScreenManagerLang.mnuCoordinateSystemShowAxis;
+                //menuShowGrid.Text = ScreenManagerLang.mnuCoordinateSystemShowGrid;
+                //menuShowGraduations.Text = ScreenManagerLang.mnuCoordinateSystemShowTickMarks;
+                menuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
+                
+                //menuShowAxis.Checked = showAxis;
+                //menuShowGrid.Checked = showGrid;
+                //menuShowGraduations.Checked = showGraduations;
+                
+                /*contextMenu.Add(menuShowAxis);
+                contextMenu.Add(menuShowGrid);
+                contextMenu.Add(menuShowGraduations);
+                contextMenu.Add(new ToolStripSeparator());*/
+                contextMenu.Add(menuHide);
                 
                 return contextMenu; 
             }
@@ -99,6 +102,7 @@ namespace Kinovea.ScreenManager
 
         #region Members
         private Dictionary<string, PointF> points = new Dictionary<string, PointF>();
+        private bool showAxis = true;
         private bool showGrid = true;
         private bool showGraduations = true;
         private Size imageSize;
@@ -110,18 +114,15 @@ namespace Kinovea.ScreenManager
         
         private bool trackingUpdate;
 
-
-        private const int axesAlpha = 255;
-        private const int gridAlpha = (int)(255*0.5f);
-        private const int labelsAlpha = (int)(255*0.5f);
+        private const int defaultBackgroundAlpha = 92;
+        private const int gridAlpha = 255;
         private const int textMargin = 8;
 
-        #region Context menu
-        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowGrid = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuShowGraduations = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuHide = new ToolStripMenuItem();
-        #endregion
+        // Context menu
+        private ToolStripMenuItem menuShowAxis = new ToolStripMenuItem();
+        private ToolStripMenuItem menuShowGrid = new ToolStripMenuItem();
+        private ToolStripMenuItem menuShowGraduations = new ToolStripMenuItem();
+        private ToolStripMenuItem menuHide = new ToolStripMenuItem();
         
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -139,26 +140,17 @@ namespace Kinovea.ScreenManager
                 style = stylePreset.Clone();
                 BindStyle();
             }
-
-            InitializeMenus();
-        }
-
-        private void InitializeMenus()
-        {
-            mnuOptions.Image = Properties.Resources.equalizer;
-            mnuShowGrid.Image = Properties.Drawings.coordinates_grid;
-            mnuShowGraduations.Image = Properties.Drawings.label;
             
-            mnuShowGrid.Click += mnuShowGrid_Click;
-            mnuShowGraduations.Click += mnuShowGraduations_Click;
-
-            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuShowGrid,
-                mnuShowGraduations,
-            });
-
-            mnuHide.Image = Properties.Drawings.hide;
-            mnuHide.Click += mnuHide_Click;
+            // Context menu
+            menuShowAxis.Click += menuShowAxis_Click;
+            menuShowGrid.Click += menuShowGrid_Click;
+            menuShowGraduations.Click += menuShowGraduations_Click;
+            menuHide.Click += menuHide_Click;
+            
+            menuShowAxis.Image = Properties.Drawings.coordinates_axis;
+            menuShowGrid.Image = Properties.Drawings.coordinates_grid;
+            menuShowGraduations.Image = Properties.Drawings.coordinates_graduations;
+            menuHide.Image = Properties.Drawings.hide;
         }
         #endregion
 
@@ -183,43 +175,36 @@ namespace Kinovea.ScreenManager
 
         private void DrawGrid(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, CoordinateSystemGrid grid)
         {
-            Pen pen = styleHelper.GetBackgroundPen(axesAlpha);
+            Pen p = styleHelper.GetBackgroundPen(gridAlpha);
+
+            p.DashStyle = DashStyle.Solid;
+            p.Width = 2;
             
-            // Axes
-            pen.DashStyle = DashStyle.Solid;
-            pen.Width = 1;
             if (grid.VerticalAxis != null)
-                DrawGridLine(canvas, distorter, transformer, pen, grid.VerticalAxis.Start, grid.VerticalAxis.End);
+                DrawGridLine(canvas, distorter, transformer, p, grid.VerticalAxis.Start, grid.VerticalAxis.End);
 
             if (grid.HorizontalAxis != null)
-                DrawGridLine(canvas, distorter, transformer, pen, grid.HorizontalAxis.Start, grid.HorizontalAxis.End);
-            
-            if (showGrid)
+                DrawGridLine(canvas, distorter, transformer, p, grid.HorizontalAxis.Start, grid.HorizontalAxis.End);
+
+            p.DashStyle = DashStyle.Dash;
+            p.Width = 1;
+            foreach (GridLine line in grid.GridLines)
             {
-                pen.Color = Color.FromArgb(gridAlpha, pen.Color);
-                pen.DashStyle = DashStyle.Dash;
-                    
-                foreach (GridLine line in grid.GridLines)
-                {
-                    DrawGridLine(canvas, distorter, transformer, pen, line.Start, line.End);
-                }
+                DrawGridLine(canvas, distorter, transformer, p, line.Start, line.End);
             }
 
-            if (showGraduations)
-            {
-                SolidBrush brushFill = styleHelper.GetBackgroundBrush(labelsAlpha);
-                SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
-                Font font = styleHelper.GetFont(1.0F);
+            SolidBrush brushFill = styleHelper.GetBackgroundBrush(defaultBackgroundAlpha);
+            SolidBrush fontBrush = styleHelper.GetForegroundBrush(255);
+            Font font = styleHelper.GetFont(1.0F);
 
-                foreach (TickMark tick in grid.TickMarks)
-                    tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin, false);
+            foreach (TickMark tick in grid.TickMarks)
+                tick.Draw(canvas, distorter, transformer, brushFill, fontBrush, font, textMargin, false);
             
-                font.Dispose();
-                fontBrush.Dispose();
-                brushFill.Dispose();
-            }
+            font.Dispose();
+            fontBrush.Dispose();
+            brushFill.Dispose();
 
-            pen.Dispose();
+            p.Dispose();
         }
 
         private void DrawGridLine(Graphics canvas, DistortionHelper distorter, IImageToViewportTransformer transformer, Pen penLine, PointF a, PointF b)
@@ -240,12 +225,7 @@ namespace Kinovea.ScreenManager
 
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
         {
-            // -1: miss
-            // 0: not bound.
-            // 1: origin point.
-            // 2: horizontal axis.
-            // 3: vertical axis.
-
+            // Convention: miss = -1, object = 0, handle = n.
             if(!Visible)
                 return -1;
             
@@ -254,14 +234,17 @@ namespace Kinovea.ScreenManager
             if (HitTester.HitPoint(point, points["0"], transformer))
                 return 1;
             
-            CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
-            if (grid == null)
-                return -1;
+            if(showGrid || showGraduations || showAxis)
+            {
+                CoordinateSystemGrid grid = CalibrationHelper.GetCoordinateSystemGrid();
+                if (grid == null)
+                    return -1;
 
-            if (grid.HorizontalAxis != null && HitTester.HitLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
-                result = 2;
-            else if (grid.VerticalAxis != null && HitTester.HitLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
-                result = 3;
+                if (grid.HorizontalAxis != null && HitTester.HitLine(point, grid.HorizontalAxis.Start, grid.HorizontalAxis.End, distorter, transformer))
+                    result = 2;
+                else if (grid.VerticalAxis != null && HitTester.HitLine(point, grid.VerticalAxis.Start, grid.VerticalAxis.End, distorter, transformer))
+                    result = 3;
+            }
             
             return result;
         }
@@ -336,19 +319,25 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Custom menu handlers
-        private void mnuShowGrid_Click(object sender, EventArgs e)
+        private void menuShowAxis_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
-            showGrid = !mnuShowGrid.Checked;
+            showAxis = !showAxis;
             InvalidateFromMenu(sender);
         }
-        private void mnuShowGraduations_Click(object sender, EventArgs e)
+        private void menuShowGrid_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
-            showGraduations = !mnuShowGraduations.Checked;
+            showGrid = !showGrid;
             InvalidateFromMenu(sender);
         }
-        private void mnuHide_Click(object sender, EventArgs e)
+        private void menuShowGraduations_Click(object sender, EventArgs e)
+        {
+            CaptureMemento(SerializationFilter.Core);
+            showGraduations = !showGraduations;
+            InvalidateFromMenu(sender);
+        }
+        private void menuHide_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
             Visible = false;
@@ -362,9 +351,7 @@ namespace Kinovea.ScreenManager
             if (ShouldSerializeCore(filter))
             {
                 w.WriteElementString("Position", XmlHelper.WritePointF(points["0"]));
-                w.WriteElementString("Visible", XmlHelper.WriteBoolean(Visible));
-                w.WriteElementString("ShowGrid", XmlHelper.WriteBoolean(showGrid));
-                w.WriteElementString("ShowGraduations", XmlHelper.WriteBoolean(showGraduations));
+                w.WriteElementString("Visible", Visible.ToString().ToLower());
             }
 
             if (ShouldSerializeStyle(filter))
@@ -398,12 +385,6 @@ namespace Kinovea.ScreenManager
                         break;
                     case "Visible":
                         Visible = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
-                    case "ShowGrid":
-                        showGrid = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
-                        break;
-                    case "ShowGraduations":
-                        showGraduations = XmlHelper.ParseBoolean(r.ReadElementContentAsString());
                         break;
                     case "DrawingStyle":
                         style = new DrawingStyle(r);
@@ -467,14 +448,6 @@ namespace Kinovea.ScreenManager
         {
             var memento = new HistoryMementoModifyDrawing(parentMetadata, parentMetadata.SingletonDrawingsManager.Id, this.Id, this.Name, filter);
             parentMetadata.HistoryStack.PushNewCommand(memento);
-        }
-
-        private void ReloadMenusCulture()
-        {
-            mnuOptions.Text = "Options";
-            mnuShowGrid.Text = "Show grid";// ScreenManagerLang.mnuCoordinateSystemShowGrid;
-            mnuShowGraduations.Text = "Show graduations"; //ScreenManagerLang.mnuCoordinateSystemShowTickMarks;
-            mnuHide.Text = ScreenManagerLang.mnuCoordinateSystemHide;
         }
         #endregion
     }

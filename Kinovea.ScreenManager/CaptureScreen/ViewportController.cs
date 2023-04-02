@@ -145,20 +145,6 @@ namespace Kinovea.ScreenManager
             view.ToastMessage(message, duration);
         }
 
-        public void StartingRecording()
-        {
-            ToastMessage(ScreenManagerLang.Toast_StartRecord, 1000);
-        }
-
-        public void UpdateRecordingIndicator(RecordingStatus status, float progress)
-        {
-            view.UpdateRecordingIndicator(status, progress);
-        }
-        public void StoppingRecording()
-        {
-            ToastMessage(ScreenManagerLang.Toast_StopRecord, 750);
-        }
-
         public void DrawKVA(Graphics canvas, Point location, float zoom)
         {
             if (metadataRenderer == null)

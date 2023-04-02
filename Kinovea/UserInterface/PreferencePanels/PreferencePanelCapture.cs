@@ -231,8 +231,6 @@ namespace Kinovea.Root
             lblReplacementFramerate.Text = RootLang.dlgPreferences_Capture_lblReplacementValue;
             nudReplacementThreshold.Value = (decimal)replacementFramerateThreshold;
             nudReplacementFramerate.Value = (decimal)replacementFramerate;
-            NudHelper.FixNudScroll(nudReplacementThreshold);
-            NudHelper.FixNudScroll(nudReplacementFramerate);
             // Tooltip: Starting at this capture framerate, videos will be created with the replacement framerate in their metadata.
         }
 
@@ -312,11 +310,9 @@ namespace Kinovea.Root
             vumeter.DecibelRange = decibelRange;
             nudAudioTriggerThreshold.Value = (decimal)vumeter.ThresholdLinear * decibelRange;
             nudAudioTriggerThreshold.Maximum = decibelRange;
-            NudHelper.FixNudScroll(nudAudioTriggerThreshold);
 
             lblQuietPeriod.Text = RootLang.dlgPreferences_Capture_lblIdleTime;
             nudQuietPeriod.Value = (decimal)audioQuietPeriod;
-            NudHelper.FixNudScroll(nudQuietPeriod);
 
             lblTriggerAction.Text = "Trigger action:";
             cmbTriggerAction.Items.Add(ScreenManagerLang.ToolTip_StartRecording);
@@ -325,8 +321,7 @@ namespace Kinovea.Root
 
             lblRecordingTime.Text = RootLang.dlgPreferences_Capture_lblStopRecordingByDuration;
             nudRecordingTime.Value = (decimal)recordingSeconds;
-            NudHelper.FixNudScroll(nudRecordingTime);
-
+            
             chkEnableAudioTrigger.Checked = enableAudioTrigger;
             EnableDisableAudioTrigger();
 

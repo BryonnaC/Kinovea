@@ -136,7 +136,6 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuShowBefore = new ToolStripMenuItem();
         private ToolStripMenuItem mnuHideAfter = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowAfter = new ToolStripMenuItem();
-        
         private ToolStripMenuItem mnuAction = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStart = new ToolStripMenuItem();
         private ToolStripMenuItem mnuStop = new ToolStripMenuItem();
@@ -150,10 +149,8 @@ namespace Kinovea.ScreenManager
         private ToolStripMenuItem mnuMoveNextSplit = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteSection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuDeleteTimes = new ToolStripMenuItem();
-        
-        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowLabel = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuLocked = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuLock = new ToolStripMenuItem();
         #endregion
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -214,8 +211,8 @@ namespace Kinovea.ScreenManager
                 mnuHideBefore, 
                 mnuHideAfter });
 
-            // Action
-            mnuAction.Image = Properties.Resources.action;
+            // Action menus
+            mnuAction.Image = Properties.Drawings.stopwatch;
             mnuStart.Image = Properties.Drawings.chronostart;
             mnuStop.Image = Properties.Drawings.chronostop;
             mnuSplit.Image = Properties.Drawings.chrono_split;
@@ -228,6 +225,9 @@ namespace Kinovea.ScreenManager
             mnuMoveNextSplit.Image = Properties.Resources.chronosectionend;
             mnuDeleteSection.Image = Properties.Resources.bin_empty;
             mnuDeleteTimes.Image = Properties.Resources.bin_empty;
+            mnuLock.Image = Properties.Drawings.padlock2;
+            mnuShowLabel.Image = Properties.Drawings.label;
+
             mnuStart.Click += mnuStart_Click;
             mnuStop.Click += mnuStop_Click;
             mnuSplit.Click += mnuSplit_Click;
@@ -240,19 +240,8 @@ namespace Kinovea.ScreenManager
             mnuMoveNextSplit.Click += mnuMoveNextSplit_Click;
             mnuDeleteSection.Click += mnuDeleteSection_Click;
             mnuDeleteTimes.Click += mnuDeleteTimes_Click;
-
-
-            // Options
-            mnuOptions.Image = Properties.Resources.equalizer;
-            mnuShowLabel.Image = Properties.Drawings.label;
-            mnuLocked.Image = Properties.Drawings.padlock2;
             mnuShowLabel.Click += mnuShowLabel_Click;
-            mnuLocked.Click += mnuLock_Click;
-            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuShowLabel,
-                mnuLocked,
-            });
-
+            mnuLock.Click += mnuLock_Click;
         }
         #endregion
 
@@ -657,16 +646,15 @@ namespace Kinovea.ScreenManager
             // Corner-case dead sections.
             mnuMovePreviousEnd.Enabled = !IsBeforeFirstSection(sectionIndex);
             mnuMoveNextStart.Enabled = !IsAfterLastSection(sectionIndex);
-            mnuRenameSections.Enabled = sections.Count > 0;
-            mnuDeleteTimes.Enabled = sections.Count > 0;
 
             mnuShowLabel.Checked = showLabel;
-            mnuLocked.Checked = locked;
+            mnuLock.Checked = locked;
 
             contextMenu.AddRange(new ToolStripItem[] {
                 mnuVisibility,
                 mnuAction,
-                mnuOptions,
+                mnuShowLabel,
+                mnuLock,
             });
 
             return contextMenu;
@@ -700,10 +688,10 @@ namespace Kinovea.ScreenManager
             mnuMoveNextStart.Text = "Move the start of the next section to this frame";
             mnuDeleteTimes.Text = "Delete all times";
 
-            // Options.
-            mnuOptions.Text = "Options";
+
+            // Display.
             mnuShowLabel.Text = ScreenManagerLang.mnuShowLabel;
-            mnuLocked.Text = "Locked";
+            mnuLock.Text = locked ? "Unlock" : "Lock";
         }
 
         #region Visibility
@@ -792,9 +780,6 @@ namespace Kinovea.ScreenManager
             // The dialog is responsible for backing up and restoring the state in case of cancellation.
             // When we exit the dialog the drawing has been modified or reverted to its original state,
             // or the original state pushed to the history stack in case of validation.
-            if (sections.Count == 0)
-                return;
-
             int sectionIndex = GetSectionIndex(contextTimestamp);
 
             ToolStripMenuItem tsmi = sender as ToolStripMenuItem;
@@ -936,7 +921,7 @@ namespace Kinovea.ScreenManager
         private void mnuLock_Click(object sender, EventArgs e)
         {
             CaptureMemento(SerializationFilter.Core);
-            locked = !mnuLocked.Checked;
+            locked = !mnuLock.Checked;
             InvalidateFromMenu(sender);
         }
         #endregion

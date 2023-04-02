@@ -165,10 +165,6 @@ namespace Kinovea.Root
             nudMax.Value = (decimal)(defaultFading.MasterFactor * 100);
             nudOpaque.Value = (decimal)defaultFading.OpaqueFrames;
             nudFading.Value = (decimal)defaultFading.FadingFrames;
-
-            NudHelper.FixNudScroll(nudMax);
-            NudHelper.FixNudScroll(nudOpaque);
-            NudHelper.FixNudScroll(nudFading);
         }
         private void InitTabTracking()
         {
