@@ -84,6 +84,12 @@ namespace Kinovea.ScreenManager
         {
             get; set;
         }
+
+        public bool ShowConnector
+        {
+            get { return showConnector; }
+            set { showConnector = value; }
+        }
         #endregion
 
         #region Members
@@ -92,6 +98,7 @@ namespace Kinovea.ScreenManager
         private long timestamp; // Absolute time.
         private int attachIndex; // The index of the reference point in the track points list.
         private PointF attachLocation; // The point we are attached to (image coordinates).
+        private bool showConnector = true; // Whether to draw the connection between the label and the attach point.
         private StyleHelper styleHelper = new StyleHelper();
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
@@ -132,12 +139,12 @@ namespace Kinovea.ScreenManager
             hash ^= styleHelper.ContentHash;
             return hash;
         }
-        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacityFactor)
+        public void Draw(Graphics canvas, IImageToViewportTransformer transformer, double opacity)
         {
-            using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacityFactor*255)))
-            using(Pen p = styleHelper.GetBackgroundPen((int)(opacityFactor*64)))
+            using(SolidBrush fillBrush = styleHelper.GetBackgroundBrush((int)(opacity*255)))
+            using(Pen p = styleHelper.GetBackgroundPen((int)(opacity*64)))
             using(Font f = styleHelper.GetFont((float)transformer.Scale))
-            using(SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacityFactor*255)))
+            using(SolidBrush fontBrush = styleHelper.GetForegroundBrush((int)(opacity*255)))
             {
                 SizeF textSize = canvas.MeasureString(text, f);
                 Point location = transformer.Transform(background.Rectangle.Location);
@@ -146,13 +153,20 @@ namespace Kinovea.ScreenManager
                 SizeF untransformed = transformer.Untransform(textSize);
                 background.Rectangle = new RectangleF(background.Rectangle.Location, untransformed);
                 
-                Point attch = transformer.Transform(attachLocation);
-                Point center = transformer.Transform(background.Center);
-                canvas.FillEllipse(fillBrush, attch.Box(2));
-                canvas.DrawLine(p, attch, center);
+                // Connector
+                if (showConnector)
+                {
+                    Point attch = transformer.Transform(attachLocation);
+                    Point center = transformer.Transform(background.Center);
+                    canvas.FillEllipse(fillBrush, attch.Box(2));
+                    canvas.DrawLine(p, attch, center);
+                }
                 
+                // Background
                 Rectangle rect = new Rectangle(location, size);
                 RoundedRectangle.Draw(canvas, rect, fillBrush, f.Height/4, false, false, null);
+
+                // Text
                 canvas.DrawString(text, f, fontBrush, rect.Location);
             }
         }    
@@ -166,7 +180,7 @@ namespace Kinovea.ScreenManager
             if(moveLabel)
                 background.Move(dx, dy);
         }
-        public void SetLabel(PointF point)
+        public void SetCenter(PointF point)
         {
             background.CenterOn(point);
         }

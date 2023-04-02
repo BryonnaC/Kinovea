@@ -522,7 +522,7 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing new Metadata object.");
         }
-        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
+        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
             : this(historyStack, timecodeBuilder)
         {
             // This should reflect what we do in FrameServerPlayer.SetupMetadata
@@ -955,7 +955,7 @@ namespace Kinovea.ScreenManager
 
             // The following is necessary for the "undo of deletion" case.
             track.UpdateKinematics();
-            track.IntegrateKeyframes();
+            track.UpdateKeyframeLabels();
             
             if (DrawingAdded != null)
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
@@ -969,7 +969,7 @@ namespace Kinovea.ScreenManager
             if (track != null)
             {
                 track.UpdateKinematics();
-                track.IntegrateKeyframes();
+                track.UpdateKeyframeLabels();
             }
 
             if (DrawingModified != null)

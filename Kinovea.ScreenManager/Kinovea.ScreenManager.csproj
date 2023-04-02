@@ -280,6 +280,7 @@
     <Compile Include="CaptureScreen\Delayer.cs" />
     <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
+    <Compile Include="CaptureScreen\RecordingStatus.cs" />
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -475,10 +476,8 @@
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
     <Compile Include="Measurement\Tracking\TrackColorCycler.cs" />
-    <Compile Include="Measurement\Tracking\MeasureLabelType.cs" />
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
-    <Compile Include="Measurement\Tracking\TrackView.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1535,6 +1534,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\padlock2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binocular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\equalizer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rtl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\border-all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit_filter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

@@ -53,6 +53,12 @@ namespace Kinovea.ScreenManager
             Cache,
         }
 
+        #region Events
+        public event EventHandler<TimeEventArgs> PositionChanging;
+        public event EventHandler<TimeEventArgs> PositionChanged;
+        public event EventHandler KeyframeDropped;
+        #endregion
+
         #region Properties
         /// <summary>
         /// The smallest timestamp of the current selection, in absolute timestamps.
@@ -126,6 +132,12 @@ namespace Kinovea.ScreenManager
                 return TimestampToPixel(curTimestamp + (tsPerFrame / 2));
             }
         }
+
+        public bool ShowCacheInTimeline
+        {
+            get { return showCacheInTimeline; }
+            set { showCacheInTimeline = value; }
+        }
         #endregion
             
         #region Members
@@ -156,12 +168,12 @@ namespace Kinovea.ScreenManager
         private Metadata metadata;
 
         // Markers coordinates and colors.
+        private bool showCacheInTimeline = false;
         private List<Pair<int, Color>> keyframesMarks = new List<Pair<int, Color>>();
         private List<Pair<Point, Color>> chronosMarks = new List<Pair<Point, Color>>();
         private List<Pair<Point, Color>> tracksMarks = new List<Pair<Point, Color>>();
         private VideoSection cacheSegment;
         private List<Pair<Point, Color>> cacheMarks = new List<Pair<Point, Color>>();
-        private bool showCacheMarkers = false;
         private long syncPointTimestamp;
         private Pair<int, Color> syncPointMark;
         private long leftHairline;
@@ -172,16 +184,10 @@ namespace Kinovea.ScreenManager
         // Standard colors.
         private static readonly Pen penPlayHead = Pens.DarkCyan;
         private static readonly SolidBrush brushPlayHead = new SolidBrush(Color.FromArgb(96, Color.DarkCyan));
+        private static readonly Color cacheColor = Color.Lime;
         #endregion
         
-        private static readonly bool prebufferDisplay = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        #endregion
-
-        #region Events
-        public event EventHandler<TimeEventArgs> PositionChanging;
-        public event EventHandler<TimeEventArgs> PositionChanged;
-        public event EventHandler KeyframeDropped;
         #endregion
 
         #region Constructor
@@ -311,13 +317,11 @@ namespace Kinovea.ScreenManager
             UpdateCursorPosition();
             Invalidate();
         }
-
         private void FrameTracker_DragOver(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
             Scrub();
         }
-
         private void FrameTracker_DragDrop(object sender, DragEventArgs e)
         {
             Commit();
@@ -331,12 +335,13 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Scrub the timeline to the cursor point.
+        /// This is called on mouse move
         /// This may be called from the outside in the context of drag and drop events on other surfaces, 
         /// as a way to turn these surfaces into large timelines.
         /// </summary>
         public void Scrub()
         {
-            if (!enabled || invalidateAsked || isCommonTimeline)
+            if (!enabled || invalidateAsked)
                 return;
 
             // gutterRight is the last available pixel, so the right side of the cursor block.
@@ -364,7 +369,8 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public void Commit()
         {
-            if (!enabled || isCommonTimeline)
+            //if (!enabled || isCommonTimeline)
+            if (!enabled)
                 return;
 
             Point mouseCoords = this.PointToClient(Cursor.Position);
@@ -415,7 +421,7 @@ namespace Kinovea.ScreenManager
                 DrawMainCursor(canvas);
             }
 
-            if (showCacheMarkers)
+            if (showCacheInTimeline)
             {
                 foreach (var mark in cacheMarks)
                     DrawRangeMark(canvas, mark, MarkerType.Cache);
@@ -590,11 +596,11 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Update the pixel range of the cache markers.
-        /// There are two markers if the cache wraps around the end of the selection.
+        /// The cache is always contiguous in time unless it wraps around the end of the selection.
         /// </summary>
         private void UpdateCachesMarkersPosition()
         {
-            if (!showCacheMarkers)
+            if (!showCacheInTimeline)
                 return;
 
             cacheMarks.Clear();
@@ -606,13 +612,13 @@ namespace Kinovea.ScreenManager
                 Point rangeEnd = TimestampToPixel(minTimestamp, cacheSegment.End);
                 Point rangeStart = TimestampToPixel(cacheSegment.Start, maxTimestamp);
 
-                cacheMarks.Add(new Pair<Point, Color>(rangeEnd, Color.DarkGreen));
-                cacheMarks.Add(new Pair<Point, Color>(rangeStart, Color.DarkGreen));
+                cacheMarks.Add(new Pair<Point, Color>(rangeEnd, cacheColor));
+                cacheMarks.Add(new Pair<Point, Color>(rangeStart, cacheColor));
             }
             else
             {
                 Point range = TimestampToPixel(cacheSegment.Start, cacheSegment.End);
-                cacheMarks.Add(new Pair<Point, Color>(range, Color.DarkGreen));
+                cacheMarks.Add(new Pair<Point, Color>(range, cacheColor));
             }
         }
 
