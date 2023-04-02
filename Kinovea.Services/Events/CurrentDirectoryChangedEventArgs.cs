@@ -26,17 +26,15 @@ namespace Kinovea.Services
 {
     public class CurrentDirectoryChangedEventArgs : EventArgs
     {
-        public readonly string Path;
+        public readonly bool Shortcuts;
         public readonly List<string> Files;
-        public readonly bool IsShortcuts;
-        public readonly bool DoRefresh;
+        public readonly bool Refresh;
 
-        public CurrentDirectoryChangedEventArgs(string path, List<string> files, bool isShortcuts, bool doRefresh)
+        public CurrentDirectoryChangedEventArgs(bool shortcuts, List<string> files, bool refresh)
         {
-            this.Path = path;
+            this.Shortcuts = shortcuts;
             this.Files = files;
-            this.IsShortcuts = isShortcuts;
-            this.DoRefresh = doRefresh;
+            this.Refresh = refresh;
         }
     }
 }

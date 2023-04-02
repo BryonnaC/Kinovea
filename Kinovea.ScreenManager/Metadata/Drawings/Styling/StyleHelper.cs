@@ -19,7 +19,6 @@ along with Kinovea. If not, see http://www.gnu.org/licenses/.
 */
 #endregion
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Drawing;
@@ -121,43 +120,18 @@ namespace Kinovea.ScreenManager
         }
         public bool Curved
         {
-            get { return toggles["curved"]; }
-            set { toggles["curved"] = value; }
+            get { return curved; }
+            set { curved = value; }
         }
         public bool Perspective
         {
-            get { return toggles["perspective"]; }
-            set { toggles["perspective"] = value; }
+            get { return perspective; }
+            set { perspective = value; }
         }
         public bool Clock
         {
-            get { return toggles["clock"]; }
-            set { toggles["clock"] = value; }
-        }
-        public bool HorizontalAxis
-        {
-            get { return toggles["horizontalAxis"]; }
-            set { toggles["horizontalAxis"] = value; }
-        }
-        public bool VerticalAxis
-        {
-            get { return toggles["verticalAxis"]; }
-            set { toggles["verticalAxis"] = value; }
-        }
-        public bool Frame
-        {
-            get { return toggles["frame"]; }
-            set { toggles["frame"] = value; }
-        }
-        public bool Thirds
-        {
-            get { return toggles["thirds"]; }
-            set { toggles["thirds"] = value; }
-        }
-        public bool DistanceGrid
-        {
-            get { return toggles["distanceGrid"]; }
-            set { toggles["distanceGrid"] = value; }
+            get { return clock; }
+            set { clock = value; }
         }
 
         public int ContentHash
@@ -174,22 +148,26 @@ namespace Kinovea.ScreenManager
                 hash ^= trackShape.GetHashCode();
                 hash ^= penShape.GetHashCode();
                 hash ^= gridDivisions.GetHashCode();
-                hash ^= toggles.GetHashCode();
+                hash ^= curved.GetHashCode();
+                hash ^= perspective.GetHashCode();
+                hash ^= clock.GetHashCode();
                 return hash;
             }
         }
         #endregion
         
         #region Members
-        private Color color = Color.Black;
-        private int lineSize = 1;
-        private LineShape lineShape = LineShape.Solid;
+        private Color color;
+        private int lineSize;
+        private LineShape lineShape;
         private Font font = new Font("Arial", 12, FontStyle.Regular);
         private Bicolor bicolor;
         private LineEnding lineEnding = LineEnding.None;
         private TrackShape trackShape = TrackShape.Solid;
         private PenShape penShape = PenShape.Solid;
-        private Dictionary<string, bool> toggles = new Dictionary<string, bool>();
+        private bool curved;
+        private bool perspective;
+        private bool clock;
         private int gridDivisions;
         private int minFontSize = 8;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -200,16 +178,6 @@ namespace Kinovea.ScreenManager
         {
             BindWrite = DoBindWrite;
             BindRead = DoBindRead;
-
-            // Initialize toggles.
-            toggles.Add("curved", false);
-            toggles.Add("perspective", false);
-            toggles.Add("clock", false);
-            toggles.Add("horizontalAxis", false);
-            toggles.Add("verticalAxis", false);
-            toggles.Add("frame", false);
-            toggles.Add("thirds", false);
-            toggles.Add("distanceGrid", false);
         }
         #endregion
         
@@ -391,6 +359,36 @@ namespace Kinovea.ScreenManager
 
                         break;
                     }
+                case "Curved":
+                    {
+                        if (value is bool)
+                        {
+                            curved = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Perspective":
+                    {
+                        if (value is bool)
+                        {
+                            perspective = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
+                case "Clock":
+                    {
+                        if (value is bool)
+                        {
+                            clock = (bool)value;
+                            imported = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
                         if (value is int)
@@ -420,86 +418,6 @@ namespace Kinovea.ScreenManager
                             gridDivisions = (int)value;
                             imported = true;
                         }
-                        break;
-                    }
-                case "Toggles/Curved":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["curved"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Perspective":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["perspective"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Clock":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["clock"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/HorizontalAxis":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["horizontalAxis"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/VerticalAxis":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["verticalAxis"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Frame":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["frame"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Thirds":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["thirds"] = (bool)value;
-                            imported = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/DistanceGrid":
-                    {
-                        if (value is bool)
-                        {
-                            toggles["distanceGrid"] = (bool)value;
-                            imported = true;
-                        }
-
                         break;
                     }
                 default:
@@ -583,6 +501,36 @@ namespace Kinovea.ScreenManager
                         }
                         break;
                     }
+                case "Curved":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = curved;
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Perspective":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = perspective;
+                            converted = true;
+                        }
+
+                        break;
+                    }
+                case "Clock":
+                    {
+                        if (targetType == typeof(bool))
+                        {
+                            result = clock;
+                            converted = true;
+                        }
+
+                        break;
+                    }
                 case "Font":
                     {
                         if (targetType == typeof(int))
@@ -608,86 +556,6 @@ namespace Kinovea.ScreenManager
                             result = gridDivisions;
                             converted = true;
                         }
-                        break;
-                    }
-                case "Toggles/Curved":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["curved"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Perspective":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["perspective"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Clock":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["clock"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/HorizontalAxis":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["horizontalAxis"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/VerticalAxis":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["verticalAxis"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Frame":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["frame"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/Thirds":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["thirds"];
-                            converted = true;
-                        }
-
-                        break;
-                    }
-                case "Toggles/DistanceGrid":
-                    {
-                        if (targetType == typeof(bool))
-                        {
-                            result = toggles["distanceGrid"];
-                            converted = true;
-                        }
-
                         break;
                     }
                 default:

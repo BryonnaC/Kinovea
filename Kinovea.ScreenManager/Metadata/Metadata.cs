@@ -40,16 +40,7 @@ using Kinovea.Video;
 namespace Kinovea.ScreenManager
 {
     /// <summary>
-    /// Main class representing the annotations added to the video.
-    /// This contains the drawings, calibration information, comments, tracking data, etc.
-    /// This is what gets serialized to KVA xml.
-    /// This also contains video import options like image rotation, demosaicing, deinterlacing, 
-    /// and rendering options like mirroring.
-    ///
-    /// We have essentially 3 types of drawings:
-    /// - attached to a keyframe (ex: a line or angle object),
-    /// - detached (ex: a stopwatch or track object),
-    /// - singletons (ex: the coordinate system or the number sequence).
+    /// Main class representing the analysis document.
     /// </summary>
     public class Metadata
     {
@@ -63,8 +54,7 @@ namespace Kinovea.ScreenManager
         public EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemAdded;
         public EventHandler MultiDrawingItemDeleted;
         public EventHandler CameraCalibrationAsked;
-        public EventHandler VideoFilterModified;
-
+            
         public RelayCommand<ITrackable> AddTrackableDrawingCommand { get; set; }
         public RelayCommand<ITrackable> DeleteTrackableDrawingCommand { get; set; }
         #endregion
@@ -77,21 +67,13 @@ namespace Kinovea.ScreenManager
         {
             get { return timecodeBuilder; }
         }
-
-        /// <summary>
-        /// Stack of recent commands for undo/redo mechanics.
-        /// </summary>
         public HistoryStack HistoryStack
         {
             get { return historyStack; }
         }
-
-        /// <summary>
-        /// True when the object contains unsaved changes.
-        /// </summary>
         public bool IsDirty
         {
-            get
+            get 
             {
                 int currentHash = GetContentHash();
                 bool dirty = currentHash != referenceHash;
@@ -116,9 +98,7 @@ namespace Kinovea.ScreenManager
                     lastKVAPath == PreferencesManager.PlayerPreferences.PlaybackKVA ||
                     lastKVAPath == PreferencesManager.CapturePreferences.CaptureKVA ||
                     lastKVAPath.StartsWith(Software.TempDirectory))
-                {
                     return "";
-                }
                     
                 return lastKVAPath;
             } 
@@ -132,13 +112,6 @@ namespace Kinovea.ScreenManager
             get { return globalTitle; }
             set { globalTitle = value; }
         }
-
-        /// <summary>
-        /// The reference image size used by drawings for their coordinates.
-        /// This may be different than the size on disk, as this takes aspect ratio and rotation into account.
-        /// It may also be different from the image coming out of the video reader, as that may be decoded at 
-        /// a scale matching the viewport for performance reasons.
-        /// </summary>
         public Size ImageSize
         {
             get { return imageSize; }
@@ -149,42 +122,15 @@ namespace Kinovea.ScreenManager
                 calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
             }
         }
-
-        /// <summary>
-        /// A helper used to transform from image space coordinates to viewport coordinates.
-        /// </summary>
         public ImageTransform ImageTransform
         {
             get { return imageTransform; }
         }
 
-        /// <summary>
-        /// The import mode for aspect ratio. 
-        /// This tells whether we are using the original aspect ratio or 
-        /// forcing the images to conform to a specific one.
-        /// </summary>
         public ImageAspectRatio ImageAspect { get; set; }
-        
-        /// <summary>
-        /// The import mode for image rotation.
-        /// </summary>
         public ImageRotation ImageRotation { get; set; }
-        
-        /// <summary>
-        /// Whether the image should be mirrored.
-        /// This has almost no impact on drawings which still keep their coordinates in the non-mirrored space.
-        /// Except for the magnifier which needs to mirror the source area and picture-in-picture.
-        /// </summary>
         public bool Mirrored { get; set; }
-        
-        /// <summary>
-        /// Import mode for demosaicing.
-        /// </summary>
         public Demosaicing Demosaicing { get; set; }
-        
-        /// <summary>
-        /// Import mode for deinterlacing.
-        /// </summary>
         public bool Deinterlacing { get; set; }
 
         /// <summary>
@@ -196,9 +142,6 @@ namespace Kinovea.ScreenManager
             set { videoPath = value;}
         }
 
-        /// <summary>
-        /// Keyframe accessor.
-        /// </summary>
         public Keyframe this[int index]
         {
             // Indexor
@@ -211,99 +154,67 @@ namespace Kinovea.ScreenManager
             }
             set { keyframes[index] = value; }
         }
-
-        /// <summary>
-        /// Collection of keyframes.
-        /// </summary>
         public List<Keyframe> Keyframes
         {
             get { return keyframes; }
         }
-
-        /// <summary>
-        /// Number of keyframes.
-        /// </summary>
         public int Count
         {
             get { return keyframes.Count; }
         }
-
-        /// <summary>
-        /// Whether there are any annotations that can be drawn on top of images.
-        /// </summary>
-        public bool HasVisibleData
+        public bool HasData
         {
             get 
             {
                 // This is used to know if there is anything to draw on the images when saving.
-                // All objects should be taken into account here, even those
+                // All kind of objects should be taken into account here, even those
                 // that we currently don't save to the .kva but only draw on the image.
                 return keyframes.Count > 0 ||
+                        spotlightManager.Count > 0 ||
+                        autoNumberManager.Count > 0 ||
                         chronoManager.Drawings.Count > 0 ||
                         trackManager.Drawings.Count > 0 ||
-                        drawingSpotlight.Count > 0 ||
-                        drawingNumberSequence.Count > 0 ||
-                        drawingTestGrid.Visible ||
-                        drawingCoordinateSystem.Visible ||
-                        magnifier.Mode != MagnifierMode.Inactive;
+                        extraDrawings.Count > totalStaticExtraDrawings ||
+                        magnifier.Mode != MagnifierMode.None;
             }
         }
-
-        /// <summary>
-        /// Whether we are currently in the process of tracking objects.
-        /// </summary>
         public bool Tracking 
         {
-            get 
-            { 
-                return TrackManager.Drawings.Any(t => ((DrawingTrack)t).Status == TrackStatus.Edit) || TrackabilityManager.Tracking; 
-            }
+            get { return TrackManager.Tracking || TrackabilityManager.Tracking; }
         }
-
-        /// <summary>
-        /// Whether we are currently in the process of editing a text label.
-        /// </summary>
+        public bool HasTrack 
+        {
+            get { return trackManager.Drawings.Count > 0; }
+        }
         public bool TextEditingInProgress
         {
             get { return Labels().Any(l => l.Editing); }
         }
-
-        /// <summary>
-        /// The drawing that was hit during the last hit test, if any.
-        /// </summary>
+        public List<AbstractDrawing> ExtraDrawings
+        {
+            get { return extraDrawings;}
+        }
         public AbstractDrawing HitDrawing
         {
             get { return hitDrawing;}
         }
-
-        /// <summary>
-        /// The keyframe owning the drawing that was hit during the last hit test, if any.
-        /// </summary>
         public Keyframe HitKeyframe
         {
             get { return hitKeyframe; }
         }
-
-        /// <summary>
-        /// The drawing manager owning the drawing that was hit during the last hit test, if any.
-        /// </summary>
-        public AbstractDrawingManager HitDrawingOwner
-        {
-            get { return hitDrawingOwner; }
-        }
-
+        
         public Magnifier Magnifier
         {
             get { return magnifier;}
             set { magnifier = value;}
         }
-        public DrawingSpotlight DrawingSpotlight
+        public SpotlightManager SpotlightManager
         {
-            get { return drawingSpotlight;}
+            get { return spotlightManager;}
         }
-        public DrawingNumberSequence DrawingNumberSequence
+        public AutoNumberManager AutoNumberManager
         {
-            get { return drawingNumberSequence;}
+            get { return autoNumberManager;}
         }
         public DrawingCoordinateSystem DrawingCoordinateSystem
         {
@@ -313,24 +224,15 @@ namespace Kinovea.ScreenManager
         {
             get { return drawingTestGrid; }
         }
-        public DrawingManager<AbstractDrawing> ChronoManager
+        public ChronoManager ChronoManager
         {
             get { return chronoManager; }
         }
-        public DrawingManager<DrawingTrack> TrackManager
+        public TrackManager TrackManager
         {
             get { return trackManager; }
         }
-
-        public DrawingManager<AbstractDrawing> SingletonDrawingsManager
-        {
-            get { return singletonDrawingsManager; }
-        }
         
-        /// <summary>
-        /// Whether we are currently in the process of initializing a drawing.
-        /// This is true for example when we are setting the second point of a line drawing.
-        /// </summary>
         public bool DrawingInitializing
         {
             get
@@ -419,9 +321,6 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        /// <summary>
-        /// Helper holding the necessary transforms to go from image space to world space.
-        /// </summary>
         public CalibrationHelper CalibrationHelper 
         {
             get { return calibrationHelper; }
@@ -451,25 +350,20 @@ namespace Kinovea.ScreenManager
         private List<Keyframe> keyframes = new List<Keyframe>();
         private Keyframe hitKeyframe;
         private AbstractDrawing hitDrawing;
-        private AbstractDrawingManager hitDrawingOwner;
-
-        // Detached drawings.
-        private DrawingManager<AbstractDrawing> chronoManager = new DrawingManager<AbstractDrawing>();
-        private DrawingManager<DrawingTrack> trackManager = new DrawingManager<DrawingTrack>();
         
-        // Singleton drawings
-        private DrawingManager<AbstractDrawing> singletonDrawingsManager = new DrawingManager<AbstractDrawing>();
-        private DrawingSpotlight drawingSpotlight;
-        private DrawingNumberSequence drawingNumberSequence;
-        private DrawingCoordinateSystem drawingCoordinateSystem;
-        private DrawingTestGrid drawingTestGrid;
-        private Guid memoCoordinateSystemId;
-        
-        // The magnifier is not a regular drawing.
+        // Drawings not attached to any key image.
+        private List<AbstractDrawing> extraDrawings = new List<AbstractDrawing>();
+        private int totalStaticExtraDrawings;           // TODO: might be removed when even Chronos and tracks are represented by a single manager object.
         private Magnifier magnifier = new Magnifier();
-
+        private SpotlightManager spotlightManager;
+        private AutoNumberManager autoNumberManager;
+        private DrawingCoordinateSystem drawingCoordinateSystem;
+        private Guid memoCoordinateSystemId;
+        private DrawingTestGrid drawingTestGrid;
+        private ChronoManager chronoManager = new ChronoManager();
+        private TrackManager trackManager = new TrackManager();
         private TrackerParameters lastUsedTrackerParameters;
-        private MeasureLabelType mesureLabelType;
+        private TrackExtraData trackExtraData;
         private TrackabilityManager trackabilityManager = new TrackabilityManager();
 
         // Other info not related to drawings.
@@ -513,7 +407,7 @@ namespace Kinovea.ScreenManager
             
             autoSaver = new AutoSaver(this);
             
-            CreateSingletonDrawings();
+            CreateStaticExtraDrawings();
             CreateVideoFilters();
             CleanupHash();
             SetupTempDirectory(id);
@@ -522,7 +416,7 @@ namespace Kinovea.ScreenManager
 
             log.Debug("Constructing new Metadata object.");
         }
-        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder)
+        public Metadata(string kvaString,  VideoInfo info, HistoryStack historyStack, TimeCodeBuilder timecodeBuilder, ClosestFrameDisplayer closestFrameDisplayer)
             : this(historyStack, timecodeBuilder)
         {
             // This should reflect what we do in FrameServerPlayer.SetupMetadata
@@ -578,12 +472,6 @@ namespace Kinovea.ScreenManager
         {
             hitKeyframe = keyframe;
         }
-
-        public void SelectManager(AbstractDrawingManager manager)
-        {
-            hitDrawingOwner = manager;
-        }
-
         public void EnableDisableKeyframes()
         {
             foreach(Keyframe keyframe in keyframes)
@@ -607,16 +495,10 @@ namespace Kinovea.ScreenManager
 
         /// <summary>
         /// Returns whether this drawing is the kind of drawing that is attached to a keyframe.
-        /// This doesn't necessarily mean it is currently parented to an actual keyframe.
         /// </summary>
         public bool IsAttachedDrawing(AbstractDrawing drawing)
         {
-            bool detached = 
-                chronoManager.Drawings.Contains(drawing) ||
-                trackManager.Drawings.Contains(drawing) ||
-                SingletonDrawingsManager.Drawings.Contains(drawing);
-
-            return !detached; 
+            return !(drawing is DrawingChrono) && !(drawing is DrawingTrack);
         }
 
         /// <summary>
@@ -624,22 +506,12 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public Guid FindManagerId(AbstractDrawing drawing)
         {
-            if (drawing is DrawingChrono || drawing is DrawingChronoMulti)
-            {
+            if (drawing is DrawingChrono)
                 return chronoManager.Id;
-            }
             else if (drawing is DrawingTrack)
-            {
                 return trackManager.Id;
-            }
-            else if (SingletonDrawingsManager.Drawings.Contains(drawing))
-            {
-                return SingletonDrawingsManager.Id;
-            }
             else
-            {
                 return FindAttachmentKeyframeId(drawing);
-            }
         }
 
         /// <summary>
@@ -668,7 +540,7 @@ namespace Kinovea.ScreenManager
 
 
         /// <summary>
-        /// Returns the (keyframe-attached) drawing with the passed id.
+        /// Returns the id of the keyframe the drawing is attached to.
         /// </summary>
         public AbstractDrawing FindDrawing(Guid drawingId)
         {
@@ -796,17 +668,15 @@ namespace Kinovea.ScreenManager
         /// </summary>
         public IEnumerable<ITrackable> TrackableDrawings()
         {
-            foreach (AbstractDrawing drawing in singletonDrawingsManager.Drawings)
+            foreach (AbstractDrawing drawing in extraDrawings)
             {
                 if (drawing is ITrackable)
                     yield return (ITrackable)drawing;
             }
 
             foreach (AbstractDrawing drawing in AttachedDrawings())
-            {
                 if (drawing is ITrackable)
                     yield return (ITrackable)drawing;
-            }
         }
         public IEnumerable<DrawingDistortionGrid> DistortionGrids()
         {
@@ -823,8 +693,6 @@ namespace Kinovea.ScreenManager
                 return chronoManager;
             else if (managerId == trackManager.Id)
                 return trackManager;
-            else if (managerId == singletonDrawingsManager.Id)
-                return singletonDrawingsManager;
             else
                 return GetKeyframe(managerId);
         }
@@ -863,12 +731,11 @@ namespace Kinovea.ScreenManager
                 return;
             }
 
-            if (chronoManager.Id == managerId && (drawing is DrawingChrono || drawing is DrawingChronoMulti))
+            if (chronoManager.Id == managerId && drawing is DrawingChrono)
             {
                 bool known = chronoManager.Drawings.Any(d => d.Id == drawing.Id);
                 if (!known)
-                    AddChrono(drawing);
-
+                    AddChrono(drawing as DrawingChrono);
                 return;
             }
 
@@ -890,7 +757,6 @@ namespace Kinovea.ScreenManager
                 return;
 
             keyframe.AddDrawing(drawing);
-            drawing.ParentMetadata = this;
             drawing.InfosFading.ReferenceTimestamp = keyframe.Position;
             drawing.InfosFading.AverageTimeStampsPerFrame = averageTimeStampsPerFrame;
             if (captureKVA)
@@ -923,7 +789,7 @@ namespace Kinovea.ScreenManager
         /// <summary>
         /// Adds a new chronometer drawing.
         /// </summary>
-        public void AddChrono(AbstractDrawing chrono)
+        public void AddChrono(DrawingChrono chrono)
         {
             chronoManager.AddDrawing(chrono);
             chrono.ParentMetadata = this;
@@ -942,6 +808,7 @@ namespace Kinovea.ScreenManager
         public void AddTrack(DrawingTrack track)
         {
             trackManager.AddDrawing(track);
+
             track.ParentMetadata = this;
             
             if (lastUsedTrackerParameters != null)
@@ -955,7 +822,7 @@ namespace Kinovea.ScreenManager
 
             // The following is necessary for the "undo of deletion" case.
             track.UpdateKinematics();
-            track.UpdateKeyframeLabels();
+            track.IntegrateKeyframes();
             
             if (DrawingAdded != null)
                 DrawingAdded(this, new DrawingEventArgs(track, trackManager.Id));
@@ -964,22 +831,15 @@ namespace Kinovea.ScreenManager
         public void ModifiedDrawing(Guid managerId, Guid drawingId)
         {
             AbstractDrawing drawing = GetDrawing(managerId, drawingId);
-            
             DrawingTrack track = drawing as DrawingTrack;
             if (track != null)
             {
                 track.UpdateKinematics();
-                track.UpdateKeyframeLabels();
+                track.IntegrateKeyframes();
             }
 
             if (DrawingModified != null)
                 DrawingModified(this, new DrawingEventArgs(drawing, managerId));
-        }
-
-        public void ModifiedVideoFilter()
-        {
-            if (VideoFilterModified != null)
-                VideoFilterModified(this, EventArgs.Empty);
         }
         
         public void DeleteDrawing(Guid managerId, Guid drawingId)
@@ -1006,7 +866,7 @@ namespace Kinovea.ScreenManager
             BeforeDrawingDeletion(drawing);
             
             manager.RemoveDrawing(drawingId);
-            DeselectAll();
+            UnselectAll();
             
             if (DrawingDeleted != null)
                 DrawingDeleted(this, EventArgs.Empty);
@@ -1019,7 +879,7 @@ namespace Kinovea.ScreenManager
                 DeleteTrackableDrawing(item);
 
             manager.Remove(itemId);
-            DeselectAll();
+            UnselectAll();
 
             if (MultiDrawingItemDeleted != null)
                 MultiDrawingItemDeleted(this, EventArgs.Empty);
@@ -1168,20 +1028,14 @@ namespace Kinovea.ScreenManager
             }
 
             // Times.
-            foreach (AbstractDrawing d in chronoManager.Drawings)
-            {   
-                if (d is DrawingChrono)
-                    md.Times.Add(((DrawingChrono)d).CollectMeasuredData());
-
-                if (d is DrawingChronoMulti)
-                    md.Times.AddRange(((DrawingChronoMulti)d).CollectMeasuredData());
-            }
+            foreach (DrawingChrono chrono in ChronoManager.Drawings)
+                md.Times.Add(chrono.CollectMeasuredData());
             md.Times.Sort((a, b) => a.Start.CompareTo(b.Start));
 
             md.Timeseries = new List<MeasuredDataTimeseries>();
             
             // Tracks.
-            foreach (DrawingTrack track in trackManager.Drawings)
+            foreach (DrawingTrack track in TrackManager.Drawings)
                 md.Timeseries.Add(track.CollectMeasuredData());
             
             // Timelines.
@@ -1253,55 +1107,6 @@ namespace Kinovea.ScreenManager
             return (float)time;
         }
 
-        /// <summary>
-        /// Get the timecode at a fraction of the frame interval.
-        /// This is currently only used by the time segment tool.
-        /// </summary>
-        public string GetFractionTime(long timestamps, float fraction)
-        {
-            TimecodeFormat tcf = PreferencesManager.PlayerPreferences.TimecodeFormat;
-            long actualTimestamps = timestamps - timeOrigin;
-            double averageTimestampsPerFrame = this.AverageTimeStampsPerFrame;
-            float frames = 0;
-            if (AverageTimeStampsPerFrame != 0)
-                frames = (float)Math.Round(actualTimestamps / averageTimestampsPerFrame);
-
-            double startMS = frames * UserInterval / HighSpeedFactor;
-            double endMS = (frames + 1) * UserInterval / HighSpeedFactor;
-            double milliseconds = startMS + ((endMS - startMS) * fraction);
-
-            double framerate = 1000.0 / UserInterval * HighSpeedFactor;
-            double framerateMagnitude = Math.Log10(framerate);
-            int precision = (int)Math.Ceiling(framerateMagnitude);
-            
-            string outputTimeCode = "";
-            switch (tcf)
-            {
-                case TimecodeFormat.Frames:
-                    outputTimeCode = String.Format("{0}", frames + Math.Round(fraction * 1000) / 1000);
-                    break;
-                case TimecodeFormat.Milliseconds:
-                    outputTimeCode = String.Format("{0}", Math.Round(milliseconds * 1000) / 1000);
-                    outputTimeCode += " ms";
-                    break;
-                case TimecodeFormat.Microseconds:
-                    outputTimeCode = String.Format("{0}", Math.Round(milliseconds * 1000000) / 1000);
-                    outputTimeCode += " µs";
-                    break;
-                case TimecodeFormat.ClassicTime:
-                default:
-                    // Increase magnitude by 1. This means for example if we are exactly at 100 fps,
-                    // we'll get the value in milliseconds instead of centiseconds.
-                    // It is equivalent to having 10 possible values along the segment.
-                    // This is the worst case scenario, in other cases we'll get somewhere between 10 and 100 values along the segment.
-                    // We limit the precision here to avoid giving a false sense of accuracy.
-                    outputTimeCode = TimeHelper.MillisecondsToTimecode(milliseconds, precision + 1);
-                    break;
-            }
-
-            return outputTimeCode;
-        }
-
         public void PostSetup(bool init)
         {
             if (init)
@@ -1312,8 +1117,8 @@ namespace Kinovea.ScreenManager
 
             if (!initialized)
             {
-                foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                    AfterDrawingCreation(d);
+                for (int i = 0; i < totalStaticExtraDrawings; i++)
+                    AfterDrawingCreation(extraDrawings[i]);
             }
             else
             {
@@ -1330,8 +1135,8 @@ namespace Kinovea.ScreenManager
             trackabilityManager.Initialize(imageSize);
             calibrationHelper.Initialize(imageSize, GetCalibrationOrigin, GetCalibrationQuad, HasTrackingData);
 
-            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                AfterDrawingCreation(d);
+            for (int i = 0; i < totalStaticExtraDrawings; i++)
+                AfterDrawingCreation(extraDrawings[i]);
         }
 
         public void Reset()
@@ -1414,7 +1219,7 @@ namespace Kinovea.ScreenManager
             hash ^= timeOrigin.GetHashCode();
             hash ^= calibrationHelper.ContentHash;
             hash ^= GetKeyframesContentHash();
-            hash ^= GetSingletonDrawingsContentHash();
+            hash ^= GetExtraDrawingsContentHash();
             hash ^= trackabilityManager.ContentHash;
             hash ^= GetVideoFiltersContentHash();
             return hash;
@@ -1432,9 +1237,8 @@ namespace Kinovea.ScreenManager
             foreach(DrawingSVG svg in SVGs())
                 svg.ResizeFinished();
         }
-        public void DeselectAll()
+        public void UnselectAll()
         {
-            hitDrawingOwner = null;
             hitKeyframe = null;
             hitDrawing = null;
         }
@@ -1450,8 +1254,6 @@ namespace Kinovea.ScreenManager
             if (string.IsNullOrEmpty(drawing.Name))
                 SetDrawingName(drawing);
 
-            drawing.ParentMetadata = this;
-
             if (drawing is IScalable)
                 ((IScalable)drawing).Scale(this.ImageSize);
 
@@ -1463,7 +1265,7 @@ namespace Kinovea.ScreenManager
                 IMeasurable measurableDrawing = drawing as IMeasurable;
                 measurableDrawing.CalibrationHelper = calibrationHelper;
 
-                measurableDrawing.InitializeMeasurableData(mesureLabelType);
+                measurableDrawing.InitializeMeasurableData(trackExtraData);
                 measurableDrawing.ShowMeasurableInfoChanged += MeasurableDrawing_ShowMeasurableInfoChanged;
             }
 
@@ -1492,7 +1294,7 @@ namespace Kinovea.ScreenManager
         {
             kvaImporting = true;
             StopAllTracking();
-            DeselectAll();
+            UnselectAll();
             
             memoCoordinateSystemId = drawingCoordinateSystem.Id;
         }
@@ -1560,18 +1362,13 @@ namespace Kinovea.ScreenManager
             serializer.SaveToFile(this, Path.Combine(tempFolder, "autosave.kva"));
         }
         #endregion
-
+        
         #region Objects Hit Tests
-
         // Note: these hit tests are for right click only.
         // They work slightly differently than the hit test in the PointerTool which is for left click.
         // The main difference is that here we only need to know if the drawing was hit at all,
         // in the pointer tool, we need to differenciate which handle was hit.
-        // When a drawing is hit it will be stored in Metadata.hitDrawing.
-
-        /// <summary>
-        /// Hit test the passed point with regards to attached drawings.
-        /// </summary>
+        // For example, Tracks can here be handled with all other ExtraDrawings.
         public bool IsOnDrawing(int _iActiveKeyframeIndex, PointF point, long _iTimestamp)
         {
             // Returns whether the mouse is on a drawing attached to a key image.
@@ -1596,17 +1393,15 @@ namespace Kinovea.ScreenManager
 
             return hit;
         }
-
-
-        /// <summary>
-        /// Hit test the passed point with regards to detached and singleton drawings.
-        /// Returns the hit drawing (or null if none), and selects it.
-        /// </summary>
-        public AbstractDrawing IsOnDetachedDrawing(PointF point, long timestamp)
+        public AbstractDrawing IsOnExtraDrawing(PointF point, long timestamp)
         {
+            // Check if the mouse is on one of the drawings not attached to any key image.
+            // Returns the drawing on which we stand (or null if none), and select it on the way.
+            // the caller will then check its type and decide which action to perform.
+            
             AbstractDrawing result = null;
 
-            foreach (AbstractDrawing chrono in chronoManager.Drawings)
+            foreach (DrawingChrono chrono in chronoManager.Drawings)
             {
                 int hit = chrono.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
                 if (hit < 0)
@@ -1614,7 +1409,6 @@ namespace Kinovea.ScreenManager
 
                 result = chrono;
                 hitDrawing = chrono;
-                hitDrawingOwner = chronoManager;
                 break;
             }
 
@@ -1629,46 +1423,29 @@ namespace Kinovea.ScreenManager
 
                 result = track;
                 hitDrawing = track;
-                hitDrawingOwner = trackManager;
                 break;
             }
 
             if (result != null)
                 return result;
 
-            foreach (AbstractDrawing drawing in singletonDrawingsManager.Drawings)
+            for(int i = extraDrawings.Count - 1; i >= 0; i--)
             {
-                int hit = drawing.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
-                if (hit < 0)
+                AbstractDrawing candidate = extraDrawings[i];
+                int hitRes = candidate.HitTest(point, timestamp, calibrationHelper.DistortionHelper, imageTransform, imageTransform.Zooming);
+                if (hitRes < 0)
                     continue;
-
-                result = drawing;
-                hitDrawing = drawing;
-                hitDrawingOwner = singletonDrawingsManager;
+                
+                result = candidate;
+                hitDrawing = candidate;
+                break;
             }
             
             return result;
         }
-        
-        /// <summary>
-        /// Hit test the passed point with regards to the magnifier.
-        /// </summary>
-        public bool IsOnMagnifier(PointF point)
-        {
-            if (magnifier.Mode != MagnifierMode.Active)
-                return false;
-
-            int hitRes = magnifier.HitTest(point, imageTransform);
-
-            return hitRes >= 0;
-        }
-
-        /// <summary>
-        /// Returns a list of indices in the keyframe collection for hit testing.
-        /// </summary>
         public int[] GetKeyframesZOrder(long _iTimestamp)
         {
-            // TODO: turn this into an iterator.
+            // TODO: turn this into an iterator.
             
             // Get the Z ordering of Keyframes for hit tests & draw.
             int[] zOrder = new int[keyframes.Count];
@@ -1724,6 +1501,7 @@ namespace Kinovea.ScreenManager
             }
 
             return zOrder;
+
         }
         #endregion
 
@@ -1739,14 +1517,6 @@ namespace Kinovea.ScreenManager
         public void DeactivateVideoFilter()
         {
             activeVideoFilterType = VideoFilterType.None;
-        }
-
-        public IVideoFilter GetVideoFilter(VideoFilterType type)
-        {
-            if (videoFilters.ContainsKey(type))
-                return videoFilters[type];
-
-            return null;
         }
 
         public void WriteVideoFilters(XmlWriter w)
@@ -1800,14 +1570,7 @@ namespace Kinovea.ScreenManager
             ClearTracking();
             trackManager.Clear();
             chronoManager.Clear();
-
-            // Keep the singletons but delete their children if any.
-            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-            {
-                if (d is AbstractMultiDrawing)
-                    ((AbstractMultiDrawing)d).Clear();
-            }
-
+            extraDrawings.RemoveRange(totalStaticExtraDrawings, extraDrawings.Count - totalStaticExtraDrawings);
             magnifier.ResetData();
             imageTransform.Reset();
             drawingCoordinateSystem.Visible = false;
@@ -1821,13 +1584,19 @@ namespace Kinovea.ScreenManager
             
             ResetVideoFilters();
             
+            foreach(AbstractDrawing extraDrawing in extraDrawings)
+            {
+                if(extraDrawing is AbstractMultiDrawing)
+                    ((AbstractMultiDrawing)extraDrawing).Clear();
+            }
+
             ImageAspect = ImageAspectRatio.Auto;
             ImageRotation = ImageRotation.Rotate0;
             Mirrored = false;
             Demosaicing = Demosaicing.None;
             Deinterlacing = false;
 
-            DeselectAll();
+            UnselectAll();
         }
         private bool DrawingsHitTest(int keyFrameIndex, PointF mouseLocation, long timestamp)
         {
@@ -1840,7 +1609,7 @@ namespace Kinovea.ScreenManager
             bool isOnDrawing = false;
             Keyframe keyframe = keyframes[keyFrameIndex];
 
-            DeselectAll();
+            UnselectAll();
             
             int currentDrawing = 0;
             int hitResult = -1;
@@ -1858,7 +1627,6 @@ namespace Kinovea.ScreenManager
                 isOnDrawing = true;
                 SelectDrawing(drawing);
                 SelectKeyframe(keyframe);
-                SelectManager(keyframe);
             }
 
             return isOnDrawing;
@@ -1896,17 +1664,17 @@ namespace Kinovea.ScreenManager
 
             return hash;
         }
-        private int GetSingletonDrawingsContentHash()
+        private int GetExtraDrawingsContentHash()
         {
             int hash = 0;
-            foreach (AbstractDrawing chrono in chronoManager.Drawings)
+            foreach (DrawingChrono chrono in chronoManager.Drawings)
                 hash ^= chrono.ContentHash;
 
             foreach (DrawingTrack track in trackManager.Drawings)
                 hash ^= track.ContentHash;
 
-            foreach (AbstractDrawing d in singletonDrawingsManager.Drawings)
-                hash ^= d.ContentHash;
+            foreach (AbstractDrawing ad in extraDrawings)
+                hash ^= ad.ContentHash;
 
             return hash;
         }
@@ -1920,33 +1688,32 @@ namespace Kinovea.ScreenManager
 
             return hash;
         }
-        private void CreateSingletonDrawings()
+        private void CreateStaticExtraDrawings()
         {
-            // Add the singleton drawings.
+            // Add the static extra drawings.
             // These drawings are unique and not attached to any particular key image.
             
-            drawingSpotlight = new DrawingSpotlight();
-            drawingNumberSequence = new DrawingNumberSequence(ToolManager.GetStylePreset("NumberSequence"));
+            spotlightManager = new SpotlightManager();
+            autoNumberManager = new AutoNumberManager(ToolManager.GetStylePreset("AutoNumbers"));
             drawingCoordinateSystem = new DrawingCoordinateSystem(Point.Empty, ToolManager.GetStylePreset("CoordinateSystem"));
-            drawingTestGrid = new DrawingTestGrid(ToolManager.GetStylePreset("TestGrid"));
+            drawingTestGrid = new DrawingTestGrid();
 
-            singletonDrawingsManager.AddDrawing(drawingSpotlight);
-            singletonDrawingsManager.AddDrawing(drawingNumberSequence);
-            singletonDrawingsManager.AddDrawing(drawingCoordinateSystem);
-            singletonDrawingsManager.AddDrawing(drawingTestGrid);
+            extraDrawings.Add(spotlightManager);
+            extraDrawings.Add(autoNumberManager);
+            extraDrawings.Add(drawingCoordinateSystem);
+            extraDrawings.Add(drawingTestGrid);
 
-            // Additional setup.
-            drawingCoordinateSystem.ParentMetadata = this;
-            drawingTestGrid.ParentMetadata = this;
-
-            // Handle the children of the spotlight which are trackable.
-            drawingSpotlight.TrackableDrawingAdded += (s, e) =>
+            // totalStaticExtraDrawings is used to differenciate between static extra drawings like multidrawing managers
+            // and dynamic extra drawings like tracks and chronos.
+            totalStaticExtraDrawings = extraDrawings.Count;
+            
+            spotlightManager.TrackableDrawingAdded += (s, e) =>
             {
                 if(AddTrackableDrawingCommand != null) 
                     AddTrackableDrawingCommand.Execute(e.TrackableDrawing); 
             };
             
-            drawingSpotlight.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
+            spotlightManager.TrackableDrawingDeleted += (s, e) => DeleteTrackableDrawing(e.TrackableDrawing);
         }
         private void CalibrationHelper_CalibrationChanged(object sender, EventArgs e)
         {
@@ -1965,9 +1732,9 @@ namespace Kinovea.ScreenManager
             foreach (DrawingTrack t in Tracks())
                 t.CalibrationChanged();
         }
-        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<MeasureLabelType> e)
+        private void MeasurableDrawing_ShowMeasurableInfoChanged(object sender, EventArgs<TrackExtraData> e)
         {
-            mesureLabelType = e.Value;
+            trackExtraData = e.Value;
         }
 
         /// <summary>

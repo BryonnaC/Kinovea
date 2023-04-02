@@ -38,20 +38,9 @@ namespace Kinovea.ScreenManager
         #region Properties
         public Rectangle Rectangle
         {
-            get { return rectangle.ToRectangle(); }
+            get { return rectangle; }
             set { rectangle = value; }
         }
-
-        public float X
-        {
-            get { return rectangle.X; }
-        }
-
-        public float Y
-        {
-            get { return rectangle.Y; }
-        }
-
         public int ContentHash
         {
             get
@@ -63,8 +52,8 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private RectangleF rectangle;
-        private SizeF minimalSize = new SizeF(50,50);
+        private Rectangle rectangle;
+        private Size minimalSize = new Size(50,50);
         #endregion
 
         public BoundingBox(){}
@@ -81,10 +70,6 @@ namespace Kinovea.ScreenManager
             canvas.FillEllipse(brush, rect.Right - widen, rect.Top - widen, widen * 2, widen * 2);
             canvas.FillEllipse(brush, rect.Right - widen, rect.Bottom - widen, widen * 2, widen * 2);
         }
-
-        /// <summary>
-        /// Mapping: -1: not hit, 0: in the rectangle, 1-4: corners. 
-        /// </summary>
         public int HitTest(PointF point, IImageToViewportTransformer transformer)
         {
             int result = -1;
@@ -94,13 +79,13 @@ namespace Kinovea.ScreenManager
             PointF botRight = new PointF(rectangle.Right, rectangle.Bottom);
             PointF botLeft = new PointF(rectangle.Left, rectangle.Bottom);
 
-            if (HitTester.HitPoint(point, topLeft, transformer))
+            if (HitTester.HitTest(topLeft, point, transformer))
                 result = 1;
-            else if (HitTester.HitPoint(point, topRight, transformer))
+            else if (HitTester.HitTest(topRight, point, transformer))
                 result = 2;
-            else if (HitTester.HitPoint(point, botRight, transformer))
+            else if (HitTester.HitTest(botRight, point, transformer))
                 result = 3;
-            else if (HitTester.HitPoint(point, botLeft, transformer))
+            else if (HitTester.HitTest(botLeft, point, transformer))
                 result = 4;
             else if (rectangle.Contains(point.ToPoint()))
                 result = 0;
@@ -111,17 +96,20 @@ namespace Kinovea.ScreenManager
         public void MoveHandle(PointF point, int handleNumber, Size originalSize, bool keepAspectRatio)
         {
             if (keepAspectRatio)
-                MoveHandleKeepAspectRatio(point, handleNumber, originalSize);
+                MoveHandleKeepAspectRatio(point.ToPoint(), handleNumber, originalSize);
             else
-                MoveHandleFree(point, handleNumber);
+                MoveHandleFree(point.ToPoint(), handleNumber);
         }
         
         public void Move(float dx, float dy)
         {
-            rectangle = rectangle.Translate(dx, dy);
+            rectangle = new Rectangle((int)(rectangle.X + dx), (int)(rectangle.Y + dy), rectangle.Width, rectangle.Height);
         }
-        public void MoveAndSnap(float dx, float dy, Size containerSize, int snapMargin)
+        public void MoveAndSnap(int deltaX, int deltaY, Size containerSize, int snapMargin)
         {
+            int dx = deltaX;
+            int dy = deltaY;
+
             if (containerSize == Size.Empty)
             {
                 Move(dx, dy);
@@ -142,7 +130,7 @@ namespace Kinovea.ScreenManager
             
             Move(dx, dy);
         }
-        private void MoveHandleKeepAspectRatio(PointF point, int handleNumber, Size originalSize)
+        private void MoveHandleKeepAspectRatio(Point point, int handleNumber, Size originalSize)
         {
             // TODO: refactor/simplify.
             
@@ -151,15 +139,17 @@ namespace Kinovea.ScreenManager
                 case 1:
                     {
                         // Top left handler.
-                        float dx = point.X - rectangle.Left;
-                        float newWidth = rectangle.Width - dx;
+                        int dx = point.X - rectangle.Left;
+                        int newWidth = rectangle.Width - dx;
 
                         if (newWidth > minimalSize.Width)
                         {
-                            float scale = newWidth / originalSize.Width;
-                            float newHeight = originalSize.Height * scale;
-                            float newY = rectangle.Top + rectangle.Height - newHeight;
-                            rectangle = new RectangleF(point.X, newY, newWidth, newHeight);
+                            double qRatio = (double)newWidth / (double)originalSize.Width;
+                            int newHeight = (int)((double)originalSize.Height * qRatio); 	// Only if square.
+
+                            int newY = rectangle.Top + rectangle.Height - newHeight;
+
+                            rectangle = new Rectangle(point.X, newY, newWidth, newHeight);
                         }
                         break;
                     }
@@ -167,47 +157,53 @@ namespace Kinovea.ScreenManager
                     {
 
                         // Top right handler.
-                        float dx = rectangle.Right - point.X;
-                        float newWidth = rectangle.Width - dx;
+                        int dx = rectangle.Right - point.X;
+                        int newWidth = rectangle.Width - dx;
 
                         if (newWidth > minimalSize.Width)
                         {
-                            float scale = newWidth / originalSize.Width;
-                            float newHeight = originalSize.Height * scale;
-                            float newY = rectangle.Top + rectangle.Height - newHeight;
-                            float newX = point.X - newWidth;
-                            rectangle = new RectangleF(newX, newY, newWidth, newHeight);
+                            double qRatio = (double)newWidth / (double)originalSize.Width;
+                            int newHeight = (int)((double)originalSize.Height * qRatio); 	// Only if square.
+
+                            int newY = rectangle.Top + rectangle.Height - newHeight;
+                            int newX = point.X - newWidth;
+
+                            rectangle = new Rectangle(newX, newY, newWidth, newHeight);
                         }
                         break;
                     }
                 case 3:
                     {
                         // Bottom right handler.
-                        float dx = rectangle.Right - point.X;
-                        float newWidth = rectangle.Width - dx;
+                        int dx = rectangle.Right - point.X;
+                        int newWidth = rectangle.Width - dx;
 
                         if (newWidth > minimalSize.Width)
                         {
-                            float scale = newWidth / originalSize.Width;
-                            float newHeight = originalSize.Height * scale;
-                            float newY = rectangle.Y;
-                            float newX = point.X - newWidth;
-                            rectangle = new RectangleF(newX, newY, newWidth, newHeight);
+                            double qRatio = (double)newWidth / (double)originalSize.Width;
+                            int newHeight = (int)((double)originalSize.Height * qRatio); 	// Only if square.
+
+                            int newY = rectangle.Y;
+                            int newX = point.X - newWidth;
+
+                            rectangle = new Rectangle(newX, newY, newWidth, newHeight);
                         }
                         break;
                     }
                 case 4:
                     {
                         // Bottom left handler.
-                        float dx = point.X - rectangle.Left;
-                        float newWidth = rectangle.Width - dx;
-                        
+                        int dx = point.X - rectangle.Left;
+                        int newWidth = rectangle.Width - dx;
+
                         if (newWidth > minimalSize.Width)
                         {
-                            float scale = newWidth / originalSize.Width;
-                            float newHeight = originalSize.Height * scale;
-                            float newY = rectangle.Y;
-                            rectangle = new RectangleF(point.X, newY, newWidth, newHeight);
+                            double qRatio = (double)newWidth / (double)originalSize.Width;
+                            int newHeight = (int)((double)originalSize.Height * qRatio); 	// Only if square.
+
+                            int newY = rectangle.Y;
+
+                            rectangle = new Rectangle(point.X, newY, newWidth, newHeight);
                         }
                         break;
                     }
@@ -238,35 +234,35 @@ namespace Kinovea.ScreenManager
             
             ApplyWithConstraints(target);
         }
-        private void MoveHandleFree(PointF point, int handleNumber)
+        private void MoveHandleFree(Point point, int handleNumber)
         {
-            RectangleF target = RectangleF.Empty;
+            Rectangle target = Rectangle.Empty;
             
             switch (handleNumber)
             {
                 case 1:
-                    target = new RectangleF(point.X, point.Y, rectangle.Right - point.X, rectangle.Bottom - point.Y);
+                    target = new Rectangle(point.X, point.Y, rectangle.Right - point.X, rectangle.Bottom - point.Y);
                     break;
                 case 2:
-                    target = new RectangleF(rectangle.Left, point.Y, point.X - rectangle.Left, rectangle.Bottom - point.Y);
+                    target = new Rectangle(rectangle.Left, point.Y, point.X - rectangle.Left, rectangle.Bottom - point.Y);
                     break;
                 case 3:
-                    target = new RectangleF(rectangle.Left, rectangle.Top, point.X - rectangle.Left, point.Y - rectangle.Top);
+                    target = new Rectangle(rectangle.Left, rectangle.Top, point.X - rectangle.Left, point.Y - rectangle.Top);
                     break;
                 case 4:
-                    target = new RectangleF(point.X, rectangle.Top, rectangle.Right - point.X, point.Y - rectangle.Top);
+                    target = new Rectangle(point.X, rectangle.Top, rectangle.Right - point.X, point.Y - rectangle.Top);
                     break;
             }
             
             ApplyWithConstraints(target);
         }
-        private void ApplyWithConstraints(RectangleF target)
+        private void ApplyWithConstraints(Rectangle target)
         {
             if(target.Width < minimalSize.Width)
-                target = new RectangleF(rectangle.Left, target.Top, minimalSize.Width, target.Height);
+                target = new Rectangle(rectangle.Left, target.Top, minimalSize.Width, target.Height);
             
             if(target.Height < minimalSize.Height)
-                target = new RectangleF(target.Left, rectangle.Top, target.Width, minimalSize.Height);
+                target = new Rectangle(target.Left, rectangle.Top, target.Width, minimalSize.Height);
             
             rectangle = target;
         }

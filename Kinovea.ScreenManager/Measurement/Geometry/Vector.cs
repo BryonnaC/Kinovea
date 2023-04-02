@@ -101,11 +101,6 @@ namespace Kinovea.ScreenManager
         {
             return this * (1.0f / Norm());
         }
-        public Vector Negate()
-        {
-            return new Vector(-X, -Y);
-        }
-
         public PointF ToPointF()
         {
             return new PointF(X, Y);

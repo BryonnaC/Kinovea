@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using Kinovea.Services;
 
 namespace Kinovea.Video.SVG
 {
@@ -118,9 +117,9 @@ namespace Kinovea.Video.SVG
         {
             return UpdateCurrent(Current.Timestamp + videoInfo.AverageTimeStampsPerFrame);
         }
-        public override bool MoveTo(long from, long target)
+        public override bool MoveTo(long timestamp)
         {
-            return UpdateCurrent(target);
+            return UpdateCurrent(timestamp);
         }
         
         public override void UpdateWorkingZone(VideoSection newZone, bool forceReload, int maxMemory, Action<DoWorkEventHandler> workerFn)

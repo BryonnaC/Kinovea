@@ -136,16 +136,13 @@ namespace Kinovea.ScreenManager
 
         private void UpdateBoundingBox(PointF o, PointF a, PointF b, float radius)
         {
-            // If the radius is negative we count it from the end of the smallest segment.
-            if (radius <= 0)
+            if (radius == 0)
             {
-                // Anything between 0 and -10 is aliased to -10 for backward compat.
-                radius = Math.Min(radius, -10);
-
+                // Special case meaning "biggest as possible" -> up to the small leg.
                 float oa = new Vector(o, a).Norm();
                 float ob = new Vector(o, b).Norm();
                 float smallest = Math.Min(oa, ob);
-                radius = smallest + radius > 0 ? smallest + radius : Math.Min(smallest, 10);
+                radius = smallest > 20 ? smallest - 10 : Math.Min(smallest, 10);
             }
 
             boundingBox = o.Box((int)radius).ToRectangle();

@@ -25,7 +25,6 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows.Forms;
-using Kinovea.Services;
 
 using Kinovea.ScreenManager.Languages;
 
@@ -86,8 +85,10 @@ namespace Kinovea.ScreenManager
             track.MemorizeState();
             track.DrawingStyle.Memorize();
 
+            InitViewCombo();
             InitMarkerCombo();
-            InitMeasureLabelTypeCombo();
+            InitExtraDataCombo();
+            chkBestFitCircle.Checked = track.DisplayBestFitCircle;
             InitTrackParameters();
             SetupStyleControls();
             SetCurrentOptions();
@@ -100,21 +101,27 @@ namespace Kinovea.ScreenManager
         #endregion
         
         #region Init
-        private void InitMeasureLabelTypeCombo()
+        private void InitViewCombo()
+        {
+            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityComplete);
+            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityOneSecond);
+            cmbView.Items.Add(ScreenManagerLang.dlgConfigureTrajectory_VisibilityLabelOnly);
+        }
+        private void InitExtraDataCombo()
         {
             // Combo must be filled in the order of the enum.
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.None));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Name));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Position));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TravelDistance));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalHorizontalDisplacement));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.TotalVerticalDisplacement));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Speed));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.HorizontalVelocity));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.VerticalVelocity));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.Acceleration));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.HorizontalAcceleration));
-            cmbMeasureLabelType.Items.Add(track.GetMeasureLabelOptionText(MeasureLabelType.VerticalAcceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.None));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Name));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Position));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalDistance));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalHorizontalDisplacement));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.TotalVerticalDisplacement));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Speed));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalVelocity));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.Acceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.HorizontalAcceleration));
+            cmbExtraData.Items.Add(track.GetExtraDataOptionText(TrackExtraData.VerticalAcceleration));
         }
         private void InitMarkerCombo()
         {
@@ -176,7 +183,8 @@ namespace Kinovea.ScreenManager
         private void SetCurrentOptions()
         {
             tbLabel.Text = track.Name;
-            cmbMeasureLabelType.SelectedIndex = (int)track.MeasureLabelType;
+            cmbView.SelectedIndex = (int)track.View;
+            cmbExtraData.SelectedIndex = (int)track.ExtraData;
             cmbMarker.SelectedIndex = (int)track.Marker;
         }
         private void InitCulture()
@@ -186,9 +194,11 @@ namespace Kinovea.ScreenManager
             grpIdentification.Text = ScreenManagerLang.dlgConfigureDrawing_Name;
 
             grpConfig.Text = ScreenManagerLang.Generic_Configuration;
+            lblView.Text = ScreenManagerLang.Generic_Visibility + " :";
 
             lblMarker.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelMarker;
             lblExtra.Text = ScreenManagerLang.dlgConfigureTrajectory_LabelExtraData;
+            chkBestFitCircle.Text = ScreenManagerLang.dlgConfigureTrajectory_CheckDisplayRotationCircle;
             
             grpAppearance.Text = ScreenManagerLang.Generic_Appearance;
 
@@ -236,9 +246,20 @@ namespace Kinovea.ScreenManager
             if(invalidate != null) 
                 invalidate();
         }
-        private void CmbMeasureLabelType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            track.MeasureLabelType = (MeasureLabelType)cmbMeasureLabelType.SelectedIndex;
+            track.View = (TrackView)cmbView.SelectedIndex;
+            if (invalidate != null)
+                invalidate();
+        }
+        private void CmbExtraData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            track.ExtraData = (TrackExtraData)cmbExtraData.SelectedIndex;
+            track.IsUsingAngularKinematics();
+
+            if (track.IsUsingAngularKinematics())
+                chkBestFitCircle.Checked = true;
+
             if(invalidate != null) 
                 invalidate();
         }
@@ -252,6 +273,15 @@ namespace Kinovea.ScreenManager
         private void element_ValueChanged(object sender, EventArgs e)
         {
             if(invalidate != null) 
+                invalidate();
+        }
+
+
+        private void chkBestFitCircle_CheckedChanged(object sender, EventArgs e)
+        {
+            track.DisplayBestFitCircle = chkBestFitCircle.Checked;
+
+            if (invalidate != null)
                 invalidate();
         }
 

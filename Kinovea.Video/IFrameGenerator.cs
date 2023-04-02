@@ -42,11 +42,6 @@ namespace Kinovea.Video
         Size ReferenceSize { get; }
 
         /// <summary>
-        /// Orientation of images.
-        /// </summary>
-        ImageRotation ImageRotation { get; }
-
-        /// <summary>
         /// Open the file.
         /// </summary>
         OpenVideoResult Open(string filename);

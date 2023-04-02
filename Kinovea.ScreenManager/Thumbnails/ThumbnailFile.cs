@@ -1,5 +1,5 @@
-ï»¿/*
-Copyright Â© Joan Charmant 2008.
+/*
+Copyright © Joan Charmant 2008.
 jcharmant@gmail.com 
  
 This file is part of Kinovea.
@@ -71,6 +71,7 @@ namespace Kinovea.ScreenManager
         private Bitmap currentThumbnail;
         private FileDetails details = new FileDetails();
         private bool m_bIsImage;
+        private bool hasKva;
         private int currentThumbnailIndex;
         private bool m_Hovering;
         private Bitmap bmpKvaAnalysis = Resources.bullet_white;
@@ -226,21 +227,13 @@ namespace Kinovea.ScreenManager
                 if (summary.ImageSize == Size.Empty)
                     details.Details[FileProperty.Size] = "";
                 else
-                    details.Details[FileProperty.Size] = string.Format("{0}Ã—{1}", summary.ImageSize.Width, summary.ImageSize.Height);
-
-                // Filesystem level properties.
-                bool hasKva = false;
-                DateTime creation = DateTime.Now;
-                if (!string.IsNullOrEmpty(summary.Filename) && File.Exists(summary.Filename))
-                {
-                    hasKva = VideoSummary.HasCompanionKva(summary.Filename);
-                    creation = File.GetCreationTime(summary.Filename);
-                }
-
+                    details.Details[FileProperty.Size] = string.Format("{0}×{1}", summary.ImageSize.Width, summary.ImageSize.Height);
+                
+                hasKva = summary.HasKva;
                 if (hasKva)
                     details.Details[FileProperty.HasKva] = "kva";
 
-                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", creation);
+                details.Details[FileProperty.CreationTime] = string.Format("{0:g}", summary.Creation);
 
                 SetSize(this.Width, this.Height);
             }
@@ -466,7 +459,7 @@ namespace Kinovea.ScreenManager
 
             if (ShouldShowProperty(FileProperty.Duration))
             {
-                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + "Â " : details.Details[FileProperty.Duration];
+                string duration = m_bIsImage ? ScreenManagerLang.Generic_Image + " " : details.Details[FileProperty.Duration];
                 DrawPropertyString(canvas, duration, top);
                 top += verticalMargin;
             }
@@ -725,7 +718,7 @@ namespace Kinovea.ScreenManager
 
                 }
 
-                lblFileName.Text = fits ? text : text + "â€¦";
+                lblFileName.Text = fits ? text : text + "…";
             }
             catch
             {

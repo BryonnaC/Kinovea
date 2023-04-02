@@ -48,7 +48,6 @@ namespace Kinovea.ScreenManager
         // Untransform : from screen coordinates to image coordinates.
         PointF Untransform(Point point);
         SizeF Untransform(SizeF size);
-        RectangleF Untransform(Rectangle rectangle);
         int Untransform(int value);
     }
 }

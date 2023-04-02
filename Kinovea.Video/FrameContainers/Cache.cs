@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using Kinovea.Services;
 
 namespace Kinovea.Video
 {
@@ -92,15 +91,15 @@ namespace Kinovea.Video
             UpdateCurrentFrame();
             return true;
         }
-        public bool MoveTo(long target)
+        public bool MoveTo(long _timestamp)
         {
-            if(!Contains(target))
+            if(!Contains(_timestamp))
                 return false;
             
-            if( m_Current != null && target == m_Current.Timestamp)
+            if( m_Current != null && _timestamp == m_Current.Timestamp)
                 return true;
 
-            m_CurrentIndex = m_Frames.FindIndex(f => f.Timestamp >= target);
+            m_CurrentIndex = m_Frames.FindIndex(f => f.Timestamp >= _timestamp);
             UpdateCurrentFrame();
             return true;
         }

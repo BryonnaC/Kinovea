@@ -76,13 +76,9 @@ namespace Kinovea.ScreenManager
             get
             {
                 List<ToolStripItem> contextMenu = new List<ToolStripItem>();
-                ReloadMenusCulture();
-
-                contextMenu.AddRange(new ToolStripItem[] {
-                    mnuOptions,
-                });
-
+                mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
                 mnuShowArrow.Checked = showArrow;
+                contextMenu.Add(mnuShowArrow);
                 return contextMenu;
             }
         }
@@ -111,13 +107,9 @@ namespace Kinovea.ScreenManager
         private InfosFading infosFading;
         private bool editing;
         private Font fontText;
-        private IImageToViewportTransformer imageToViewportTransformer;
-
-        #region Menus
-        private ToolStripMenuItem mnuOptions = new ToolStripMenuItem();
         private ToolStripMenuItem mnuShowArrow = new ToolStripMenuItem();
-        #endregion
-
+        private IImageToViewportTransformer imageToViewportTransformer;
+        
         private RoundedRectangle background = new RoundedRectangle();
         private TextBox textBox;
         private Control host;
@@ -163,7 +155,8 @@ namespace Kinovea.ScreenManager
             textBox.TextChanged += TextBox_TextChanged;
             UpdateLabelRectangle();
 
-            InitializeMenus();
+            mnuShowArrow.Click += new EventHandler(mnuShowArrow_Click);
+            mnuShowArrow.Image = Properties.Drawings.arrow;
         }
         public DrawingText(PointF p, long timestamp, long averageTimeStampsPerFrame, string text)
             : this(p, timestamp, averageTimeStampsPerFrame, ToolManager.GetStylePreset("Label"))
@@ -175,15 +168,6 @@ namespace Kinovea.ScreenManager
             : this(PointF.Empty, 0, 0, ToolManager.GetStylePreset("Label"))
         {
             ReadXml(xmlReader, scale, timestampMapper);
-        }
-        private void InitializeMenus()
-        {
-            mnuOptions.Image = Properties.Resources.equalizer;
-            mnuShowArrow.Image = Properties.Drawings.arrow;
-            mnuShowArrow.Click += mnuShowArrow_Click;
-            mnuOptions.DropDownItems.AddRange(new ToolStripItem[] {
-                mnuShowArrow,
-            });
         }
         #endregion
 
@@ -198,6 +182,7 @@ namespace Kinovea.ScreenManager
             int backgroundOpacity = 255;
             using (SolidBrush brushBack = styleHelper.GetBackgroundBrush((int)(opacity * backgroundOpacity)))
             using (SolidBrush brushText = styleHelper.GetForegroundBrush((int)(opacity * 255)))
+            using (Pen pen = styleHelper.GetPen(backgroundOpacity))
             using (Font fontText = styleHelper.GetFont((float)transformer.Scale))
             {
                 SizeF textSize = canvas.MeasureString(text, fontText);
@@ -212,33 +197,18 @@ namespace Kinovea.ScreenManager
 
                 if (showArrow)
                 {
-                    float arrowWidth = fontText.Height / 4;
-                    PointF start = rect.Center();
-                    PointF end = transformer.Transform(arrowEnd);
-                    DrawArrow(canvas, backgroundOpacity, brushBack.Color, arrowWidth, start, end);
+                    pen.Color = brushBack.Color;
+                    pen.Width = fontText.Height / 4;
+                    Point arrowStartInScreen = rect.Center();
+                    Point arrowEndInScreen = transformer.Transform(arrowEnd);
+                    canvas.DrawLine(pen, arrowStartInScreen, arrowEndInScreen);
+                    ArrowHelper.Draw(canvas, pen, arrowEndInScreen, arrowStartInScreen);
                 }
 
-                // Background.
                 RoundedRectangle.Draw(canvas, rect, brushBack, roundingRadius, false, false, null);
 
-                // Text
                 if (!editing)
                     canvas.DrawString(text, fontText, brushText, rect.Location);
-            }
-        }
-        private void DrawArrow(Graphics canvas, float opacity, Color color, float width, PointF start, PointF end)
-        {
-            using (Pen pen = styleHelper.GetPen(opacity))
-            {
-                pen.Color = color;
-                pen.Width = width;
-
-                bool canDrawArrow = ArrowHelper.UpdateStartEnd(width, ref start, ref end, false, true);
-                if (!canDrawArrow)
-                    return;
-                
-                canvas.DrawLine(pen, start, end);
-                ArrowHelper.Draw(canvas, pen, end, start);
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -250,7 +220,7 @@ namespace Kinovea.ScreenManager
             // Background label: 0, hidden resizer: 1, arrow end: 2.
             if (showArrow)
             {
-                if (HitTester.HitPoint(point, arrowEnd, transformer))
+                if (HitTester.HitTest(arrowEnd, point, transformer))
                     return 2;
 
                 if (IsPointOnSegment(point, background.Rectangle.Center(), arrowEnd, transformer))
@@ -478,15 +448,8 @@ namespace Kinovea.ScreenManager
                 else
                     areaPath.AddLine(a, b);
 
-                return HitTester.HitPath(point, areaPath, styleHelper.LineSize, false, transformer);
+                return HitTester.HitTest(areaPath, point, styleHelper.LineSize, false, transformer);
             }
-        }
-
-        private void ReloadMenusCulture()
-        {
-            // Options
-            mnuOptions.Text = "Options";
-            mnuShowArrow.Text = ScreenManagerLang.mnuShowArrow;
         }
         #endregion
     }

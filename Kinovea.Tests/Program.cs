@@ -18,14 +18,14 @@ namespace Kinovea.Tests
             //TestLineClipping();
 
             TestTime();
-
+            
             // Performance
             //ImageCopy.Test();
         }
         private static void TestKVAFuzzer()
         {
             KVAFuzzer20 fuzzer = new KVAFuzzer20();
-            fuzzer.CreateKVA(@"");
+            fuzzer.CreateKVA(@"C:\Users\Joan\Dev  Prog\Videa\Experiments\KVAFuzzer");
         }
 
         private static void TestKSVFuzzer()
@@ -34,7 +34,7 @@ namespace Kinovea.Tests
             for (int i = 0; i < count; i++)
             {
                 KSVFuzzer fuzzer = new KSVFuzzer();
-                fuzzer.CreateKSV(@"");
+                fuzzer.CreateKSV(@"C:\Users\Joan\Dev  Prog\Videa\Experiments\KSVFuzzer");
                 Thread.Sleep(1000);
             }
         }
@@ -57,7 +57,7 @@ namespace Kinovea.Tests
             LineClippingTester tester = new LineClippingTester();
             tester.Test();
         }
-
+    
         private static void TestTime()
         {
             //TimeTester tester = new TimeTester();

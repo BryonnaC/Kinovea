@@ -322,17 +322,13 @@ namespace Kinovea.ScreenManager
                         ParseChronos(r, scaling);
                         break;
                     case "Spotlights":
-                        metadata.DrawingSpotlight.ReadXml(r, scaling, RemapTimestamp);
+                        metadata.SpotlightManager.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "AutoNumbers":
-                    case "NumberSequence":
-                        metadata.DrawingNumberSequence.ReadXml(r, scaling, RemapTimestamp);
+                        metadata.AutoNumberManager.ReadXml(r, scaling, RemapTimestamp, metadata);
                         break;
                     case "CoordinateSystem":
                         metadata.DrawingCoordinateSystem.ReadXml(r);
-                        break;
-                    case "TestGrid":
-                        metadata.DrawingTestGrid.ReadXml(r);
                         break;
                     case "Trackability":
                         metadata.TrackabilityManager.ReadXml(r, scaling, RemapTimestamp);
@@ -460,15 +456,11 @@ namespace Kinovea.ScreenManager
             
             WriteGeneralInformation(w);
             WriteKeyframes(w, SerializationFilter.KVA);
-            
             WriteChronos(w, SerializationFilter.KVA);
             WriteTracks(w, SerializationFilter.KVA);
-
             WriteSpotlights(w);
-            WriteNumberSequence(w);
+            WriteAutoNumbers(w);
             WriteCoordinateSystem(w);
-            WriteTestGrid(w);
-
             WriteTrackablePoints(w);
             WriteVideoFilters(w);
 
@@ -518,66 +510,64 @@ namespace Kinovea.ScreenManager
         }
         private void WriteChronos(XmlWriter w, SerializationFilter filter)
         {
-            if (metadata.ChronoManager.Drawings.Count == 0)
-                return;
-
-            w.WriteStartElement("Chronos");
-            
-            foreach (AbstractDrawing chrono in metadata.ChronoManager.Drawings)
-            {
-                IKvaSerializable d = chrono as IKvaSerializable;
-
-                if (chrono is DrawingChrono)
+            bool atLeastOne = false;
+            foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
+            {   
+                if (!atLeastOne)
                 {
-                    w.WriteStartElement("Chrono");
-                }
-                else if (chrono is DrawingChronoMulti)
-                {
-                    w.WriteStartElement("ChronoMulti");
+                    w.WriteStartElement("Chronos");
+                    atLeastOne = true;
                 }
 
-                w.WriteAttributeString("id", d.Id.ToString());
-                w.WriteAttributeString("name", d.Name);
-                d.WriteXml(w, filter);
+                w.WriteStartElement("Chrono");
+                //if (filter != SerializationFilter.Spreadsheet) 
+                w.WriteAttributeString("id", chrono.Id.ToString());
+                w.WriteAttributeString("name", chrono.Name);
+                chrono.WriteXml(w, filter);
                 w.WriteEndElement();
             }
 
-            w.WriteEndElement();
+            if (atLeastOne)
+                w.WriteEndElement();
         }
         private void WriteTracks(XmlWriter w, SerializationFilter filter)
         {
-            if (metadata.TrackManager.Drawings.Count == 0)
-                return;
-
-            w.WriteStartElement("Tracks");
-
-            foreach (DrawingTrack track in metadata.TrackManager.Drawings)
+            bool atLeastOne = false;
+            foreach (DrawingTrack track in metadata.Tracks())
             {
+                if (!atLeastOne)
+                {
+                    w.WriteStartElement("Tracks");
+                    atLeastOne = true;
+                }
+
                 w.WriteStartElement("Track");
+                //if (filter != SerializationFilter.Spreadsheet)
                 w.WriteAttributeString("id", track.Id.ToString());
                 w.WriteAttributeString("name", track.Name);
                 track.WriteXml(w, filter);
                 w.WriteEndElement();
             }
 
-            w.WriteEndElement();
+            if (atLeastOne)
+                w.WriteEndElement();
         }
         private void WriteSpotlights(XmlWriter w)
         {
-            if (metadata.DrawingSpotlight.Count == 0)
+            if (metadata.SpotlightManager.Count == 0)
                 return;
 
             w.WriteStartElement("Spotlights");
-            metadata.DrawingSpotlight.WriteXml(w, SerializationFilter.KVA);
+            metadata.SpotlightManager.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
-        private void WriteNumberSequence(XmlWriter w)
+        private void WriteAutoNumbers(XmlWriter w)
         {
-            if (metadata.DrawingNumberSequence.Count == 0)
+            if (metadata.AutoNumberManager.Count == 0)
                 return;
 
-            w.WriteStartElement("NumberSequence");
-            metadata.DrawingNumberSequence.WriteXml(w, SerializationFilter.KVA);
+            w.WriteStartElement("AutoNumbers");
+            metadata.AutoNumberManager.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteCoordinateSystem(XmlWriter w)
@@ -586,14 +576,6 @@ namespace Kinovea.ScreenManager
             w.WriteAttributeString("id", metadata.DrawingCoordinateSystem.Id.ToString());
             w.WriteAttributeString("name", metadata.DrawingCoordinateSystem.Name);
             metadata.DrawingCoordinateSystem.WriteXml(w, SerializationFilter.KVA);
-            w.WriteEndElement();
-        }
-        private void WriteTestGrid(XmlWriter w)
-        {
-            w.WriteStartElement("TestGrid");
-            w.WriteAttributeString("id", metadata.DrawingTestGrid.Id.ToString());
-            w.WriteAttributeString("name", metadata.DrawingTestGrid.Name);
-            metadata.DrawingTestGrid.WriteXml(w, SerializationFilter.KVA);
             w.WriteEndElement();
         }
         private void WriteCalibrationHelp(XmlWriter w)
@@ -616,6 +598,25 @@ namespace Kinovea.ScreenManager
                 w.WriteAttributeString("active", name);
             
             metadata.WriteVideoFilters(w);
+            w.WriteEndElement();
+        }
+        #endregion
+
+        #region Spreadsheet specific
+        private void WriteTimes(XmlWriter w)
+        {
+            w.WriteStartElement("Times");
+            
+            foreach (DrawingChrono chrono in metadata.ChronoManager.Drawings)
+            {
+                w.WriteStartElement("Time");
+                
+                w.WriteAttributeString("name", chrono.Name);
+                //chrono.WriteXml(w, SerializationFilter.Spreadsheet);
+                
+                w.WriteEndElement();
+            }
+
             w.WriteEndElement();
         }
         #endregion

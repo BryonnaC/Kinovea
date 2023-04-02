@@ -128,7 +128,7 @@ namespace Kinovea.ScreenManager
             infosFading.AlwaysVisible = false;
 
             mnuCalibrate.Click += new EventHandler(mnuCalibrate_Click);
-            mnuCalibrate.Image = Properties.Drawings.coordinates_graduations;
+            mnuCalibrate.Image = Properties.Drawings.linecalibrate;
         }
         public DrawingDistortionGrid(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata parent)
             : this(PointF.Empty, 0, 0)
@@ -147,6 +147,7 @@ namespace Kinovea.ScreenManager
             List<Point> screenPoints = transformer.Transform(points);
 
             using (penEdges = styleHelper.GetPen(opacityFactor, 1.0))
+            using (SolidBrush br = styleHelper.GetBrush(opacityFactor))
             {
                 int rows = subdivisions + 1;
                 int cols = rows;
@@ -181,7 +182,7 @@ namespace Kinovea.ScreenManager
 
                 // Handles
                 foreach (PointF p in screenPoints)
-                    canvas.DrawEllipse(penEdges, p.Box(4));
+                    canvas.FillEllipse(br, p.Box(4));
             }
         }
         public override int HitTest(PointF point, long currentTimestamp, DistortionHelper distorter, IImageToViewportTransformer transformer, bool zooming)
@@ -193,7 +194,7 @@ namespace Kinovea.ScreenManager
 
             for (int i = 0; i < points.Count; i++)
             {
-                if (HitTester.HitPoint(point, points[i], transformer))
+                if (HitTester.HitTest(points[i], point, transformer))
                     return i + 1;
             }
 

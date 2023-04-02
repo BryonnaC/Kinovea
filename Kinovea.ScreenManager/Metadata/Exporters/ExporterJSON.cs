@@ -196,8 +196,6 @@ namespace Kinovea.ScreenManager
                 w.WriteValue(md.Units.TimeSymbol);
                 w.WritePropertyName("duration");
                 w.WriteValue(o.Duration);
-                w.WritePropertyName("cumul");
-                w.WriteValue(o.Cumul);
                 w.WritePropertyName("start");
                 w.WriteValue(o.Start);
                 w.WritePropertyName("stop");

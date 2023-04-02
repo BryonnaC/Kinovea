@@ -29,22 +29,18 @@ namespace Kinovea.ScreenManager
     /// </summary>
     public class ZoomHelper
     {
-        /// <summary>
-        /// Current zoom value as a number between 0.1 and 10.
-        /// </summary>
         public float Value
         {
             get { return Map(linearValue);}
             set { linearValue = Unmap(value);}
         }
         
-        // Store a linear value in [-1.0 -> +1.0].
+        // All values are linear [-1.0 -> +1.0], until the caller asks for it.
         private float linearValue = 0;
         private float step = 0.05f;
         private float min = -1.0f;
         private float max = 1.0f;
         private bool roundToNearest = true;
-        
         public void Increase()
         {
             linearValue = Clamp(linearValue + step);
@@ -63,25 +59,7 @@ namespace Kinovea.ScreenManager
         {
             linearValue = 0;
         }
-
-        /// <summary>
-        /// Returns the zoom value as a string, 
-        /// using percentage for values less than 1x and multiplier for above 1x.
-        /// </summary>
-        public string GetLabel(float stretch = 1.0f)
-        {
-            float logValue = Map(linearValue) * stretch;
-            string label = "";
-            if (logValue <= 1.0f)
-                label = string.Format("{0:0}%", Math.Round(logValue * 100));
-            else if (logValue < 10.0f)
-                label = string.Format("{0:0.0}x", Math.Round(logValue, 1));
-            else
-                label = string.Format("{0:0}x", Math.Round(logValue));
-
-            return label;
-        }
-
+        
         private static float Map(float linearValue)
         {
             return (float)Math.Pow(10, linearValue);
@@ -100,8 +78,6 @@ namespace Kinovea.ScreenManager
         {
             return (float)Math.Round(linearValue / step) * step;
         }
-
-        
         
     }
 }

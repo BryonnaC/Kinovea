@@ -109,23 +109,6 @@ namespace Kinovea.ScreenManager
             set;
         }
 
-        public abstract bool CoordinateSystemVisible
-        {
-            get;
-            set;
-        }
-
-        public abstract bool TestGridVisible
-        {
-            get;
-            set;
-        }
-        
-        public abstract HistoryStack HistoryStack
-        {
-            get;
-        }
-
         public abstract void DisplayAsActiveScreen(bool active);
         public abstract void RefreshUICulture();
         public abstract void PreferencesUpdated();

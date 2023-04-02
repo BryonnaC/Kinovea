@@ -89,10 +89,8 @@ namespace Kinovea.ScreenManager
         public static void DeserializeModifyMemento(Guid managerId, Guid drawingId, string data, Metadata metadata)
         {
             AbstractDrawingManager manager = metadata.GetDrawingManager(managerId);
-            if (manager == null)
-                return;
-
             IKvaSerializable drawing = manager.GetDrawing(drawingId) as IKvaSerializable;
+
             if (drawing == null)
                 return;
 

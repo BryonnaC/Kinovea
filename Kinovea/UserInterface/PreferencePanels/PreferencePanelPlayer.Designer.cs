@@ -63,7 +63,6 @@ namespace Kinovea.Root
       this.lblImageFormat = new System.Windows.Forms.Label();
       this.chkLockSpeeds = new System.Windows.Forms.CheckBox();
       this.tabMemory = new System.Windows.Forms.TabPage();
-      this.cbCacheInTimeline = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.trkMemoryBuffer)).BeginInit();
       this.tabSubPages.SuspendLayout();
       this.tabGeneral.SuspendLayout();
@@ -232,7 +231,6 @@ namespace Kinovea.Root
       // 
       // tabMemory
       // 
-      this.tabMemory.Controls.Add(this.cbCacheInTimeline);
       this.tabMemory.Controls.Add(this.trkMemoryBuffer);
       this.tabMemory.Controls.Add(this.lblWorkingZoneMemory);
       this.tabMemory.Location = new System.Drawing.Point(4, 22);
@@ -242,16 +240,6 @@ namespace Kinovea.Root
       this.tabMemory.TabIndex = 1;
       this.tabMemory.Text = "Memory";
       this.tabMemory.UseVisualStyleBackColor = true;
-      // 
-      // cbCacheInTimeline
-      // 
-      this.cbCacheInTimeline.Location = new System.Drawing.Point(18, 115);
-      this.cbCacheInTimeline.Name = "cbCacheInTimeline";
-      this.cbCacheInTimeline.Size = new System.Drawing.Size(369, 20);
-      this.cbCacheInTimeline.TabIndex = 36;
-      this.cbCacheInTimeline.Text = "Show memory indicator in the timeline";
-      this.cbCacheInTimeline.UseVisualStyleBackColor = true;
-      this.cbCacheInTimeline.CheckedChanged += new System.EventHandler(this.cbCacheInTimeline_CheckedChanged);
       // 
       // PreferencePanelPlayer
       // 
@@ -285,6 +273,5 @@ namespace Kinovea.Root
         private System.Windows.Forms.Label lblPlaybackKVA;
         private System.Windows.Forms.TextBox tbPlaybackKVA;
         private System.Windows.Forms.Button btnPlaybackKVA;
-        private System.Windows.Forms.CheckBox cbCacheInTimeline;
     }
 }

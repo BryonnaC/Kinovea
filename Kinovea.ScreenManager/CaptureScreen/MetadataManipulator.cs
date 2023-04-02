@@ -41,18 +41,9 @@ namespace Kinovea.ScreenManager
         {
             get { return metadata.HitDrawing;}
         }
-
-        public Keyframe HitKeyframe
-        {
-            get { return metadata.HitKeyframe; }
-        }
-
-        public bool DrawingInitializing
-        {
-            get { return metadata.DrawingInitializing; }
-        }
+        
         #endregion
-
+        
         #region Members
         private Metadata metadata;
         private ScreenToolManager screenToolManager;
@@ -76,150 +67,93 @@ namespace Kinovea.ScreenManager
             this.fixedKeyframe = index;
         }
 
-        /// <summary>
-        /// Start manipulation motion.
-        /// </summary>
-        public bool StartMove(MouseEventArgs e, Point imageLocation, float imageZoom)
+        public bool OnMouseLeftDown(Point mouse, Point imageLocation, float imageZoom)
         {
             if(metadata == null || screenToolManager == null)
                 return false;
-
+                
             // At this point we must know the current timestamp and metadata should be valid.
-
-            // Possible contexts:
-            // Creation of a new drawing, 
-            // Start moving an existing drawing or a handle.
-            // Start new step of multi-step initialization.
-
             // TODO: Handle magnifier.
             // TODO: see if this could handle whole image manipulation as well, but at the moment the resizers are stored in the viewport.
-
+            
             bool handled = false;
-
-            // Get the mouse point in image space.
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            PointF imagePoint = transformer.Untransform(e.Location);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             metadata.AllDrawingTextToNormalMode();
-
             
-
-            if (screenToolManager.IsUsingHandTool || e.Button == MouseButtons.Middle)
+            if(screenToolManager.IsUsingHandTool)
             {
                 // TODO: Change cursor.
                 handled = screenToolManager.HandTool.OnMouseDown(metadata, fixedKeyframe, imagePoint, fixedTimestamp, true);
             }
-            else if (!metadata.DrawingInitializing)
-            {
-                CreateNewDrawing(imagePoint, transformer);
-                handled = true;
-            }
             else
             {
-                // The active drawing is at initialization stage, it will receive the point commit during mouse up.
                 handled = true;
+                CreateNewDrawing(imagePoint, transformer);
             }
-
+            
             return handled;
         }
         
-        /// <summary>
-        /// Continue moving the current object.
-        /// </summary>
-        public bool ContinueMove(MouseEventArgs e, Keys modifiers, Point imageLocation, float imageZoom)
+        public bool OnMouseLeftMove(Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
         {
             if(metadata == null || screenToolManager == null)
                 return false;
-
-            bool handled = false;
-
-            // Get the mouse point in image space.
-            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            PointF imagePoint = transformer.Untransform(e.Location);
             
-            if (e.Button == MouseButtons.None && metadata.DrawingInitializing)
+            bool handled = false;
+            ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
+            PointF imagePoint = transformer.Untransform(mouse);
+            
+            if(screenToolManager.IsUsingHandTool)
             {
-                IInitializable initializableDrawing = metadata.HitDrawing as IInitializable;
-                if (initializableDrawing != null)
-                {
-                    initializableDrawing.InitializeMove(imagePoint, modifiers);
-                    handled = true;
-                }
-            }
-            else if(e.Button == MouseButtons.Left)
-            {
-                if (!screenToolManager.IsUsingHandTool)
-                {
-                    // Initialization of a drawing that is in the process of being added.
-                    // (ex: dragging the second point of a line that we just added).
-                    // Tools that are not IInitializable should reset to Pointer tool right after creation.
-                    IInitializable drawing = metadata.HitDrawing as IInitializable;
-                    if(drawing != null)
-                        drawing.InitializeMove(imagePoint, modifiers);
-
-                    handled = true;
-                }
-                else
-                {
-                    // Manipulation of an existing drawing via a handle.
-                    // TODO: handle magnifier.
-                    // TODO: handle video filters.
-                    handled = screenToolManager.HandTool.OnMouseMove(metadata, imagePoint, Point.Empty, modifiers);
-                }
-            }
-            else if (e.Button == MouseButtons.Middle)
-            {
-                // Middle mouse button: allow to move stuff even if we have a tool selected.
+                // TODO: handle magnifier.
                 handled = screenToolManager.HandTool.OnMouseMove(metadata, imagePoint, Point.Empty, modifiers);
             }
-
+            else
+            {
+                // Setting second point of a drawing.
+                IInitializable drawing = metadata.HitDrawing as IInitializable;
+                if(drawing != null)
+                    drawing.InitializeMove(imagePoint, modifiers);
+            }
+            
             return handled;
         }
         
-        /// <summary>
-        /// Stop moving the current object.
-        /// </summary>
-        public void StopMove(MouseEventArgs e, Bitmap bitmap, Keys modifiers, Point imageLocation, float imageZoom)
+        public void OnMouseUp(Bitmap bitmap, Point mouse, Keys modifiers, Point imageLocation, float imageZoom)
         {
             // TODO: Handle magnifier.
             // TODO: Memorize the action we just finished to enable undo.
             // TODO: keep tool or change tool.
             // m_ActiveTool = m_ActiveTool.KeepTool ? m_ActiveTool : m_PointerTool;
-            
-            if (e.Button != MouseButtons.Left)
-                return;
 
             if (screenToolManager.IsUsingHandTool)
             {
+                screenToolManager.HandTool.OnMouseUp();
                 metadata.AllDrawingTextToNormalMode();
                 metadata.UpdateTrackPoint(bitmap);
-                screenToolManager.HandTool.OnMouseUp();
             }
-
+            
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            PointF imagePoint = transformer.Untransform(e.Location);
+            PointF imagePoint = transformer.Untransform(mouse);
             metadata.InitializeCommit(null, imagePoint);
 
             screenToolManager.AfterToolUse();
         }
         
-        /// <summary>
-        /// Check if the passed point is on any drawing.
-        /// The hit drawing, if any, will be placed in metadata.hitDrawing.
-        /// The passed point is in screen space coordinates (transformed).
-        /// </summary>
-        public void HitTest(Point p, Point imageLocation, float imageZoom)
+        public bool HitTest(Point mouse, Point imageLocation, float imageZoom)
         {
+            // Note: at the moment this method does not support extra drawings.
+
             if(metadata == null)
-                return;
+                return false;
             
             ImageToViewportTransformer transformer = new ImageToViewportTransformer(imageLocation, imageZoom);
-            PointF imagePoint = transformer.Untransform(p);
+            PointF imagePoint = transformer.Untransform(mouse);
             
             int keyframeIndex = 0;
-            metadata.DeselectAll();
-            metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
-            metadata.IsOnDetachedDrawing(imagePoint, fixedTimestamp);
+            return metadata.IsOnDrawing(keyframeIndex, imagePoint, fixedTimestamp);
         }
         
         public Cursor GetCursor(float scale)
@@ -247,14 +181,12 @@ namespace Kinovea.ScreenManager
 
         public void ConfigureDrawing(AbstractDrawing drawing, Action refresh)
         {
+            Keyframe keyframe = metadata.HitKeyframe;
             IDecorable decorable = drawing as IDecorable;
-            if (drawing == null || decorable == null)
+            if (keyframe == null || drawing == null || decorable == null)
                 return;
-            
-            AbstractDrawingManager owner = metadata.HitDrawingOwner;
-            HistoryMementoModifyDrawing memento = null;
-            if (owner != null)
-                memento = new HistoryMementoModifyDrawing(metadata, owner.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
+
+            HistoryMementoModifyDrawing memento = new HistoryMementoModifyDrawing(metadata, keyframe.Id, drawing.Id, drawing.Name, SerializationFilter.Style);
 
             FormConfigureDrawing2 fcd = new FormConfigureDrawing2(decorable, refresh);
             FormsHelper.Locate(fcd);
@@ -262,23 +194,8 @@ namespace Kinovea.ScreenManager
 
             if (fcd.DialogResult == DialogResult.OK)
             {
-                if (memento != null)
-                {
-                    memento.UpdateCommandName(drawing.Name);
-                    metadata.HistoryStack.PushNewCommand(memento);
-                }
-
-                // If this was a singleton drawing also update the tool-level preset.
-                if (metadata.HitDrawing is DrawingCoordinateSystem)
-                {
-                    ToolManager.SetStylePreset("CoordinateSystem", ((DrawingCoordinateSystem)metadata.HitDrawing).DrawingStyle);
-                    ToolManager.SavePresets();
-                }
-                else if (metadata.HitDrawing is DrawingTestGrid)
-                {
-                    ToolManager.SetStylePreset("TestGrid", ((DrawingTestGrid)metadata.HitDrawing).DrawingStyle);
-                    ToolManager.SavePresets();
-                }
+                memento.UpdateCommandName(drawing.Name);
+                metadata.HistoryStack.PushNewCommand(memento);
             }
 
             fcd.Dispose();
@@ -309,7 +226,7 @@ namespace Kinovea.ScreenManager
 
             if(metadata.Count == 0)
             {
-                Keyframe kf = new Keyframe(0, "", metadata, "", Keyframe.DefaultColor);
+                Keyframe kf = new Keyframe(0, "", metadata);
                 metadata.AddKeyframe(kf);
             }
 
