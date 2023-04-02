@@ -280,6 +280,7 @@
     <Compile Include="CaptureScreen\Delayer.cs" />
     <Compile Include="CaptureScreen\LoadStatus.cs" />
     <Compile Include="CaptureScreen\PipelineManager.cs" />
+    <Compile Include="CaptureScreen\RecordingStatus.cs" />
     <Compile Include="CaptureScreen\Views\InfobarCapture.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -297,6 +298,9 @@
     <Compile Include="Measurement\Geometry\SegmentF.cs" />
     <Compile Include="Measurement\Geometry\SVD.cs" />
     <Compile Include="Measurement\Geometry\Vector3.cs" />
+    <Compile Include="Metadata\DrawingManager\DrawingManager`1.cs" />
+    <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
+    <Compile Include="Metadata\Drawings\DrawingLine.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPostureOption.cs" />
     <Compile Include="Metadata\Drawings\GenericPosture\GenericPosturePolyline.cs" />
     <Compile Include="Metadata\Exporters\CSVHelper.cs" />
@@ -401,7 +405,6 @@
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridAxis.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\RangeHelper.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\GridLine.cs" />
-    <Compile Include="Metadata\DrawingManager\ChronoManager.cs" />
     <Compile Include="IImageToViewportTransformer.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="ImageToViewportTransformer.cs" />
@@ -431,6 +434,7 @@
     <Compile Include="Metadata\Importers\OpenPose\OpenPosePerson.cs" />
     <Compile Include="Metadata\Importers\OpenPose\MetadataImporterOpenPose.cs" />
     <Compile Include="Metadata\Importers\SRT\MetadataImporterSRT.cs" />
+    <Compile Include="Metadata\Interfaces\ITimeable.cs" />
     <Compile Include="Metadata\Serialization\MeasuredData.cs" />
     <Compile Include="Metadata\MetadataWatcher.cs" />
     <Compile Include="Metadata\Serialization\MeasuredDataAngle.cs" />
@@ -442,6 +446,7 @@
     <Compile Include="Metadata\Serialization\MeasuredDataUnits.cs" />
     <Compile Include="Metadata\Serialization\MeasurementSerializationHelper.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="PlayerScreen\Events\KeyframeAddEventArgs.cs" />
     <Compile Include="PlayerScreen\Events\TimeEventArgs.cs" />
     <Compile Include="Measurement\Geometry\ClipResult.cs" />
     <Compile Include="Measurement\Geometry\LiangBarsky.cs" />
@@ -471,16 +476,19 @@
     <Compile Include="Measurement\Kinematics\StatsHelper.cs" />
     <Compile Include="Measurement\Kinematics\TimedPoint.cs" />
     <Compile Include="Measurement\Tracking\TrackColorCycler.cs" />
-    <Compile Include="Measurement\Tracking\TrackExtraData.cs" />
     <Compile Include="Measurement\Tracking\TrackMarker.cs" />
     <Compile Include="Measurement\Tracking\TrackStatus.cs" />
-    <Compile Include="Measurement\Tracking\TrackView.cs" />
-    <Compile Include="Metadata\DrawingManager\TrackManager.cs" />
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Measurement\LensDistortion\FormCalibrateDistortion.Designer.cs">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormTimeSections.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlayerScreen\UserInterface\FormTimeSections.Designer.cs">
+      <DependentUpon>FormTimeSections.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayerScreen\UserInterface\FormConfigureVisibility.cs">
       <SubType>Form</SubType>
@@ -532,6 +540,7 @@
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteKeyframe.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoDeleteMultiDrawingItem.cs" />
+    <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyVideoFilter.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoModifyDrawing.cs" />
     <Compile Include="UndoRedo\HistoryMementos\HistoryMementoNull.cs" />
     <Compile Include="UndoRedo\HistoryMenuManager.cs" />
@@ -558,19 +567,19 @@
     <Compile Include="Measurement\Calibration\LengthUnit.cs" />
     <Compile Include="Measurement\Calibration\UnitHelper.cs" />
     <Compile Include="Metadata\Drawings\AbstractMultiDrawing.cs" />
-    <Compile Include="Metadata\Drawings\AutoNumber.cs" />
-    <Compile Include="Metadata\Drawings\AutoNumberManager.cs" />
+    <Compile Include="Metadata\Drawings\DrawingNumberSequenceItem.cs" />
+    <Compile Include="Metadata\Drawings\DrawingNumberSequence.cs" />
     <Compile Include="Metadata\Drawings\BoundingBox.cs" />
     <Compile Include="Metadata\Drawings\DrawingBitmap.cs" />
     <Compile Include="Metadata\Drawings\DrawingCapabilities.cs" />
-    <Compile Include="Metadata\Drawings\DrawingChrono.cs" />
+    <Compile Include="Metadata\Drawings\DrawingChronoMulti.cs" />
     <Compile Include="Metadata\Drawings\DrawingCircle.cs" />
     <Compile Include="Metadata\Drawings\CoordinateSystem\DrawingCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\Styling\DrawingStyle.cs" />
     <Compile Include="Metadata\Drawings\DrawingSVG.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolCoordinateSystem.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolMagnifier.cs" />
-    <Compile Include="Metadata\Drawings\DrawingToolAutoNumbers.cs" />
+    <Compile Include="Metadata\Drawings\DrawingToolNumberSequence.cs" />
     <Compile Include="Metadata\Drawings\DrawingToolSpotlight.cs" />
     <Compile Include="Metadata\Events\DrawingEventArgs.cs" />
     <Compile Include="Metadata\Events\MeasurableDrawingEventArgs.cs" />
@@ -623,8 +632,8 @@
     <Compile Include="Metadata\Interfaces\IScalable.cs" />
     <Compile Include="Metadata\Interfaces\ITrackable.cs" />
     <Compile Include="Metadata\Drawings\RoundedRectangle.cs" />
-    <Compile Include="Metadata\Drawings\Spotlight.cs" />
-    <Compile Include="Metadata\Drawings\SpotlightManager.cs" />
+    <Compile Include="Metadata\Drawings\DrawingSpotlightItem.cs" />
+    <Compile Include="Metadata\Drawings\DrawingSpotlight.cs" />
     <Compile Include="Metadata\Drawings\Styling\AbstractStyleElement.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementColor.cs" />
     <Compile Include="Metadata\Drawings\Styling\StyleElementFontSize.cs" />
@@ -640,7 +649,7 @@
     <Compile Include="PlayerScreen\FrameServerPlayer.cs" />
     <Compile Include="Metadata\Drawings\DrawingAngle.cs" />
     <Compile Include="Metadata\Drawings\DrawingCrossMark.cs" />
-    <Compile Include="Metadata\Drawings\DrawingLine.cs" />
+    <Compile Include="Metadata\Drawings\DrawingTimeSegment.cs" />
     <Compile Include="Metadata\Drawings\AbstractDrawing.cs" />
     <Compile Include="Metadata\Drawings\AbstractDrawingTool.cs" />
     <Compile Include="Metadata\Drawings\DrawingPencil.cs" />
@@ -851,7 +860,7 @@
       <DependentUpon>ViewerSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Thumbnails\SelectorOption.cs" />
-    <Compile Include="Thumbnails\ThumbnailViewerContent.cs" />
+    <Compile Include="Thumbnails\ThumbnailViewerType.cs" />
     <Compile Include="Thumbnails\ThumbnailViewerCameras.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -972,6 +981,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Measurement\LensDistortion\FormCalibrateDistortion.resx">
       <DependentUpon>FormCalibrateDistortion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlayerScreen\UserInterface\FormTimeSections.resx">
+      <DependentUpon>FormTimeSections.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerScreen\UserInterface\FormConfigureVisibility.resx">
       <DependentUpon>FormConfigureVisibility.cs</DependentUpon>
@@ -1462,6 +1474,84 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\move_keyframe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-center.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\gutter-cursor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\comment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\balloon-ellipsis.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navforward.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\navback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stopwatch_multi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handlersetleft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\handlersetright.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\leftconstraint3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rightconstraint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\chrono_split.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow-000-medium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\padlock2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binocular.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\equalizer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rtl.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\border-all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\exit_filter.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="FixAL1703Warning" BeforeTargets="GenerateSatelliteAssemblies" Condition="'$(PlatformTarget)' == 'x64'">

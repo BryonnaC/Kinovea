@@ -42,7 +42,12 @@ namespace Kinovea.ScreenManager
         public long Position
         {
             get { return position; }
-            set { position = value;}
+            set 
+            { 
+                position = value;
+                foreach (AbstractDrawing d in Drawings)
+                    d.UpdateReferenceTime(position);
+            }
         }
         public Bitmap Thumbnail
         {
@@ -77,6 +82,18 @@ namespace Kinovea.ScreenManager
                 metadata.UpdateTrajectoriesForKeyframes();
             }
         }
+
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                color = value;
+            }
+        }
         public string TimeCode
         {
             get { return timecode; }
@@ -91,6 +108,10 @@ namespace Kinovea.ScreenManager
         {
             get { return GetContentHash();}
         }
+        public static Color DefaultColor
+        {
+            get { return defaultColor; }
+        }
         #endregion
 
         #region Members
@@ -101,6 +122,8 @@ namespace Kinovea.ScreenManager
         private string comments;
         private Bitmap thumbnail;
         private Bitmap disabledThumbnail;
+        public static readonly Color defaultColor = Color.SteelBlue;
+        private Color color = defaultColor;
         private List<AbstractDrawing> drawings = new List<AbstractDrawing>();
         private bool disabled;
         private Metadata metadata;
@@ -108,24 +131,27 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Constructor
-        public Keyframe(long position, string timecode, Metadata metadata)
+        public Keyframe(long position, string timecode, Metadata metadata, string title, Color color)
         {
             this.position = position;
             this.timecode = timecode;
             this.metadata = metadata;
+            this.title = title;
+            this.color = color;
         }
-        public Keyframe(Guid id, long position, string title, string timecode, string comments, List<AbstractDrawing> drawings, Metadata metadata)
+        public Keyframe(Guid id, long position, string title, Color color, string timecode, string comments, List<AbstractDrawing> drawings, Metadata metadata)
         {
             this.id = id;
             this.position = position;
             this.title = title;
+            this.color = color;
             this.timecode = timecode;
             this.comments = comments;
             this.drawings = drawings;
             this.metadata = metadata;
         }
         public Keyframe(XmlReader xmlReader, PointF scale, TimestampMapper timestampMapper, Metadata metadata)
-            : this(0, "", metadata)
+            : this(0, "", metadata, "", defaultColor)
         {
             ReadXml(xmlReader, scale, timestampMapper);
         }
@@ -174,33 +200,33 @@ namespace Kinovea.ScreenManager
         public void WriteXml(XmlWriter w, SerializationFilter filter)
         {
             // Keyframe only support two kind of serialization, KVA or Spreadsheet.
-            if ((filter & SerializationFilter.KVA) == SerializationFilter.KVA)
+            w.WriteStartElement("Position");
+            w.WriteString(position.ToString());
+            w.WriteEndElement();
+
+            if (!string.IsNullOrEmpty(Title))
+                w.WriteElementString("Title", Title);
+
+            w.WriteElementString("Color", XmlHelper.WriteColor(color, false));
+
+            if (!string.IsNullOrEmpty(comments))
+                w.WriteElementString("Comment", comments);
+
+            if (drawings.Count == 0)
+                return;
+
+            // Drawings are written in reverse order to match order of addition.
+            w.WriteStartElement("Drawings");
+            for (int i = drawings.Count - 1; i >= 0; i--)
             {
-                w.WriteStartElement("Position");
-                w.WriteString(position.ToString());
-                w.WriteEndElement();
+                IKvaSerializable serializableDrawing = drawings[i] as IKvaSerializable;
+                if (serializableDrawing == null)
+                    continue;
 
-                if (!string.IsNullOrEmpty(Title))
-                    w.WriteElementString("Title", Title);
-
-                if (!string.IsNullOrEmpty(comments))
-                    w.WriteElementString("Comment", comments);
-
-                if (drawings.Count == 0)
-                    return;
-
-                // Drawings are written in reverse order to match order of addition.
-                w.WriteStartElement("Drawings");
-                for (int i = drawings.Count - 1; i >= 0; i--)
-                {
-                    IKvaSerializable serializableDrawing = drawings[i] as IKvaSerializable;
-                    if (serializableDrawing == null)
-                        continue;
-
-                    DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.KVA);
-                }
-                w.WriteEndElement();
+                DrawingSerializer.Serialize(w, serializableDrawing, SerializationFilter.KVA);
             }
+
+            w.WriteEndElement();
         }
 
         public MeasuredDataKeyframe CollectMeasuredData()
@@ -229,8 +255,16 @@ namespace Kinovea.ScreenManager
                     case "Title":
                         title = r.ReadElementContentAsString();
                         break;
+                    case "Color":
+                        color = XmlHelper.ParseColor(r.ReadElementContentAsString(), Color.SteelBlue);
+                        break;
                     case "Comment":
                         comments = r.ReadElementContentAsString();
+
+                        // Note: XML spec specifies that any CRLF must be converted to single LF.
+                        // This breaks the comparison between saved data and read data.
+                        // Force CRLF back.
+                        comments = comments.Replace("\n", "\r\n");
                         break;
                     case "Drawings":
                         ParseDrawings(r, scale);
@@ -294,13 +328,17 @@ namespace Kinovea.ScreenManager
 
             if(comments != null)
                 hash ^= comments.GetHashCode();
-            
-            if(!string.IsNullOrEmpty(title))
+
+            if (!string.IsNullOrEmpty(title))
                 hash ^= title.GetHashCode();
-            
-            hash ^= timecode.GetHashCode();
+
+            hash ^= color.GetHashCode();
+
+            if (!string.IsNullOrEmpty(timecode))
+                hash ^= timecode.GetHashCode();
 
             return hash;
+
         }
         #endregion
     }

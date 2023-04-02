@@ -210,10 +210,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlphanumComparator.cs" />
+    <Compile Include="Filesystem\AlphanumComparator.cs" />
+    <Compile Include="Filesystem\FileComparator.cs" />
+    <Compile Include="Filesystem\FolderNavigationType.cs" />
+    <Compile Include="Filesystem\FileSortAxis.cs" />
     <Compile Include="Infrastructure\BitmapHelper.cs" />
     <Compile Include="Types\CSVDecimalSeparator.cs" />
     <Compile Include="Types\ExportSpace.cs" />
+    <Compile Include="Types\KeyframePresetsParameters.cs" />
     <Compile Include="Types\KinogramParameters.cs" />
     <Compile Include="Infrastructure\NativeMethods.cs" />
     <Compile Include="Types\AudioTriggerAction.cs" />
@@ -253,6 +257,7 @@
     <Compile Include="Types\ImageFormat.cs" />
     <Compile Include="Types\ImageFormatHelper.cs" />
     <Compile Include="Types\ImageRotation.cs" />
+    <Compile Include="Types\MeasureLabelType.cs" />
     <Compile Include="Types\Pair.cs" />
     <Compile Include="Types\AccelerationUnit.cs" />
     <Compile Include="Types\AngleUnit.cs" />
@@ -268,21 +273,23 @@
     <Compile Include="Types\KinoveaUncompressedVideoFormat.cs" />
     <Compile Include="Types\PhotofinishConfiguration.cs" />
     <Compile Include="Preferences\PreferenceTab.cs" />
+    <Compile Include="Types\KeyframePreset.cs" />
     <Compile Include="Types\TrackerParameterUnit.cs" />
     <Compile Include="Types\TrackingProfile.cs" />
     <Compile Include="Infrastructure\TimestampMapper.cs" />
+    <Compile Include="Types\VideoSection.cs" />
     <Compile Include="UndoRedo\CommandManager.cs" />
     <Compile Include="Events\FileActionEventArgs.cs" />
     <Compile Include="Events\NotificationCenter.cs" />
     <Compile Include="Events\RefreshFileExplorerEventArgs.cs" />
-    <Compile Include="FilesystemHelper.cs" />
+    <Compile Include="Filesystem\FilesystemHelper.cs" />
     <Compile Include="Preferences\IPreferenceSerializer.cs" />
     <Compile Include="Preferences\KeyboardPreferences.cs" />
-    <Compile Include="WinForms\Commands.cs" />
+    <Compile Include="Commands\Commands.cs" />
     <Compile Include="WinForms\FormsHelper.cs" />
-    <Compile Include="WinForms\HotkeyCommand.cs" />
-    <Compile Include="WinForms\HotkeySettings.cs" />
-    <Compile Include="WinForms\HotkeySettingsManager.cs" />
+    <Compile Include="Commands\HotkeyCommand.cs" />
+    <Compile Include="Commands\HotkeySettings.cs" />
+    <Compile Include="Commands\HotkeySettingsManager.cs" />
     <Compile Include="WinForms\KeysExtensions.cs" />
     <Compile Include="WinForms\KinoveaControl.cs">
       <SubType>UserControl</SubType>
@@ -314,6 +321,7 @@
     <Compile Include="Types\TimecodeType.cs" />
     <Compile Include="ThreePartsVersion.cs" />
     <Compile Include="TimeHelper.cs" />
+    <Compile Include="WinForms\NudHelper.cs" />
     <Compile Include="WinForms\TextboxHotkey.cs">
       <SubType>Component</SubType>
     </Compile>
