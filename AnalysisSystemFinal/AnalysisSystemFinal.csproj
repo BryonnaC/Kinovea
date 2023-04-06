@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B3A23B1C-E139-4009-9547-1D0692C2E5BD}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>AnalysisSystemFinal</RootNamespace>
+    <AssemblyName>AnalysisSystemFinal</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Emgu.CV, Version=4.6.0.5131, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.6.0.5131\lib\netstandard2.0\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Bitmap, Version=4.6.0.5131, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.Bitmap.4.6.0.5131\lib\netstandard2.0\Emgu.CV.Bitmap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.0.0\lib\portable-net45+win8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenManager.cs" />
+    <Compile Include="ServiceManager.cs" />
+    <Compile Include="Services\Csv.cs" />
+    <Compile Include="Services\FakeUser.cs" />
+    <Compile Include="Services\FileHandler.cs" />
+    <Compile Include="Services\Math.cs" />
+    <Compile Include="Services\MatrixMath.cs" />
+    <Compile Include="Services\Synchronizer.cs" />
+    <Compile Include="Services\Template.cs" />
+    <Compile Include="Services\Time.cs" />
+    <Compile Include="SoftwareManager.cs" />
+    <Compile Include="UserInterface\ButtonClickedEventArgs.cs" />
+    <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CalibrationObjectDimensions.designer.cs">
+      <DependentUpon>CalibrationObjectDimensions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\CameraSourceViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CameraSourceViewer.designer.cs">
+      <DependentUpon>CameraSourceViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\ChooseAScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\ChooseAScreen.Designer.cs">
+      <DependentUpon>ChooseAScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\CustomSplashscreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\CustomSplashscreen.designer.cs">
+      <DependentUpon>CustomSplashscreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\DashboardControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\DashboardControl.designer.cs">
+      <DependentUpon>DashboardControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\DashboardNavigation.cs" />
+    <Compile Include="UserInterface\MainFrame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\MainFrame.designer.cs">
+      <DependentUpon>MainFrame.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\NaviClickEventArgs.cs" />
+    <Compile Include="UserInterface\RecordingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\RecordingControl.designer.cs">
+      <DependentUpon>RecordingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\SubjectInformationScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\SubjectInformationScreen.designer.cs">
+      <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UserInterface\CalibrationObjectDimensions.resx">
+      <DependentUpon>CalibrationObjectDimensions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\CameraSourceViewer.resx">
+      <DependentUpon>CameraSourceViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\ChooseAScreen.resx">
+      <DependentUpon>ChooseAScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\CustomSplashscreen.resx">
+      <DependentUpon>CustomSplashscreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\DashboardControl.resx">
+      <DependentUpon>DashboardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\MainFrame.resx">
+      <DependentUpon>MainFrame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\RecordingControl.resx">
+      <DependentUpon>RecordingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\SubjectInformationScreen.resx">
+      <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kinovea.Camera.Basler\Kinovea.Camera.Basler.csproj">
+      <Project>{d978ab6e-feeb-4ad5-8a2b-a515f0dc166a}</Project>
+      <Name>Kinovea.Camera.Basler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera.Baumer\Kinovea.Camera.Baumer.csproj">
+      <Project>{0aab56ae-86c4-45b0-974a-885effb4904f}</Project>
+      <Name>Kinovea.Camera.Baumer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera.Daheng\Kinovea.Camera.Daheng.csproj">
+      <Project>{92cfeb6d-11fb-48bb-a5f9-e2bfb6f8b29f}</Project>
+      <Name>Kinovea.Camera.Daheng</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera.DirectShow\Kinovea.Camera.DirectShow.csproj">
+      <Project>{104b98b4-961d-4ed4-b7c3-7e790065aaed}</Project>
+      <Name>Kinovea.Camera.DirectShow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera.FrameGenerator\Kinovea.Camera.FrameGenerator.csproj">
+      <Project>{6358dc91-456d-41d3-8c73-6ee39c6e3048}</Project>
+      <Name>Kinovea.Camera.FrameGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera.HTTP\Kinovea.Camera.HTTP.csproj">
+      <Project>{7b8cf26d-b8af-4914-b395-93661d225ea3}</Project>
+      <Name>Kinovea.Camera.HTTP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera.IDS\Kinovea.Camera.IDS.csproj">
+      <Project>{117171e1-8fd7-4e59-b1d6-95dc27d90465}</Project>
+      <Name>Kinovea.Camera.IDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Camera\Kinovea.Camera.csproj">
+      <Project>{2bf373b8-5d33-4fcf-8c30-5e8caf6777e7}</Project>
+      <Name>Kinovea.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.FileBrowser\Kinovea.FileBrowser.csproj">
+      <Project>{85924d93-541a-46e6-bf9a-ebe3b73887ec}</Project>
+      <Name>Kinovea.FileBrowser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Pipeline\Kinovea.Pipeline.csproj">
+      <Project>{32380ce3-aa6a-465b-bb0c-bf0708b2b3a5}</Project>
+      <Name>Kinovea.Pipeline</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.ScreenManager\Kinovea.ScreenManager.csproj">
+      <Project>{25c4b2fb-ca90-4e2e-8046-106fcf36cb81}</Project>
+      <Name>Kinovea.ScreenManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Services\Kinovea.Services.csproj">
+      <Project>{8aa92254-a016-4a84-925c-f5b07e02f8a8}</Project>
+      <Name>Kinovea.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video.Bitmap\Kinovea.Video.Bitmap.csproj">
+      <Project>{c0148b9e-a511-4631-a075-ae483d4153a8}</Project>
+      <Name>Kinovea.Video.Bitmap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video.FFMpeg\PlayerServer\PlayerServer.vcxproj">
+      <Project>{f80dbe6d-d394-4811-b5e6-7528f849c71a}</Project>
+      <Name>Kinovea.Video.FFMpeg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video.GIF\Kinovea.Video.GIF.csproj">
+      <Project>{b2f5c3eb-9f9e-4b7a-acbb-55781e62957c}</Project>
+      <Name>Kinovea.Video.GIF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video.SVG\Kinovea.Video.SVG.csproj">
+      <Project>{2507e203-236d-4b02-8477-5fcbc30a670c}</Project>
+      <Name>Kinovea.Video.SVG</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video.Synthetic\Kinovea.Video.Synthetic.csproj">
+      <Project>{94d6de5a-b99a-4eed-af5b-c08746ea568e}</Project>
+      <Name>Kinovea.Video.Synthetic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kinovea.Video\Kinovea.Video.csproj">
+      <Project>{4cbb8462-00a7-4814-ad3b-07c82eeeb0de}</Project>
+      <Name>Kinovea.Video</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

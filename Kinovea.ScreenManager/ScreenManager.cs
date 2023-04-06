@@ -65,7 +65,7 @@ namespace Kinovea.ScreenManager
         private ScreenManagerUserInterface view;
         private DualPlayerController dualPlayer = new DualPlayerController();
         private DualCaptureController dualCapture = new DualCaptureController();
-        private List<AbstractScreen> screenList = new List<AbstractScreen>();
+        protected List<AbstractScreen> screenList = new List<AbstractScreen>();
         private IEnumerable<PlayerScreen> playerScreens;
         private IEnumerable<CaptureScreen> captureScreens;
         private AbstractScreen activeScreen = null;
@@ -2386,7 +2386,7 @@ namespace Kinovea.ScreenManager
             DoLoadMovieInScreen(e.Path, e.Target);
         }
         
-        private void DoLoadMovieInScreen(string path, int targetScreen)
+        protected void DoLoadMovieInScreen(string path, int targetScreen)
         {
             if (FilesystemHelper.IsReplayWatcher(path))
             {
@@ -2420,7 +2420,7 @@ namespace Kinovea.ScreenManager
             }
         }
         
-        private void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
+        protected void DoLoadCameraInScreen(CameraSummary summary, int targetScreen)
         {
             if(summary == null)
                 return;
