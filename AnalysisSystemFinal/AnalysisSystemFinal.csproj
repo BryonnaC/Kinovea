@@ -114,7 +114,13 @@
     <Compile Include="Services\Template.cs" />
     <Compile Include="Services\Time.cs" />
     <Compile Include="SoftwareManager.cs" />
-    <Compile Include="UserInterface\ButtonClickedEventArgs.cs" />
+    <Compile Include="UserInterface\BaseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\BaseControl.Designer.cs">
+      <DependentUpon>BaseControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\EventArgs.cs" />
     <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,7 +158,6 @@
     <Compile Include="UserInterface\MainFrame.designer.cs">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\NaviClickEventArgs.cs" />
     <Compile Include="UserInterface\RecordingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

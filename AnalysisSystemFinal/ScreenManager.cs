@@ -128,7 +128,7 @@ namespace AnalysisSystemFinal
 
         public static async Task DelaySplashScreen()
         {
-            await Task.Delay(3000);
+            await Task.Delay(2000);
         }
 
         public void CreateCaptureScreen()

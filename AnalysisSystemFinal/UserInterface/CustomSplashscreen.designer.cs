@@ -35,13 +35,14 @@ namespace AnalysystemTakeTwo
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Franklin Gothic Medium Cond", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(141, 194);
+            this.label1.Location = new System.Drawing.Point(60, 224);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(490, 81);
+            this.label1.Size = new System.Drawing.Size(666, 81);
             this.label1.TabIndex = 0;
-            this.label1.Text = "2D Analysis System";
+            this.label1.Text = "2D Biomechanical Analysis";
             // 
             // goButton
             // 
@@ -55,12 +56,13 @@ namespace AnalysystemTakeTwo
             this.goButton.TabIndex = 1;
             this.goButton.Text = "Go!";
             this.goButton.UseVisualStyleBackColor = false;
+            this.goButton.Visible = false;
             this.goButton.Click += new System.EventHandler(this.goButton_Click);
             // 
             // CustomSplashscreen
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.AutoSize = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
             this.Controls.Add(this.goButton);
             this.Controls.Add(this.label1);

@@ -11,24 +11,19 @@ using AnalysisSystemFinal;
 
 namespace AnalysystemTakeTwo
 {
-    public partial class CustomSplashscreen : UserControl
+    public partial class BaseControl : UserControl
     {
-        public static event Action StartDashboard;
-
-        public CustomSplashscreen()
+        public BaseControl()
         {
             InitializeComponent();
             MainFrame.WindowResize += OnWindowResize;
         }
+
         protected void OnWindowResize(object sender, WindowResizeEventArgs e)
         {
             this.Width = e.width;
             this.Height = e.height;
 
-        }
-        private void goButton_Click(object sender, EventArgs e)
-        {
-            StartDashboard?.Invoke();
         }
     }
 }
