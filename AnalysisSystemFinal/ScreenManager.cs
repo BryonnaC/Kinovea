@@ -32,7 +32,7 @@ namespace AnalysisSystemFinal
         {
             //smKernel = new ScreenManagerKernel();
             mainFrame = new MainFrame();
-            LoadSplashScreen();
+            //LoadSplashScreen();
             mainFrame.Show();
 
             FormsHelper.SetMainForm(mainFrame);
@@ -43,8 +43,6 @@ namespace AnalysisSystemFinal
             DashboardNavigation.ToolBarClick += DashboardNav_ToolBarClick;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
-
-            //Application.Run();
         }
 
         #region EventHandlers
@@ -123,9 +121,14 @@ namespace AnalysisSystemFinal
         #endregion
 
         #region Not Event Handlers
-        private void LoadSplashScreen()
+        public void LoadSplashScreen()
         {
             mainFrame.Controls.Add(customSplash);
+        }
+
+        public static async Task DelaySplashScreen()
+        {
+            await Task.Delay(3000);
         }
 
         public void CreateCaptureScreen()
@@ -165,8 +168,9 @@ namespace AnalysisSystemFinal
             mainFrame.Controls.Clear();
         }
 
-        private void FirstSwitchToDashboard()
+        public void FirstSwitchToDashboard()
         {
+            HideCurrentScreen();
             dashNav.PopulateToolBar(dashboardScr.toolStrip1);
 
             ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();

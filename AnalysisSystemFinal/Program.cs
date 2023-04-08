@@ -56,7 +56,18 @@ namespace AnalysisSystemFinal
             ServiceManager serviceManager = new ServiceManager();
             FileBrowserKernel fileBrowser = new FileBrowserKernel();
 
+            //function used to test formulas against matlab
             ServiceManager.DoMath();
+
+            screenManager.LoadSplashScreen();
+
+            //async loading here to allow us to move to dashboard without click
+            Task.Run(async delegate
+            {
+                await ScreenManager.DelaySplashScreen();
+            }).Wait();
+
+            screenManager.FirstSwitchToDashboard();
 
             Application.Run();
         }
