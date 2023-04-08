@@ -117,7 +117,7 @@ namespace AnalysisSystemFinal
         {
             mainFrame.Controls.Clear();
             mainFrame.Controls.Add(recordingControl);
-            whichScreen = 1;
+            whichScreen = 0;
             DoLoadMovieInScreen(e.Path, e.Target);
         }
         #endregion

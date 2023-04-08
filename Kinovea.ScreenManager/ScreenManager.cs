@@ -971,7 +971,7 @@ namespace Kinovea.ScreenManager
         #region Menu organization
         public void OrganizeMenus()
         {
-            DoOrganizeMenu();
+            //DoOrganizeMenu();
         }
         private void BuildSvgMenu()
         {
@@ -2663,7 +2663,7 @@ namespace Kinovea.ScreenManager
             foreach (CaptureScreen captureScreen in captureScreens)
                 captureScreen.SetShared(true);
 
-            AddScreenEventHandlers(screen);
+            //AddScreenEventHandlers(screen);
             screenList.Add(screen);
         }
         private void AddScreenEventHandlers(AbstractScreen screen)
