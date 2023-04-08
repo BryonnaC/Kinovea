@@ -120,6 +120,7 @@
     <Compile Include="UserInterface\BaseControl.Designer.cs">
       <DependentUpon>BaseControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\SizeHelper.cs" />
     <Compile Include="UserInterface\EventArgs.cs" />
     <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
       <SubType>UserControl</SubType>

@@ -84,8 +84,11 @@ namespace AnalysisSystemFinal
 
         private void CameraTypeManager_CameraLoadAsked(object source, CameraLoadAskedEventArgs e)
         {
-            mainFrame.Controls.Clear();
-            mainFrame.Controls.Add(recordingControl);
+            //mainFrame.Controls.Clear();
+            dashboardScr.panel1.Controls.Clear();
+            dashboardScr.PageTitle.Text = "Live Recording Phase";
+            dashboardScr.panel1.Controls.Add(recordingControl);
+            //mainFrame.Controls.Add(recordingControl);
             //recordingControl.Controls.Clear();
             whichScreen = 0;
             DoLoadCameraInScreen(e.Source, e.Target);
@@ -113,8 +116,11 @@ namespace AnalysisSystemFinal
 
         new private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
         {
-            mainFrame.Controls.Clear();
-            mainFrame.Controls.Add(recordingControl);
+            /*            mainFrame.Controls.Clear();
+                        mainFrame.Controls.Add(recordingControl);*/
+            dashboardScr.panel1.Controls.Clear();
+            dashboardScr.PageTitle.Text = "Video Playback Phase";
+            dashboardScr.panel1.Controls.Add(recordingControl);
             whichScreen = 0;
             DoLoadMovieInScreen(e.Path, e.Target);
         }
@@ -175,6 +181,8 @@ namespace AnalysisSystemFinal
 
             ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
 
+            dashboardScr.PageTitle.Text = "Live Recording Phase";
+
             dashboardScr.panel1.Controls.Add(scrMgUI);
             mainFrame.Controls.Add(dashboardScr);
         }
@@ -192,6 +200,7 @@ namespace AnalysisSystemFinal
         {
             FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
             dashboardScr.panel1.Controls.Clear();
+            dashboardScr.PageTitle.Text = "Video Selection Phase";
             dashboardScr.panel1.Controls.Add(fileBrowsUI);
         }
 
@@ -199,6 +208,7 @@ namespace AnalysisSystemFinal
         {
             SubjectInformationScreen subjInfoScr = new SubjectInformationScreen();
             dashboardScr.panel1.Controls.Clear();
+            dashboardScr.PageTitle.Text = "Information Collection Phase";
             dashboardScr.panel1.Controls.Add(subjInfoScr);
         }
 
@@ -206,9 +216,9 @@ namespace AnalysisSystemFinal
         {
             CalibrationObjectDimensions calibObjControl = new CalibrationObjectDimensions();
             dashboardScr.panel1.Controls.Clear();
+            dashboardScr.PageTitle.Text = "Calibration Object Phase";
             dashboardScr.panel1.Controls.Add(calibObjControl);
         }
-
 
         #endregion
 

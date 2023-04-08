@@ -32,7 +32,7 @@ namespace AnalysystemTakeTwo
             this.label1 = new System.Windows.Forms.Label();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.PageTitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -57,29 +57,34 @@ namespace AnalysystemTakeTwo
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(0, 71);
+            this.panel1.Location = new System.Drawing.Point(11, 71);
+            this.panel1.Margin = new System.Windows.Forms.Padding(20);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(750, 479);
+            this.panel1.Size = new System.Drawing.Size(1179, 630);
             this.panel1.TabIndex = 3;
             // 
-            // panel2
+            // PageTitle
             // 
-            this.panel2.Location = new System.Drawing.Point(3, 556);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(750, 44);
-            this.panel2.TabIndex = 4;
+            this.PageTitle.AutoSize = true;
+            this.PageTitle.Font = new System.Drawing.Font("Franklin Gothic Medium Cond", 32.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PageTitle.ForeColor = System.Drawing.Color.White;
+            this.PageTitle.Location = new System.Drawing.Point(583, 18);
+            this.PageTitle.Name = "PageTitle";
+            this.PageTitle.Size = new System.Drawing.Size(227, 50);
+            this.PageTitle.TabIndex = 4;
+            this.PageTitle.Text = "Current Page";
             // 
             // DashboardControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.PageTitle);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.label1);
             this.Name = "DashboardControl";
-            this.Size = new System.Drawing.Size(800, 600);
+            this.Size = new System.Drawing.Size(1273, 763);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -90,6 +95,6 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.ToolStrip toolStrip1;
         public System.Windows.Forms.Panel panel1;
-        public System.Windows.Forms.Panel panel2;
+        public System.Windows.Forms.Label PageTitle;
     }
 }
