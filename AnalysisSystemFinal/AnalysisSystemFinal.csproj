@@ -152,7 +152,7 @@
     <Compile Include="UserInterface\DashboardControl.designer.cs">
       <DependentUpon>DashboardControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserInterface\DashboardNavigation.cs" />
+    <Compile Include="UserInterface\ToolStripButtonManager.cs" />
     <Compile Include="UserInterface\MainFrame.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -57,10 +57,11 @@ namespace AnalysystemTakeTwo
             // 
             // panel1
             // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.panel1.Location = new System.Drawing.Point(11, 71);
-            this.panel1.Margin = new System.Windows.Forms.Padding(20);
+            this.panel1.Margin = new System.Windows.Forms.Padding(100);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1179, 630);
+            this.panel1.Size = new System.Drawing.Size(1250, 625);
             this.panel1.TabIndex = 3;
             // 
             // PageTitle
@@ -83,8 +84,9 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(20);
             this.Name = "DashboardControl";
-            this.Size = new System.Drawing.Size(1273, 763);
+            this.Size = new System.Drawing.Size(1600, 800);
             this.ResumeLayout(false);
             this.PerformLayout();
 

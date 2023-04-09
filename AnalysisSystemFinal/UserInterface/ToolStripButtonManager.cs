@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AnalysisSystemFinal
 {
-    class DashboardNavigation
+    class ToolStripButtonManager
     {
         private ToolStripMenuItem mnuInfoCollection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrationObject = new ToolStripMenuItem();
@@ -22,11 +22,12 @@ namespace AnalysisSystemFinal
         private ToolStripMenuItem mnucalibrationTemplate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuleg12pointsTemplate = new ToolStripMenuItem();
         private ToolStripMenuItem mnutrackingMarker = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuGeneratePositionGraph = new ToolStripMenuItem();
 
         public static event EventHandler<ButtonClickedEventArgs> ToolBarClick;
         private int number = 0;
 
-        public DashboardNavigation()
+        public ToolStripButtonManager()
         {
 
         }
@@ -38,24 +39,55 @@ namespace AnalysisSystemFinal
             mnucalibrationTemplate.Text = "Triangle Template";
             mnuleg12pointsTemplate.Text = "Leg Tracking Template";
             mnutrackingMarker.Text = "Individual Tracker";
+            mnuGeneratePositionGraph.Text = "Generate Position Data";
+
+            mnucalibrationTemplate.Click += mnuCalibrationTemplate_Click;
+            mnuleg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;
+            mnutrackingMarker.Click += mnuTrackingMarker_Click;
+            mnuGeneratePositionGraph.Click += mnuGeneratePositionGraph_Click;
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnucalibrationTemplate, mnuleg12pointsTemplate, mnutrackingMarker});
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnucalibrationTemplate, mnuleg12pointsTemplate, mnutrackingMarker, mnuGeneratePositionGraph});
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
         }
 
-        private void InitButtons()
+        private void mnuGeneratePositionGraph_Click(object sender, EventArgs e)
         {
-            calibrationTemplate.Text = "Place Triangle Template";
+            throw new NotImplementedException();
+        }
+
+        private void InitAnalysisButtons()
+        {
+/*            calibrationTemplate.Text = "Place Triangle Template";
+            calibrationTemplate.Click += mnuCalibrationTemplate_Click;
+
             leg12pointsTemplate.Text = "Place Leg Tracking Template";
+            leg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;
+
             trackingMarker.Text = "Place Individual Tracker";
+            trackingMarker.Click += mnuTrackingMarker_Click;*/
+        }
+
+        private void mnuTrackingMarker_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void mnuLeg12pointsTemplate_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void mnuCalibrationTemplate_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public void PlaceButtons(Panel buttonPanel)
         {
-            InitButtons();
+            InitAnalysisButtons();
 
             buttonPanel.Controls.Add(leg12pointsTemplate);
             buttonPanel.Controls.Add(calibrationTemplate);

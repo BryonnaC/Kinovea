@@ -22,7 +22,7 @@ namespace AnalysisSystemFinal
         CustomSplashscreen customSplash = new CustomSplashscreen();
         DashboardControl dashboardScr = new DashboardControl();
 
-        DashboardNavigation dashNav = new DashboardNavigation();
+        ToolStripButtonManager dashNav = new ToolStripButtonManager();
         //CameraSourceViewer availableCamerasScreen;
         private int whichScreen = 0;
 
@@ -40,7 +40,7 @@ namespace AnalysisSystemFinal
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             //ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
-            DashboardNavigation.ToolBarClick += DashboardNav_ToolBarClick;
+            ToolStripButtonManager.ToolBarClick += DashboardNav_ToolBarClick;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
         }
