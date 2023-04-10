@@ -13,6 +13,12 @@ namespace AnalysisSystemFinal
         public ServiceManager()
         {
             //CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
+            FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
+        }
+
+        private void Kinematics_DoCustomMath(object sender, Kinovea.ScreenManager.GraphToCsvToMathEventArgs e)
+        {
+            DoMath();   //this is placeholder, we're gonna need the *numbers* bby
         }
 
         private void CaptureScrView_RecordingStarted()

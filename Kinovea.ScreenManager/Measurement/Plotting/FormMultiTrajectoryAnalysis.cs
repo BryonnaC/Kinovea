@@ -28,6 +28,8 @@ namespace Kinovea.ScreenManager
         private PlotHelper plotHelper;
         private bool manualUpdate;
 
+        public static event EventHandler<GraphToCsvToMathEventArgs> DoCustomMath;
+
         public FormMultiTrajectoryAnalysis(Metadata metadata)
         {
             this.metadata = metadata;
@@ -596,6 +598,27 @@ namespace Kinovea.ScreenManager
             }
 
             return csv;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //we still want to save it because it'd be weird and hazard prone if we didn't
+            btnExportData_Click(sender, e);
+            //this is where I want to tie in the formulas
+            //but I don't wait to handle it here.
+            List<string> eventCSV = GetCSV();
+
+            DoCustomMath?.Invoke(this, new GraphToCsvToMathEventArgs(eventCSV));
+        }
+    }
+
+    public class GraphToCsvToMathEventArgs : EventArgs
+    {
+        public readonly List<string> csv_String;
+
+        public GraphToCsvToMathEventArgs(List<string> csv)
+        {
+            this.csv_String = csv;
         }
     }
 }

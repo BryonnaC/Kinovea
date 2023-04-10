@@ -43,6 +43,12 @@ namespace AnalysisSystemFinal
             ToolStripButtonManager.ToolBarClick += DashboardNav_ToolBarClick;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
+            ToolStripButtonManager.TrajectoryClick += ToolStrip_TrajectoryClick;
+        }
+
+        private void ToolStrip_TrajectoryClick(object sender, EventArgs e)
+        {
+            base.mnuTrajectoryAnalysis_OnClick(sender, e);
         }
 
         #region EventHandlers
@@ -199,9 +205,9 @@ namespace AnalysisSystemFinal
         private void PrepareFileBrowser()
         {
             FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
-            dashboardScr.panel1.Controls.Clear();
+            dashboardScr.panel2.Controls.Clear();
             dashboardScr.PageTitle.Text = "Video Selection Phase";
-            dashboardScr.panel1.Controls.Add(fileBrowsUI);
+            dashboardScr.panel2.Controls.Add(fileBrowsUI);
         }
 
         private void ShowSubjectInfoCollection()

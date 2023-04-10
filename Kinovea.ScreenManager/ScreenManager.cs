@@ -725,6 +725,7 @@ namespace Kinovea.ScreenManager
             int index = sender == screenList[0] ? 0 : 1;
             VideoTypeManager.LoadVideo(filename, index);
         }
+
         private void Player_OpenReplayWatcherAsked(object sender, EventArgs e)
         {
             string path = FilePicker.OpenReplayWatcher();
@@ -817,6 +818,7 @@ namespace Kinovea.ScreenManager
             activeScreen = screen;
             OrganizeMenus();
         }
+
         public void SetAllToInactive()
         {
             foreach (AbstractScreen screen in screenList)
@@ -2336,7 +2338,7 @@ namespace Kinovea.ScreenManager
             ps.ShowCameraCalibration();
         }
 
-        private void mnuTrajectoryAnalysis_OnClick(object sender, EventArgs e)
+        protected void mnuTrajectoryAnalysis_OnClick(object sender, EventArgs e)
         {
             PlayerScreen ps = activeScreen as PlayerScreen;
             if (ps == null)
@@ -2663,9 +2665,10 @@ namespace Kinovea.ScreenManager
             foreach (CaptureScreen captureScreen in captureScreens)
                 captureScreen.SetShared(true);
 
-            //AddScreenEventHandlers(screen);
+            AddScreenEventHandlers(screen);
             screenList.Add(screen);
         }
+
         private void AddScreenEventHandlers(AbstractScreen screen)
         {
             screen.CloseAsked += Screen_CloseAsked;
@@ -2677,6 +2680,7 @@ namespace Kinovea.ScreenManager
             else if (screen is CaptureScreen)
                 AddCaptureScreenEventHandlers(screen as CaptureScreen);
         }
+
         private void AddPlayerScreenEventHandlers(PlayerScreen screen)
         {
             screen.OpenVideoAsked += Player_OpenVideoAsked;

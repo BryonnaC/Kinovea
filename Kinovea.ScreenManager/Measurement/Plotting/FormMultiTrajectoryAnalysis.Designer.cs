@@ -63,6 +63,7 @@
             this.clbSources = new System.Windows.Forms.CheckedListBox();
             this.cmbPlotSpec = new System.Windows.Forms.ComboBox();
             this.lblData = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.pagePlot.SuspendLayout();
             this.pageAbout.SuspendLayout();
@@ -140,6 +141,7 @@
             this.chY});
             this.lvCutoffFrequencies.GridLines = true;
             this.lvCutoffFrequencies.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.lvCutoffFrequencies.HideSelection = false;
             this.lvCutoffFrequencies.Location = new System.Drawing.Point(490, 236);
             this.lvCutoffFrequencies.Name = "lvCutoffFrequencies";
             this.lvCutoffFrequencies.Size = new System.Drawing.Size(250, 207);
@@ -286,6 +288,7 @@
             // gbExportData
             // 
             this.gbExportData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbExportData.Controls.Add(this.button1);
             this.gbExportData.Controls.Add(this.btnDataCopy);
             this.gbExportData.Controls.Add(this.btnExportData);
             this.gbExportData.Location = new System.Drawing.Point(784, 547);
@@ -297,7 +300,7 @@
             // 
             // btnDataCopy
             // 
-            this.btnDataCopy.Location = new System.Drawing.Point(18, 34);
+            this.btnDataCopy.Location = new System.Drawing.Point(18, 19);
             this.btnDataCopy.Name = "btnDataCopy";
             this.btnDataCopy.Size = new System.Drawing.Size(175, 23);
             this.btnDataCopy.TabIndex = 6;
@@ -307,7 +310,7 @@
             // 
             // btnExportData
             // 
-            this.btnExportData.Location = new System.Drawing.Point(18, 74);
+            this.btnExportData.Location = new System.Drawing.Point(18, 48);
             this.btnExportData.Name = "btnExportData";
             this.btnExportData.Size = new System.Drawing.Size(175, 23);
             this.btnExportData.TabIndex = 5;
@@ -489,6 +492,16 @@
             this.lblData.TabIndex = 5;
             this.lblData.Text = "Data :";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(18, 77);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(175, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Save to file and use immediately";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // FormMultiTrajectoryAnalysis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -558,5 +571,6 @@
         private System.Windows.Forms.ColumnHeader chSource;
         private System.Windows.Forms.ColumnHeader chX;
         private System.Windows.Forms.ColumnHeader chY;
+        private System.Windows.Forms.Button button1;
     }
 }

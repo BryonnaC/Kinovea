@@ -37,4 +37,14 @@ namespace AnalysisSystemFinal
             this.navigationChoice = naviChoice;
         }
     }
+
+    class GraphToCsvToMathEventArgs : EventArgs
+    {
+        public readonly List<string> csv_String;
+
+        public GraphToCsvToMathEventArgs()
+        {
+
+        }
+    }
 }

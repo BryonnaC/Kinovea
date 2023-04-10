@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
+using Kinovea.ScreenManager;
 
 namespace AnalysisSystemFinal
 {
@@ -27,6 +29,8 @@ namespace AnalysisSystemFinal
         public static event EventHandler<ButtonClickedEventArgs> ToolBarClick;
         private int number = 0;
 
+        public static event EventHandler<EventArgs> TrajectoryClick;
+
         public ToolStripButtonManager()
         {
 
@@ -36,10 +40,11 @@ namespace AnalysisSystemFinal
         {
             toolStrip.AllowMerge = true;
 
-            mnucalibrationTemplate.Text = "Triangle Template";
-            mnuleg12pointsTemplate.Text = "Leg Tracking Template";
-            mnutrackingMarker.Text = "Individual Tracker";
-            mnuGeneratePositionGraph.Text = "Generate Position Data";
+            mnucalibrationTemplate.Text = " ";
+            mnucalibrationTemplate.Image = Image.FromFile("C:/Users/Bryonna/Documents/GitHub/Kinovea/AnalysisSystemFinal/Resources/triangle.png");
+            mnuleg12pointsTemplate.Text = "L";
+            mnutrackingMarker.Text = "+";
+            mnuGeneratePositionGraph.Text = "G";
 
             mnucalibrationTemplate.Click += mnuCalibrationTemplate_Click;
             mnuleg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;
@@ -55,7 +60,10 @@ namespace AnalysisSystemFinal
 
         private void mnuGeneratePositionGraph_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            /*            PlayerScreen ps = new PlayerScreen();
+                        ps.ShowTrajectoryAnalysis();*/
+
+            TrajectoryClick?.Invoke(sender, e);
         }
 
         private void InitAnalysisButtons()

@@ -33,6 +33,7 @@ namespace AnalysystemTakeTwo
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.panel1 = new System.Windows.Forms.Panel();
             this.PageTitle = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label1
@@ -58,8 +59,8 @@ namespace AnalysystemTakeTwo
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.panel1.Location = new System.Drawing.Point(11, 71);
-            this.panel1.Margin = new System.Windows.Forms.Padding(100);
+            this.panel1.Location = new System.Drawing.Point(330, 71);
+            this.panel1.Margin = new System.Windows.Forms.Padding(20);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1250, 625);
             this.panel1.TabIndex = 3;
@@ -75,11 +76,21 @@ namespace AnalysystemTakeTwo
             this.PageTitle.TabIndex = 4;
             this.PageTitle.Text = "Current Page";
             // 
+            // panel2
+            // 
+            this.panel2.AutoScroll = true;
+            this.panel2.Location = new System.Drawing.Point(3, 71);
+            this.panel2.Margin = new System.Windows.Forms.Padding(10);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(320, 600);
+            this.panel2.TabIndex = 5;
+            // 
             // DashboardControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.PageTitle);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
@@ -98,5 +109,6 @@ namespace AnalysystemTakeTwo
         public System.Windows.Forms.ToolStrip toolStrip1;
         public System.Windows.Forms.Panel panel1;
         public System.Windows.Forms.Label PageTitle;
+        public System.Windows.Forms.Panel panel2;
     }
 }

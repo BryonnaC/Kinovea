@@ -957,22 +957,41 @@ namespace Kinovea.FileBrowser
         
         private void fileWatcher_Renamed(object sender, RenamedEventArgs e)
         {
-            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            if (IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            }
+
         }
 
         private void fileWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            if (IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            }
+
         }
 
         private void fileWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            if (IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            }
+            else
+            {
+                return;
+            }
+
         }
 
         private void fileWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            if (IsHandleCreated)
+            {
+                this.BeginInvoke((MethodInvoker)delegate { DoRefreshFileList(true); });
+            }
         }
         #endregion
 
