@@ -26,6 +26,13 @@ namespace AnalysisSystemFinal
         private ToolStripMenuItem mnutrackingMarker = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGeneratePositionGraph = new ToolStripMenuItem();
 
+        private ToolStripDropDownButton openVid = new ToolStripDropDownButton();
+        private ToolStripDropDownButton openCam = new ToolStripDropDownButton();
+        private ToolStripDropDownButton subInf = new ToolStripDropDownButton();
+        private ToolStripDropDownButton calibrationObj = new ToolStripDropDownButton();
+        private ToolStripDropDownButton trackWindow = new ToolStripDropDownButton();
+        //private ToolStripDropDownButton linearKine = new ToolStripDropDownButton();
+
         public static event EventHandler<ButtonClickedEventArgs> ToolBarClick;
         private int number = 0;
 
@@ -105,6 +112,12 @@ namespace AnalysisSystemFinal
         public void PopulateToolBar(ToolStrip toolStrip)
         {
             toolStrip.AllowMerge = true;
+            openVid.Text = "Open Video...";
+            openCam.Text = "Open Camera...";
+            subInf.Text = "Subject Info";
+            calibrationObj.Text = "Calibration Obj";
+            trackWindow.Text = "Marker Properties";
+            //openVid.Size.Width = 50;
 
             mnuInfoCollection.Text = "Subject Info";
             mnuInfoCollection.Click += mnuInfoCollection_Click;
@@ -112,10 +125,16 @@ namespace AnalysisSystemFinal
             mnuCalibrationObject.Text = "Calibration Object";
             mnuCalibrationObject.Click += mnuCalibrationObject_Click;
 
-            mnuDataGraphing.Text = "Graph Data";
+            mnuDataGraphing.Text = "Properties";
+            mnuDataGraphing.DropDownItems.Add(trackWindow);
+            mnuDataGraphing.DropDownItems.Add(subInf);
+            mnuDataGraphing.DropDownItems.Add(calibrationObj);
             mnuDataGraphing.Click += MnuDataGraphing_Click;
 
-            mnuFileBrowser.Text = "Open File Browser";
+            mnuFileBrowser.Text = "Video";
+            mnuFileBrowser.DropDownItems.Add(openVid);
+            mnuFileBrowser.DropDownItems.Add(openCam);
+
             mnuFileBrowser.Click += MnuFileBrowser_Click;
 
             mnuRecord.Text = "Record Live Video";
