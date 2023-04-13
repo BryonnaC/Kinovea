@@ -40,11 +40,11 @@ namespace AnalysisSystemFinal
         {
             toolStrip.AllowMerge = true;
 
-            mnucalibrationTemplate.Text = " ";
-            mnucalibrationTemplate.Image = Image.FromFile("C:/Users/Bryonna/Documents/GitHub/Kinovea/AnalysisSystemFinal/Resources/triangle.png");
-            mnuleg12pointsTemplate.Text = "L";
-            mnutrackingMarker.Text = "+";
-            mnuGeneratePositionGraph.Text = "G";
+            mnucalibrationTemplate.Text = "Calibration Object";
+            //mnucalibrationTemplate.Image = Image.FromFile("C:/Users/Bryonna/Documents/GitHub/Kinovea/AnalysisSystemFinal/Resources/triangle.png");
+            mnuleg12pointsTemplate.Text = "Leg 12 Points";
+            mnutrackingMarker.Text = "Single Marker";
+            mnuGeneratePositionGraph.Text = "Graph Position";
 
             mnucalibrationTemplate.Click += mnuCalibrationTemplate_Click;
             mnuleg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;

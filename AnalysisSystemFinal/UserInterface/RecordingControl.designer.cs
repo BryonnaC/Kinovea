@@ -38,7 +38,7 @@ namespace AnalysystemTakeTwo
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(60, 3);
+            this.panel1.Location = new System.Drawing.Point(146, 3);
             this.panel1.Margin = new System.Windows.Forms.Padding(100);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(900, 450);
@@ -62,7 +62,7 @@ namespace AnalysystemTakeTwo
             this.panel2.Controls.Add(this.buttonToolStrip);
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(50, 450);
+            this.panel2.Size = new System.Drawing.Size(138, 450);
             this.panel2.TabIndex = 6;
             // 
             // buttonToolStrip
@@ -71,7 +71,7 @@ namespace AnalysystemTakeTwo
             this.buttonToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.buttonToolStrip.Location = new System.Drawing.Point(0, 0);
             this.buttonToolStrip.Name = "buttonToolStrip";
-            this.buttonToolStrip.Size = new System.Drawing.Size(50, 111);
+            this.buttonToolStrip.Size = new System.Drawing.Size(138, 111);
             this.buttonToolStrip.TabIndex = 0;
             this.buttonToolStrip.Text = "buttonToolStrip";
             // 
