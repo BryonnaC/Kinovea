@@ -10,6 +10,7 @@ using Kinovea.FileBrowser;
 using Kinovea.Services;
 using Kinovea.Video;
 using AnalysystemTakeTwo;
+using AnalysisSystemFinal.UserInterface;
 
 namespace AnalysisSystemFinal
 {
@@ -204,10 +205,19 @@ namespace AnalysisSystemFinal
 
         private void PrepareFileBrowser()
         {
+            FileSelection fs = new FileSelection();
             FileBrowserUserInterface fileBrowsUI = new FileBrowserUserInterface();
-            dashboardScr.panel2.Controls.Clear();
+            ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
+
+            fs.panel1.Controls.Clear();
+            fs.panel1.Controls.Add(scrMgUI);
+
+            fs.panel2.Controls.Clear();
+            fs.panel2.Controls.Add(fileBrowsUI);
+
+            dashboardScr.panel1.Controls.Clear();
             dashboardScr.PageTitle.Text = "Video Selection Phase";
-            dashboardScr.panel2.Controls.Add(fileBrowsUI);
+            dashboardScr.panel1.Controls.Add(fs);
         }
 
         private void ShowSubjectInfoCollection()

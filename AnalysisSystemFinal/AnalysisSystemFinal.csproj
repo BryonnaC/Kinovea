@@ -132,6 +132,12 @@
     <Compile Include="UserInterface\BaseControl.Designer.cs">
       <DependentUpon>BaseControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\FileSelection.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\FileSelection.Designer.cs">
+      <DependentUpon>FileSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\SizeHelper.cs" />
     <Compile Include="UserInterface\EventArgs.cs" />
     <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
@@ -206,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\DashboardControl.resx">
       <DependentUpon>DashboardControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\FileSelection.resx">
+      <DependentUpon>FileSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>

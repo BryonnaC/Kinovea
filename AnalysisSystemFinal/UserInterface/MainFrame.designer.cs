@@ -36,8 +36,8 @@ namespace AnalysystemTakeTwo
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
-            this.ClientSize = new System.Drawing.Size(984, 961);
-            this.MinimumSize = new System.Drawing.Size(1000, 700);
+            this.ClientSize = new System.Drawing.Size(1184, 961);
+            this.MinimumSize = new System.Drawing.Size(1200, 600);
             this.Name = "MainFrame";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainWindow";
