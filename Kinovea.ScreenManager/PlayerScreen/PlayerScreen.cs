@@ -321,7 +321,7 @@ namespace Kinovea.ScreenManager
         public PlayerScreenUserInterface view;
         private DrawingToolbarPresenter drawingToolbarPresenter = new DrawingToolbarPresenter();
         private HistoryStack historyStack; 
-        private FrameServerPlayer frameServer;
+        public FrameServerPlayer frameServer;
         private bool synched;
         private int index;
         private ReplayWatcher replayWatcher;

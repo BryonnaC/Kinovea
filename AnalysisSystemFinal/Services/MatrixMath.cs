@@ -10,6 +10,7 @@ namespace CodeTranslation
 {
     class MatrixMath
     {
+        #region Old Test Vals
         double aFx = 256.98;
         double aFy = -201.43;
 
@@ -59,6 +60,7 @@ namespace CodeTranslation
         static double DSx = 0;
         static double DSy = (BSy + CSy) / 2;
         static double DSz = 260 + CSz;
+        #endregion
 
         List<double> frontPx = new List<double> { };
         List<double> frontPy = new List<double> { };
@@ -126,6 +128,24 @@ namespace CodeTranslation
             globalFSY.Add(DSy);
         }
         #endregion
+
+        //This is where the most up to date variables start for the most recent version of the code
+
+        //Camera calibration specifications
+        double k1 = 0.0136;
+        double k2 = 0.0363;
+        double fx, fy = 2060;
+
+        //double[][] intrinsicMatrixGoPro = new double[3][];
+
+        private void CalibrationSetUp()
+        {
+            // GoPro camera intrinsic matrix
+            double[][] intrinsicMatrixGoPro = new double[3][];
+            intrinsicMatrixGoPro[0] = new double[] { fx, 0, 0 };
+            intrinsicMatrixGoPro[1] = new double[] { 0, fy, 0 };
+            intrinsicMatrixGoPro[2] = new double[] { 0, 0, 1 };
+        }
 
         public void PerformCalcuations(List<string> horizVals, List<string> vertVals)
         {
@@ -273,7 +293,7 @@ namespace CodeTranslation
         public List<List<string>> String1DtoString2D(List<string> csvString)
         {
             List<List<string>> headlessCSV = new List<List<string>>();
-
+            //might need to check this for zeros in the time dimension oops
             for(int row = 1; row < csvString.Count; row++)
             {
                 headlessCSV[row-1].AddRange(csvString[row].Split(','));

@@ -31,12 +31,17 @@ namespace AnalysisSystemFinal
         private ToolStripDropDownButton subInf = new ToolStripDropDownButton();
         private ToolStripDropDownButton calibrationObj = new ToolStripDropDownButton();
         private ToolStripDropDownButton trackWindow = new ToolStripDropDownButton();
+
+        private ToolStripDropDownButton placeCaliTemp = new ToolStripDropDownButton();
+        private ToolStripDropDownButton saveCaliPos = new ToolStripDropDownButton();
+
         //private ToolStripDropDownButton linearKine = new ToolStripDropDownButton();
 
         public static event EventHandler<ButtonClickedEventArgs> ToolBarClick;
         private int number = 0;
 
         public static event EventHandler<EventArgs> TrajectoryClick;
+        public static event Action CalibrationClick;
 
         public ToolStripButtonManager()
         {
@@ -48,6 +53,11 @@ namespace AnalysisSystemFinal
             toolStrip.AllowMerge = true;
 
             mnucalibrationTemplate.Text = "Calibration Object";
+            placeCaliTemp.Text = "Track Calibration Object";
+            saveCaliPos.Text = "Save Object Position";
+            mnucalibrationTemplate.DropDownItems.Add(placeCaliTemp);
+            mnucalibrationTemplate.DropDownItems.Add(saveCaliPos);
+
             //mnucalibrationTemplate.Image = Image.FromFile("C:/Users/Bryonna/Documents/GitHub/Kinovea/AnalysisSystemFinal/Resources/triangle.png");
             mnuleg12pointsTemplate.Text = "Leg 12 Points";
             mnutrackingMarker.Text = "Single Marker";
@@ -97,7 +107,8 @@ namespace AnalysisSystemFinal
 
         private void mnuCalibrationTemplate_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            //maybe make a call to handle it in screenmanager
+            CalibrationClick?.Invoke();
         }
 
         public void PlaceButtons(Panel buttonPanel)

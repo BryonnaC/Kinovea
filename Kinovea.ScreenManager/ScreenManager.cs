@@ -2724,5 +2724,15 @@ namespace Kinovea.ScreenManager
         }
 
         #endregion
+
+        protected void ImitateClick(object sender, MouseEventArgs e)
+        {
+            if (screenList[0] is PlayerScreen)
+            {
+                PlayerScreen ps = (PlayerScreen)screenList[0];
+                ps.view.mnuDirectTrack_Click(sender, e);
+            }
+
+        }
     }
 }

@@ -78,6 +78,7 @@ namespace Kinovea.ScreenManager
         public event EventHandler<MultiDrawingItemEventArgs> MultiDrawingItemDeleting;
         public event EventHandler<TrackableDrawingEventArgs> TrackableDrawingAdded;
         public event EventHandler<EventArgs<HotkeyCommand>> DualCommandReceived;
+        public static event EventHandler<MouseEventArgs> MouseClicked;
         #endregion
 
         #region Commands encapsulating domain logic implemented in the presenter.
@@ -258,7 +259,7 @@ namespace Kinovea.ScreenManager
         #endregion
 
         #region Members
-        private FrameServerPlayer m_FrameServer;
+        protected FrameServerPlayer m_FrameServer;
 
         // Playback current state
         private bool m_bIsCurrentlyPlaying;
@@ -312,7 +313,7 @@ namespace Kinovea.ScreenManager
         private bool m_bKeyframePanelCollapsed = true;
         private bool m_bKeyframePanelCollapsedManual = false;
         private bool m_bTextEdit;
-        private PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
+        public PointF m_DescaledMouse;    // The current mouse point expressed in the original image size coordinates.
 
         // Others
         private NativeMethods.TimerCallback m_TimerCallback;
@@ -2794,6 +2795,7 @@ namespace Kinovea.ScreenManager
 
             m_DeselectionTimer.Stop();
             m_DescaledMouse = m_FrameServer.ImageTransform.Untransform(e.Location);
+            MouseClicked?.Invoke(sender, e);
 
             if (e.Button == MouseButtons.Left)
                 SurfaceScreen_LeftDown();
@@ -4331,7 +4333,7 @@ namespace Kinovea.ScreenManager
         {
             MarkTimeOrigin();
         }
-        private void mnuDirectTrack_Click(object sender, EventArgs e)
+        public void mnuDirectTrack_Click(object sender, EventArgs e)
         {
             // Track the point.
             // m_DescaledMouse would have been set during the MouseDown event.

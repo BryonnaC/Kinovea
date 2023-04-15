@@ -13,6 +13,8 @@ namespace AnalysisSystemFinal.UserInterface
 {
     public partial class VideoScreenControl : UserControl
     {
+        public static event EventHandler<MouseEventArgs> SelectPoint;
+
         public VideoScreenControl()
         {
             InitializeComponent();
@@ -26,6 +28,12 @@ namespace AnalysisSystemFinal.UserInterface
 
             this.Width = e.width;
             this.Height = e.height;
+        }
+
+        private void panel1_MouseDown(object sender, MouseEventArgs e)
+        {
+            //get a mouse click so we can try to figure out where to place a calibration object in one click
+            SelectPoint?.Invoke(sender, e);
         }
     }
 }
