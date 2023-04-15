@@ -602,23 +602,60 @@ namespace Kinovea.ScreenManager
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //we still want to save it because it'd be weird and hazard prone if we didn't
-            btnExportData_Click(sender, e);
-            //this is where I want to tie in the formulas
-            //but I don't wait to handle it here.
-            List<string> eventCSV = GetCSV();
+            //we still want to save it because it'd be hazard prone if we didn't
+            //but thankfully, we can just use the existing saving functionality
+            //now, this is where I want to tie in the formulas
+            //but I don't wait to handle it here - so push it to the service manager
 
-            DoCustomMath?.Invoke(this, new GraphToCsvToMathEventArgs(eventCSV));
+            //We're setting up the Horizontal graph before we click this button so first step ->
+            btnExportData_Click(sender, e);
+            //save it as something to send
+            List<string> horizEventCSV = GetCSV();
+            //now auto set to vert
+            SetUpVertGraph();
+            //export again -- maybe we could make them into one file but that might be confusing to read tbh
+            btnExportData_Click(sender, e);
+            List<string> vertEventCSV = GetCSV();
+
+            //this event handler is being listened to in ServiceManager.cs
+            DoCustomMath?.Invoke(this, new GraphToCsvToMathEventArgs(horizEventCSV, vertEventCSV));
+        }
+
+        public void SetUpHorizGraph()
+        {
+            //change the cmbPlotSpec box to Horizontal Position
+            cmbPlotSpec.SelectedIndex = 0;
+
+            manualUpdate = true;
+            UpdatePlot();
+            UpdateCutoffPlot();
+            UpdateTitles();
+            manualUpdate = false;
+        }
+
+        public void SetUpVertGraph()
+        {
+            //change the cmbPlotSpec box to Vertical Position
+            cmbPlotSpec.SelectedIndex = 1;
+
+            manualUpdate = true;
+            UpdatePlot();
+            UpdateCutoffPlot();
+            UpdateTitles();
+            manualUpdate = false;
         }
     }
 
+    // This class of EventArgs allows us to directly send the string that was being used to populate the CSV file
     public class GraphToCsvToMathEventArgs : EventArgs
     {
-        public readonly List<string> csv_String;
+        public readonly List<string> csv_StringHoriz;
+        public readonly List<string> csv_StringVert;
 
-        public GraphToCsvToMathEventArgs(List<string> csv)
+        public GraphToCsvToMathEventArgs(List<string> csvX, List<string> csvY)
         {
-            this.csv_String = csv;
+            this.csv_StringHoriz = csvX;
+            this.csv_StringVert = csvY;
         }
     }
 }

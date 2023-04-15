@@ -19,6 +19,7 @@ namespace AnalysisSystemFinal
         MainFrame mainFrame;
         ChooseAScreen chooseScreen = new ChooseAScreen();
         RecordingControl recordingControl = new RecordingControl();
+        VideoScreenControl videoControl = new VideoScreenControl();
         CameraSourceViewer availableCamerasScreen;
         CustomSplashscreen customSplash = new CustomSplashscreen();
         DashboardControl dashboardScr = new DashboardControl();
@@ -49,7 +50,11 @@ namespace AnalysisSystemFinal
 
         private void ToolStrip_TrajectoryClick(object sender, EventArgs e)
         {
+            //I use this way of delegating so that UI component that starts this chain
+            //does not require an extra dependency
+            //since the screen manager already has access to the function I need with its own inheritance
             base.mnuTrajectoryAnalysis_OnClick(sender, e);
+
         }
 
         #region EventHandlers
@@ -94,7 +99,7 @@ namespace AnalysisSystemFinal
             //mainFrame.Controls.Clear();
             dashboardScr.panel1.Controls.Clear();
             dashboardScr.PageTitle.Text = "Live Recording Phase";
-            dashboardScr.panel1.Controls.Add(recordingControl);
+            dashboardScr.panel1.Controls.Add(videoControl);
             //mainFrame.Controls.Add(recordingControl);
             //recordingControl.Controls.Clear();
             whichScreen = 0;
@@ -127,7 +132,7 @@ namespace AnalysisSystemFinal
                         mainFrame.Controls.Add(recordingControl);*/
             dashboardScr.panel1.Controls.Clear();
             dashboardScr.PageTitle.Text = "Video Playback Phase";
-            dashboardScr.panel1.Controls.Add(recordingControl);
+            dashboardScr.panel1.Controls.Add(videoControl);
             whichScreen = 0;
             DoLoadMovieInScreen(e.Path, e.Target);
         }
@@ -146,15 +151,15 @@ namespace AnalysisSystemFinal
 
         public void CreateCaptureScreen()
         {
-            recordingControl.panel1.Controls.Clear();
-            recordingControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
+            videoControl.panel1.Controls.Clear();
+            videoControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
         }
 
         private void CreateVideoScreen()
         {
-            dashNav.PopulateButtonToolStrip(recordingControl.buttonToolStrip);
-            recordingControl.panel1.Controls.Clear();
-            recordingControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
+            dashNav.PopulateButtonToolStrip(videoControl.toolStrip1);
+            videoControl.panel1.Controls.Clear();
+            videoControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
         }
         new private void DoLoadMovieInScreen(string path, int targetScreen)
         {

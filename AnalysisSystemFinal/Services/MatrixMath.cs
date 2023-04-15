@@ -127,6 +127,57 @@ namespace CodeTranslation
         }
         #endregion
 
+        public void PerformCalcuations(List<string> horizVals, List<string> vertVals)
+        {
+            List<double> horizData = CsvStringToListDouble(horizVals);
+            List<double> vertData = CsvStringToListDouble(vertVals);
+
+            //we still need to pull the calibration object data from somewhere
+        }
+        
+/*        public void TakeInValues(List<string> horizVals, List<string> vertVals)
+        {
+            List<List<string>> horizData = String1DtoString2D(horizVals);
+            List<List<string>> vertData = String1DtoString2D(vertVals);
+
+            double[][] horizCSV = new double[horizData.Count][];
+            horizCSV = StringToDouble(horizData);
+
+            double[][] vertCSV = new double[vertData.Count][];
+            vertCSV = StringToDouble(vertData);
+
+            List<double> dataHorizontal = new List<double> { horizCSV[1][0], horizCSV[2][0], horizCSV[3][0],
+                horizCSV[4][0], horizCSV[5][0], horizCSV[6][0], horizCSV[7][0], horizCSV[8][0], horizCSV[9][0],
+                horizCSV[10][0], horizCSV[11][0], horizCSV[12][0]};
+            List<double> dataVertical = new List<double> { vertCSV[1][0], vertCSV[2][0], vertCSV[3][0],
+                vertCSV[4][0], vertCSV[5][0], vertCSV[6][0], vertCSV[7][0], vertCSV[8][0], vertCSV[9][0],
+                vertCSV[10][0], vertCSV[11][0], vertCSV[12][0]};
+        }*/
+
+        public List<double> CsvStringToListDouble(List<string> csvString)
+        {
+            List<List<string>> listStringData = String1DtoString2D(csvString);
+
+            double[][] doubleCSV = new double[listStringData.Count][];
+            doubleCSV = StringToDouble(listStringData);
+
+            List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
+                doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0], doubleCSV[9][0],
+                doubleCSV[10][0], doubleCSV[11][0], doubleCSV[12][0]};
+
+            return listCSVdouble;
+        }
+
+        public void PerformRealization()
+        {
+            //this is where we realize the 2D pixel space points into 3D world space points
+        }
+
+        public void GraphResults()
+        {
+
+        }
+
         public void ImitateMATLAB()
         {
             double scaledpX;
@@ -214,6 +265,28 @@ namespace CodeTranslation
             HandleLegMarkerData(dataHorizontal, dataVertical, matrixH);
 
             Console.WriteLine("yay no errors");
+        }
+
+        //I don't want the count, I want the first column and parse it. It should have 12 tracking values.
+        //thats not true, I do want the count but I also need to part each string of the list 
+
+        public List<List<string>> String1DtoString2D(List<string> csvString)
+        {
+            List<List<string>> headlessCSV = new List<List<string>>();
+
+            for(int row = 1; row < csvString.Count; row++)
+            {
+                headlessCSV[row-1].AddRange(csvString[row].Split(','));
+            }
+
+            return headlessCSV;
+        }
+
+        public double[][] StringToDouble(List<string> csvString)
+        {
+            double[][] csvAsDoubleMatrix = new double[csvString.Count][];
+
+            return csvAsDoubleMatrix;
         }
 
         public double[][] StringToDouble(List<List<string>> loadedCSV)

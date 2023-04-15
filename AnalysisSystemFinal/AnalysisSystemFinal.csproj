@@ -189,6 +189,12 @@
     <Compile Include="UserInterface\SubjectInformationScreen.designer.cs">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\VideoScreenControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\VideoScreenControl.Designer.cs">
+      <DependentUpon>VideoScreenControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\WorkflowDashboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -230,6 +236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\SubjectInformationScreen.resx">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\VideoScreenControl.resx">
+      <DependentUpon>VideoScreenControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\WorkflowDashboard.resx">
       <DependentUpon>WorkflowDashboard.cs</DependentUpon>
