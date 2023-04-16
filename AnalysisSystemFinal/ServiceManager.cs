@@ -24,10 +24,7 @@ namespace AnalysisSystemFinal
         {
             DoMath();   //this is placeholder, we're gonna need the *numbers* bby
 
-            if(e.csv_StringHoriz.Count < 12)
-            {
-                math.Calibrate(e.csv_StringHoriz, e.csv_StringVert);
-            }
+            math.TakeInValues(e.csv_StringHoriz, e.csv_StringVert);
         }
 
         private void CaptureScrView_RecordingStarted()
