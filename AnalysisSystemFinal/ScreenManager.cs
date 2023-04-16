@@ -29,6 +29,8 @@ namespace AnalysisSystemFinal
         //CameraSourceViewer availableCamerasScreen;
         private int whichScreen = 0;
 
+        private int whichTemplate = 0;
+
         //TODO should make state machine for UI windows
 
         public ScreenManager()
@@ -48,23 +50,21 @@ namespace AnalysisSystemFinal
             RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
             ToolStripButtonManager.TrajectoryClick += ToolStrip_TrajectoryClick;
             ToolStripButtonManager.CalibrationClick += ToolStrip_CalibrationClick;
+            ToolStripButtonManager.LegTemplateClick += ToolStrip_LegTemplateClick;
+        }
+
+        private void ToolStrip_LegTemplateClick()
+        {
+            //We need mouse position which is best found by using PlayerScreenUserInterface
+            whichTemplate = 2;
+            PlayerScreenUserInterface.MouseClicked += PSUI_MouseClicked;
+
         }
 
         private void ToolStrip_CalibrationClick()
         {
-            /*            PlayerScreen ps = new PlayerScreen();
-                        VideoFrame frame = ps.frameServer.VideoReader.Current;
-                        ps.frameServer.Metadata.TrackabilityManager.Track(frame);*/
-            //VideoFrame frame = frameServer.VideoReader.Current;
-
-            //okay lets try something different
-            //let's subscribe to our own position click
-            VideoScreenControl.SelectPoint += VideoScreen_SelectCalibPoint;
-
-            //I don't think that is gonna work let's do this
-
-            //base.screenList[whichScreen].view.m_DescaledMouse;
-            //base.screenList[whichScreen].view.
+            //We need mouse position which is best found by using PlayerScreenUserInterface
+            whichTemplate = 1;
             PlayerScreenUserInterface.MouseClicked += PSUI_MouseClicked;
         }
 
@@ -73,53 +73,84 @@ namespace AnalysisSystemFinal
             //Console.WriteLine(base.screenList[whichScreen].view.m_DescaledMouse);
             Console.WriteLine("alright, I'm in.");
 
-            //CheckCustomDecodingSize(true);
+            PlayerScreen ps = base.activeScreen as PlayerScreen;
+            if (ps == null) return;
 
-            /*            Color color = TrackColorCycler.Next();
-                        DrawingStyle style = new DrawingStyle();
-                        style.Elements.Add("color", new StyleElementColor(color));
-                        style.Elements.Add("line size", new StyleElementLineSize(3));
-                        style.Elements.Add("track shape", new StyleElementTrackShape(TrackShape.Solid));
-
-                        DrawingTrack track = new DrawingTrack(e.Location, 0, style);
-                        track.Status = TrackStatus.Edit;
-
-                        if (DrawingAdding != null)
-                            DrawingAdding(this, new DrawingEventArgs(track, m_FrameServer.Metadata.TrackManager.Id));*/
-            /*            PlayerScreen ps = new PlayerScreen();
-                        ps.view.mnuDirectTrack_Click(sender, e);*/
-            //base.ImitateClick(sender, e);
-            if (screenList[0] is PlayerScreen)
+            switch (whichTemplate)
             {
-                PlayerScreen ps = (PlayerScreen)screenList[0];
-                ps.view.mnuDirectTrack_Click(sender, e);
+                case 0:
+                    return;
+                case 1:
+                    ps.view.mnuDirectTrack_Click(sender, e);
 
-                ps.view.m_DescaledMouse.X -= 60;
-                ps.view.m_DescaledMouse.Y += 395;
-                ps.view.mnuDirectTrack_Click(sender, e);
+                    ps.view.m_DescaledMouse.X -= 60;
+                    ps.view.m_DescaledMouse.Y += 395;
+                    ps.view.mnuDirectTrack_Click(sender, e);
 
-                ps.view.m_DescaledMouse.X += 115;
-                ps.view.mnuDirectTrack_Click(sender, e);
+                    ps.view.m_DescaledMouse.X += 200;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    break;
+                case 2:
+                    //#1 - start with tibia
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#2
+                    ps.view.m_DescaledMouse.X += 30;
+                    //ps.view.m_DescaledMouse.Y -= 10;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#3
+                    //ps.view.m_DescaledMouse.X += 0;
+                    ps.view.m_DescaledMouse.Y -= 400;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#4
+                    ps.view.m_DescaledMouse.X -= 45;
+                    //ps.view.m_DescaledMouse.Y += 0;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#5 - tibia side
+                    ps.view.m_DescaledMouse.X += 75;
+                    ps.view.m_DescaledMouse.Y += 400;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#6
+                    //ps.view.m_DescaledMouse.X -= 0;
+                    ps.view.m_DescaledMouse.Y -= 400;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#7 - start femur
+                    ps.view.m_DescaledMouse.X -= 75;
+                    ps.view.m_DescaledMouse.Y -= 200;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#8
+                    ps.view.m_DescaledMouse.X += 30;
+                    //ps.view.m_DescaledMouse.Y += 0;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#9
+                    ps.view.m_DescaledMouse.X -= 30;
+                    ps.view.m_DescaledMouse.Y -= 250;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#10
+                    ps.view.m_DescaledMouse.X += 30;
+                    //ps.view.m_DescaledMouse.Y += 0;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#11 - femur side
+                    ps.view.m_DescaledMouse.X += 60;
+                    ps.view.m_DescaledMouse.Y += 250;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    //#12
+                    //ps.view.m_DescaledMouse.X -= 0;
+                    ps.view.m_DescaledMouse.Y -= 250;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    break;
             }
 
             PlayerScreenUserInterface.MouseClicked -= PSUI_MouseClicked;
-        }
-
-        private void VideoScreen_SelectCalibPoint(object sender, MouseEventArgs e)
-        {
-            //handle the marker placement
-            Console.WriteLine(e.Location);
-            //and unsub again
-            VideoScreenControl.SelectPoint -= VideoScreen_SelectCalibPoint;
+            whichTemplate = 0;
         }
 
         private void ToolStrip_TrajectoryClick(object sender, EventArgs e)
         {
-            //I use this way of delegating so that UI component that starts this chain
-            //does not require an extra dependency
-            //since the screen manager already has access to the function I need with its own inheritance
-            base.mnuTrajectoryAnalysis_OnClick(sender, e);
+            PlayerScreen ps = base.activeScreen as PlayerScreen;
+            if (ps == null)
+                return;
 
+            ps.ShowTrajectoryAnalysisCUSTOM();
         }
 
         #region EventHandlers

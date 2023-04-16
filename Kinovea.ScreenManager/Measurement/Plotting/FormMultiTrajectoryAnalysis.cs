@@ -49,6 +49,37 @@ namespace Kinovea.ScreenManager
             manualUpdate = false;
         }
 
+        public FormMultiTrajectoryAnalysis(Metadata metadata, int stepNumber)
+        {
+            this.metadata = metadata;
+            ImportData(metadata);
+
+            InitializeComponent();
+
+            plotHelper = new PlotHelper(plotView);
+            Localize();
+            PopulateDataSources();
+            PopulatePlotSpecifications();
+            PopulateTimeModels();
+
+            manualUpdate = true;
+            UpdatePlot();
+            UpdateTitles();
+            manualUpdate = false;
+            switch (stepNumber)
+            {
+                case 0:
+                    return;
+                case 1:
+                    //this is for calib obj - but i guess it may not be different than normal tracking
+                case 2:
+                    //just set the default being opened to horizontal position
+                    SetUpHorizGraph();
+                    return;
+            }
+
+        }
+
         private void ImportData(Metadata metadata)
         {
             ImportTrackData(metadata);

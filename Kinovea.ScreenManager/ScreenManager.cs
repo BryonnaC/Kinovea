@@ -68,7 +68,7 @@ namespace Kinovea.ScreenManager
         protected List<AbstractScreen> screenList = new List<AbstractScreen>();
         private IEnumerable<PlayerScreen> playerScreens;
         private IEnumerable<CaptureScreen> captureScreens;
-        private AbstractScreen activeScreen = null;
+        protected AbstractScreen activeScreen = null;
         private bool canShowCommonControls;
         private int dualLaunchSettingsPendingCountdown;
         private List<string> camerasToDiscover = new List<string>();

@@ -42,6 +42,7 @@ namespace AnalysisSystemFinal
 
         public static event EventHandler<EventArgs> TrajectoryClick;
         public static event Action CalibrationClick;
+        public static event Action LegTemplateClick;
 
         public ToolStripButtonManager()
         {
@@ -54,7 +55,9 @@ namespace AnalysisSystemFinal
 
             mnucalibrationTemplate.Text = "Calibration Object";
             placeCaliTemp.Text = "Track Calibration Object";
+            placeCaliTemp.Click += placeCaliTemp_Click;
             saveCaliPos.Text = "Save Object Position";
+            saveCaliPos.Click += saveCaliPos_Click;
             mnucalibrationTemplate.DropDownItems.Add(placeCaliTemp);
             mnucalibrationTemplate.DropDownItems.Add(saveCaliPos);
 
@@ -63,7 +66,7 @@ namespace AnalysisSystemFinal
             mnutrackingMarker.Text = "Single Marker";
             mnuGeneratePositionGraph.Text = "Graph Position";
 
-            mnucalibrationTemplate.Click += mnuCalibrationTemplate_Click;
+            //mnucalibrationTemplate.Click += mnuCalibrationTemplate_Click;
             mnuleg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;
             mnutrackingMarker.Click += mnuTrackingMarker_Click;
             mnuGeneratePositionGraph.Click += mnuGeneratePositionGraph_Click;
@@ -76,6 +79,14 @@ namespace AnalysisSystemFinal
         }
 
         private void mnuGeneratePositionGraph_Click(object sender, EventArgs e)
+        {
+            /*            PlayerScreen ps = new PlayerScreen();
+                        ps.ShowTrajectoryAnalysis();*/
+
+            TrajectoryClick?.Invoke(sender, e);
+        }
+
+        private void saveCaliPos_Click(object sender, EventArgs e)
         {
             /*            PlayerScreen ps = new PlayerScreen();
                         ps.ShowTrajectoryAnalysis();*/
@@ -102,10 +113,10 @@ namespace AnalysisSystemFinal
 
         private void mnuLeg12pointsTemplate_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            LegTemplateClick?.Invoke();
         }
 
-        private void mnuCalibrationTemplate_Click(object sender, EventArgs e)
+        private void placeCaliTemp_Click(object sender, EventArgs e)
         {
             //maybe make a call to handle it in screenmanager
             CalibrationClick?.Invoke();

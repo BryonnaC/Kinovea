@@ -788,15 +788,21 @@ namespace Kinovea.ScreenManager
             view.RefreshImage();
         }
 
-        //This has been altered to fit the needs of senior design project - careful with merging from upstream
         public void ShowTrajectoryAnalysis()
         {
             FormMultiTrajectoryAnalysis f = new FormMultiTrajectoryAnalysis(frameServer.Metadata);
             FormsHelper.Locate(f);
             f.ShowDialog();
             f.Dispose();
+        }
 
-            f.SetUpHorizGraph();
+        //This overloads a function that has been altered to fit the needs of senior design project - careful with merging from upstream
+        public void ShowTrajectoryAnalysisCUSTOM()
+        {
+            FormMultiTrajectoryAnalysis f = new FormMultiTrajectoryAnalysis(frameServer.Metadata, 2);
+            FormsHelper.Locate(f);
+            f.ShowDialog();
+            f.Dispose();
         }
 
         public void ShowScatterDiagram()

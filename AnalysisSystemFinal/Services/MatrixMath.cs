@@ -138,7 +138,22 @@ namespace CodeTranslation
 
         //double[][] intrinsicMatrixGoPro = new double[3][];
 
-        private void CalibrationSetUp()
+        public void TakeInValues(List<string> horizVals, List<string> vertVals)
+        {
+            
+            
+            List<double> horizData = CsvStringToListDouble(horizVals);
+            List<double> vertData = CsvStringToListDouble(vertVals);
+            //now we need to decide whether we are calibrating or calculating
+
+        }
+
+        public void Calibrate(List<string> horizCali, List<string> vertCali)
+        {
+            InitGoProInMat();
+        }
+
+        private void InitGoProInMat()
         {
             // GoPro camera intrinsic matrix
             double[][] intrinsicMatrixGoPro = new double[3][];
@@ -147,33 +162,6 @@ namespace CodeTranslation
             intrinsicMatrixGoPro[2] = new double[] { 0, 0, 1 };
         }
 
-        public void PerformCalcuations(List<string> horizVals, List<string> vertVals)
-        {
-            List<double> horizData = CsvStringToListDouble(horizVals);
-            List<double> vertData = CsvStringToListDouble(vertVals);
-
-            //we still need to pull the calibration object data from somewhere
-        }
-        
-/*        public void TakeInValues(List<string> horizVals, List<string> vertVals)
-        {
-            List<List<string>> horizData = String1DtoString2D(horizVals);
-            List<List<string>> vertData = String1DtoString2D(vertVals);
-
-            double[][] horizCSV = new double[horizData.Count][];
-            horizCSV = StringToDouble(horizData);
-
-            double[][] vertCSV = new double[vertData.Count][];
-            vertCSV = StringToDouble(vertData);
-
-            List<double> dataHorizontal = new List<double> { horizCSV[1][0], horizCSV[2][0], horizCSV[3][0],
-                horizCSV[4][0], horizCSV[5][0], horizCSV[6][0], horizCSV[7][0], horizCSV[8][0], horizCSV[9][0],
-                horizCSV[10][0], horizCSV[11][0], horizCSV[12][0]};
-            List<double> dataVertical = new List<double> { vertCSV[1][0], vertCSV[2][0], vertCSV[3][0],
-                vertCSV[4][0], vertCSV[5][0], vertCSV[6][0], vertCSV[7][0], vertCSV[8][0], vertCSV[9][0],
-                vertCSV[10][0], vertCSV[11][0], vertCSV[12][0]};
-        }*/
-
         public List<double> CsvStringToListDouble(List<string> csvString)
         {
             List<List<string>> listStringData = String1DtoString2D(csvString);
@@ -181,11 +169,26 @@ namespace CodeTranslation
             double[][] doubleCSV = new double[listStringData.Count][];
             doubleCSV = StringToDouble(listStringData);
 
-            List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
-                doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0], doubleCSV[9][0],
-                doubleCSV[10][0], doubleCSV[11][0], doubleCSV[12][0]};
+            if(listStringData.Count == 8)
+            {
+                //format of calibration object (two sets of 4)
+                List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
+                    doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0]};
+                return listCSVdouble;
+            }
+            else if(listStringData.Count == 12)
+            {
+                //format of leg marker set of 12
+                List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
+                    doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0], doubleCSV[9][0],
+                    doubleCSV[10][0], doubleCSV[11][0], doubleCSV[12][0]};
+                return listCSVdouble;
+            }
+            else
+            {
+                return null;
+            }
 
-            return listCSVdouble;
         }
 
         public void PerformRealization()
