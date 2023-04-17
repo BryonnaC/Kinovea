@@ -136,22 +136,58 @@ namespace CodeTranslation
         double k2 = 0.0363;
         double fx, fy = 2060;
 
+        //Have we calibrated?
+        private bool calibrationComplete = false;
+
         //double[][] intrinsicMatrixGoPro = new double[3][];
 
         public void TakeInValues(List<string> horizVals, List<string> vertVals)
         {
-            
-            
+
             List<double> horizData = CsvStringToListDouble(horizVals);
             List<double> vertData = CsvStringToListDouble(vertVals);
             //now we need to decide whether we are calibrating or calculating
+            if (horizData.Count == 8)
+            {
+                Calibrate(horizData, vertData);
+            }
+            else if(horizData.Count == 12 && calibrationComplete)
+            {
 
+            }
+            else
+            {
+                Console.WriteLine("Data does not represent an accepted number of markers.");
+            }
         }
 
-        public void Calibrate(List<string> horizCali, List<string> vertCali)
+        public void Calibrate(List<double> horizCali, List<double> vertCali)
         {
             InitGoProInMat();
+
+            double[][] correctPixelPts = new double[horizCali.Count][];
+
+            for (int i=0; i<horizCali.Count; i++)
+            {
+                correctPixelPts[i] = CorrectRadialDistortion(k1, k2, fx, fy, horizCali[i], vertCali[i]);
+            }
+
+            double[] scaledXY = ScalePoints(correctPixelPts);
+            double[] centeredXY = CenterPoints(correctPixelPts);
+            double[][] NC1 = CreateNC1_2(scaledXY[0], scaledXY[1], centeredXY[0], centeredXY[1]);
+            
+            //get new values based on multipling by NC1 matrix
+            //pull world space coordinates from save data? -- look into how to have save data with .net form
+            //scale and center world coordinates
+
+            calibrationComplete = true;
         }
+
+/*        scaledpX = ScalePoints(frontSideX);
+        scaledpY = ScalePoints(frontSideY);
+
+        centeredpX = CenterPoints(frontSideX);
+        centeredpY = CenterPoints(frontSideY);*/
 
         private void InitGoProInMat()
         {
@@ -200,6 +236,27 @@ namespace CodeTranslation
         {
 
         }
+
+        /*
+         *             aFx = horizCali[0];
+            aFy = vertCali[0];
+            bFx = horizCali[1];
+            bFy = vertCali[1];
+            cFx = horizCali[2];
+            cFy = vertCali[2];
+            dFx = horizCali[3];
+            dFy = vertCali[3];
+
+            aSx = horizCali[4];
+            aSy = vertCali[4];
+            bSx = horizCali[5];
+            bSy = vertCali[5];
+            cSx = horizCali[6];
+            cSy = vertCali[6];
+            dSx = horizCali[7];
+            dSy = vertCali[8];
+
+         */
 
         public void ImitateMATLAB()
         {
@@ -891,6 +948,16 @@ namespace CodeTranslation
             return nc1;
         }
 
+        public double[][] CreateNC1_2(double scalePx, double scalePy, double centerPx, double centerPy)
+        {
+            double[][] NC1 = new double[3][];
+            NC1[0] = new double[] { scalePx, 0, -(centerPx * scalePx) };
+            NC1[1] = new double[] { 0, scalePy, -(centerPy * scalePy) };
+            NC1[2] = new double[] { 0, 0, 1 };
+
+            return NC1;
+        }
+
         public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
         {
             NC2 = new double[4, 4]
@@ -1004,6 +1071,51 @@ namespace CodeTranslation
             //Console.WriteLine("scaled: " + scaledValue + "\n");
 
             return scaledValue;
+        }
+
+        //rewritten to support a simpler format
+        public double[] ScalePoints(double[][] points)
+        {
+            double[] scaledValues = new double[2];
+
+            double[] xPts = new double[8];
+            double[] yPts = new double[8];
+
+            for(int i=0; i < points.Length; i++)
+            {
+                xPts[i] = points[i][0];
+                yPts[i] = points[0][i];
+            }
+
+            scaledValues[0] = 1 / (xPts.Max() - xPts.Min());    //scaled x
+            scaledValues[1] = 1 / (yPts.Min() - yPts.Min());    //scaled y
+
+            return scaledValues;
+        }
+
+        //rewritten to support a simpler format
+        public double[] CenterPoints(double[][] points)
+        {
+            double[] centeredValues = new double[2];
+
+            double[] xPts = new double[8];
+            double[] yPts = new double[8];
+            double sumX = 0;
+            double sumY = 0;
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                xPts[i] = points[i][0];
+                yPts[i] = points[0][i];
+
+                sumX += xPts[i];
+                sumY += yPts[i];
+            }
+
+            centeredValues[0] = (sumX / xPts.Length);
+            centeredValues[1] = (sumY / yPts.Length);
+
+            return centeredValues;
         }
 
         //Holy shit this thing is HUGE
