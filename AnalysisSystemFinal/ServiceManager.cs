@@ -10,11 +10,11 @@ namespace AnalysisSystemFinal
 {
     class ServiceManager
     {
-        MatrixMath math;
+        WuAlgorithm math;
 
         public ServiceManager()
         {
-            math = new MatrixMath();
+            math = new WuAlgorithm();
             
             //CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;

@@ -21,8 +21,8 @@ namespace AnalysisSystemFinal
         [STAThread]
         static void Main()
         {
-            Console.WriteLine("Hello World");
-            return;
+/*            Console.WriteLine("Hello World");
+            return;*/
 
             // C# winforms default
             Application.EnableVisualStyles();
