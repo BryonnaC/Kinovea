@@ -65,14 +65,14 @@ namespace CodeTranslation
 
             double[][] matrixT = HomographicMatrixT(calibratedWorldPts, calibratedPixelPts);
 
-            //double[][] matrixU
-            double[] matrixU1D = GetUFromSVD(matrixT);
-            //double[][] matrixH
-            //double[][] matrixH = Math
+            double[][] matrixU = GetUFromSVD(matrixT);
+
+            double[][] matrixH = GetHMatrix(matrixU, NC1, NC2);
             //method 2 using row vectors
             //double[][] matrixR
+            double[][] matrixR = CrossVectors(matrixH, false);
 
-            //return matrixH
+            //return matrixH? return matrixR?
         }
 
         public void CalibrateLegPts(List<double> horizPos, List<double> vertPos, double[][] matrixH)
@@ -117,16 +117,155 @@ namespace CodeTranslation
             double[] femurMatrixU = MatrixInverseProgram.MatVecProd(MatrixInverseProgram.MatInverse(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatTranspose(femurMatrixT), femurMatrixT)), TransposeMultPixelPts(femurMatrixT, femurPixelPts));
 
             //matrixH
-            double[][] tibiaMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(tibiaNC1), PopulateHMultplierMat(tibiaMatrixU)), tibiaNC2);
-            double[][] femurMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(femurNC1), PopulateHMultplierMat(femurMatrixU)), femurNC2);
+            double[][] tibiaMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(tibiaNC1), PopulateHMultplierMatLeg(tibiaMatrixU)), tibiaNC2);
+            double[][] femurMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(femurNC1), PopulateHMultplierMatLeg(femurMatrixU)), femurNC2);
             //matrixR
-
+            double[][] tibiaThetaVals = CrossVectors(tibiaMatrixH, true);
+            double[][] femurThetaVals = CrossVectors(femurMatrixH, true);
         }
 
-        private double[] GetUFromSVD(double[][] matrixT)
+        private void GetRMatrix(double[][] matrixH)
+        {
+            //cross H[1][0-2] and H[2][0-2] then divide by its own norm
+        }
+
+        private double[][] CrossVectors(double[][] matrix, bool isLeg)
+        {//hardcode for now
+            double[][] firstM = new double[1][];
+            double[][] secondM = new double[1][];
+
+            firstM[0] = new double[] {matrix[1][0], matrix[1][1], matrix[1][2]};
+            secondM[0] = new double[] { matrix[2][0], matrix[2][1], matrix[3][2] };
+
+            double[][] result = MatrixInverseProgram.MatProduct(firstM, secondM);
+            double norm = Norm.Norm2(result);
+            double[][] q1 = MatrixScalarDiv(result, norm);
+
+            double[][] q3 = MatrixScalarDiv(secondM, Norm.Norm2(secondM));
+            double[][] q2 = MatrixInverseProgram.MatProduct(q3, q1);
+
+            double[][] q1T = MatrixInverseProgram.MatTranspose(q1);
+            double[][] q2T = MatrixInverseProgram.MatTranspose(q2);
+            double[][] q3T = MatrixInverseProgram.MatTranspose(q3);
+
+            double[][] toBeSVD = new double[3][];
+
+            for(int i=0; i < toBeSVD.Length; i++)
+            {
+                toBeSVD[i] = new double[] { q1T[i][0], q2T[i][0], q3T[i][0]};
+            }
+
+            Accord.Math.Decompositions.SingularValueDecomposition svd = new Accord.Math.Decompositions.SingularValueDecomposition(ChangeArrayType(toBeSVD));
+
+            double[][] matrixR = MatrixInverseProgram.MatTranspose(MatrixInverseProgram.MatProduct(ChangeArrayTypeBack(svd.LeftSingularVectors), MatrixInverseProgram.MatTranspose(ChangeArrayTypeBack(svd.RightSingularVectors))));
+
+            double[][] matrixR_init = globalToCameraTheta(matrixR);
+
+            if (!isLeg)
+            {
+                return matrixR_init;
+            }
+            else
+            {
+                double[][] matrixR_new = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(matrixR_init), matrixR);
+                double theta3 = Math.Atan2(matrixR_new[1][0], matrixR_new[0][0]);
+                double theta1 = Math.Atan2(matrixR_new[2][1], matrixR_new[2][2]);
+                double theta2 = Math.Atan2(-(matrixR_new[2][0]), (matrixR_new[2][2] / Math.Cos(theta1)));
+
+                double[][] thetaVals = new double[3][]; //{ theta1, theta2, theta3 };
+                thetaVals[0][0] = theta1;
+                thetaVals[1][0] = theta2;
+                thetaVals[2][0] = theta3;
+
+                return thetaVals;
+            }
+        }
+
+        private void CalculateAngularVelocity(double[][] thetaVals)
+        {
+            //for(int i=2; )
+        }
+
+        private double[][] globalToCameraTheta(double[][] matrix)
+        {
+            double theta1;
+            double theta2;
+            double theta3;
+
+            theta3 = Math.Atan2(matrix[1][0], matrix[0][0]);
+            theta1 = Math.Atan2(matrix[2][1], matrix[2][2]);
+            theta2 = Math.Atan2(-(matrix[2][0]), (matrix[2][2] / Math.Cos(theta1)));
+
+            double[][] matrixR = new double[3][];
+            matrixR[0] = new double[] {  Math.Cos(theta2) * Math.Cos(theta3), - Math.Sin(theta3) *  Math.Cos(theta1) +  Math.Sin(theta1) *  Math.Sin(theta2) *  Math.Cos(theta3),  Math.Sin(theta1) * Math.Sin(theta3) + Math.Cos(theta1) * Math.Sin(theta2) * Math.Cos(theta3) };
+            matrixR[1] = new double[] {  Math.Cos(theta2) * Math.Sin(theta3),  Math.Cos(theta1) *  Math.Cos(theta3) +  Math.Sin(theta1) *  Math.Sin(theta2) *  Math.Sin(theta3), - Math.Sin(theta1) *  Math.Cos(theta3) +  Math.Cos(theta1) *  Math.Sin(theta2) *  Math.Sin(theta3) };
+            matrixR[2] = new double[] { -Math.Sin(theta2),  Math.Sin(theta1) *  Math.Cos(theta2),  Math.Cos(theta1) *  Math.Cos(theta2) };
+
+            return matrixR;
+        }
+
+        private double[][] MatrixScalarDiv(double[][] matrix, double scalar)
+        {
+            for(int i=0; i<matrix.Length; i++)
+            {
+                for(int j=0; j<matrix[i].Length; j++)
+                {
+                    matrix[i][j] = matrix[i][j] / scalar;
+                }
+            }
+
+            return matrix;
+        }
+
+        private double[][] GetHMatrix(double[][] matrixU, double[][] nc1, double[][] nc2)
+        {
+            double[] matrixUcol12 = new double[matrixU.Length];
+            for(int i=0; i<matrixU.Length; i++)
+            {
+                matrixUcol12[i] = matrixU[i][12];
+            }
+
+            double[][] matrixH = MatrixScalarProd(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(nc1), PopulateHMultplierMat(matrixUcol12)), nc2), matrixUcol12[12]);
+            return matrixH;
+        }
+
+        private double[][] MatrixScalarProd(double[][] matrix, double scalar)
+        {
+            for(int i=0; i<matrix.Length; i++)
+            {
+                for(int j=0; j<matrix[i].Length; j++)
+                {
+                    matrix[i][j] = matrix[i][j] * scalar;
+                }
+            }
+            return matrix;
+        }
+
+        private int SignOfSingleValue(double value)
+        {
+            if (value == 0)
+            {
+                return 0;
+            }
+            else if (value < 0)
+            {
+                return -1;
+            }
+            else if (value > 0)
+            {
+                return 1;
+            }
+            else
+            {
+                Console.WriteLine("The value passed is complex.");
+                return 0;
+            }
+        }
+
+        private double[][] GetUFromSVD(double[][] matrixT)
         {
             Accord.Math.Decompositions.SingularValueDecomposition svd = new Accord.Math.Decompositions.SingularValueDecomposition(ChangeArrayType(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(matrixT), matrixT)));
-            double[] matrixU = ChangeArrayType1D(svd.LeftSingularVectors);
+            double[][] matrixU = ChangeArrayTypeBack(svd.LeftSingularVectors);
 
             return matrixU;
         }
@@ -148,16 +287,19 @@ namespace CodeTranslation
             return returnMatrix;
         }
 
-        private double[] ChangeArrayType1D(double[,] matrix)
+        private double[][] ChangeArrayTypeBack(double[,] matrix)
         {
-            double[] stdMatrix = new double[matrix.GetLength(0)];
+            double[][] returnMatrix = new double[matrix.GetLength(0)][];
 
-            for (int i = 0; i < stdMatrix.Length; i++)
+            for (int i = 0; i < returnMatrix.Length; i++)
             {
-                stdMatrix[i] = matrix[i, 0];
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    returnMatrix[i][j] = matrix[i,j];
+                }
             }
 
-            return stdMatrix;
+            return returnMatrix;
         }
 
         private void CalculateAngularVelocity()
@@ -166,6 +308,16 @@ namespace CodeTranslation
         }
 
         private double[][] PopulateHMultplierMat(double[] matrixU)
+        {
+            double[][] multiplierMat = new double[3][];
+            multiplierMat[0] = new double[] { matrixU[0], matrixU[1], matrixU[2], matrixU[3] };
+            multiplierMat[1] = new double[] { matrixU[4], matrixU[5], matrixU[6], matrixU[7] };
+            multiplierMat[2] = new double[] { matrixU[8], matrixU[9], matrixU[10], matrixU[11] };
+
+            return multiplierMat;
+        }
+
+        private double[][] PopulateHMultplierMatLeg(double[] matrixU)
         {
             double[][] multiplierMat = new double[3][];
             multiplierMat[0] = new double[] { matrixU[0], matrixU[1], matrixU[2], matrixU[3] };
