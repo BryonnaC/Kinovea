@@ -124,11 +124,6 @@ namespace CodeTranslation
             double[][] femurThetaVals = CrossVectors(femurMatrixH, true);
         }
 
-        private void GetRMatrix(double[][] matrixH)
-        {
-            //cross H[1][0-2] and H[2][0-2] then divide by its own norm
-        }
-
         private double[][] CrossVectors(double[][] matrix, bool isLeg)
         {//hardcode for now
             double[][] firstM = new double[1][];
@@ -181,7 +176,7 @@ namespace CodeTranslation
             }
         }
 
-        private void CalculateAngularVelocity(double[][] thetaVals)
+        private void CalculateVelAcc(double[][] thetaVals)
         {
             //for(int i=2; )
         }
