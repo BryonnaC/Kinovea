@@ -146,11 +146,12 @@
     <Compile Include="ScreenManager.cs" />
     <Compile Include="ServiceManager.cs" />
     <Compile Include="Services\Csv.cs" />
+    <Compile Include="Services\DeprecatedAlgorithm.cs" />
     <Compile Include="Services\FakeUser.cs" />
     <Compile Include="Services\FileHandler.cs" />
-    <Compile Include="Services\Math.cs" />
+    <Compile Include="Services\FFTAlgMath.cs" />
     <Compile Include="Services\MatrixInverseProgram.cs" />
-    <Compile Include="Services\MatrixMath.cs" />
+    <Compile Include="Services\WuAlgorithm.cs" />
     <Compile Include="Services\Synchronizer.cs" />
     <Compile Include="Services\Template.cs" />
     <Compile Include="Services\Time.cs" />

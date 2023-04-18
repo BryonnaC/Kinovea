@@ -20,11 +20,10 @@ namespace CodeTranslation
 
         //double[][] intrinsicMatrixGoPro = new double[3][];
 
-        public void TakeInValues(List<string> horizVals, List<string> vertVals)
+        public void TakeInPositionValues(List<string> horizVals, List<string> vertVals)
         {
-
-            List<double> horizData = CsvStringToListDouble(horizVals);
-            List<double> vertData = CsvStringToListDouble(vertVals);
+            List<double> horizData = GetFirstFrameVals(horizVals);
+            List<double> vertData = GetFirstFrameVals(vertVals);
             //now we need to decide whether we are calibrating or calculating
             if (horizData.Count == 8)
             {
@@ -34,12 +33,25 @@ namespace CodeTranslation
             }
             else if(horizData.Count == 12 && calibrationComplete)
             {
-
+                //CalibrateLegPts(horizData, vertData);
+                //IterateThroughFrames(horizVals, vertVals);
             }
             else
             {
                 Console.WriteLine("Data does not represent an accepted number of markers.");
             }
+        }
+
+        private void HandleForceData()
+        {
+            double samplingForce = 500; //sample frequency of PASCO force plate
+            double weight = 60; //kg - need to get this from somewhere
+            double height = 1.6; //meters - need to get this from the form too
+
+            double g = 9.81; //gravity coeff
+            double thigh_CG_knees = 0.567;
+
+
         }
 
         public void CalibrateObject(List<double> horizCali, List<double> vertCali)
@@ -71,11 +83,168 @@ namespace CodeTranslation
             //method 2 using row vectors
             //double[][] matrixR
             double[][] matrixR = CrossVectors(matrixH, false);
-
-            //return matrixH? return matrixR?
+            double[][] matrixR_init = globalToCameraTheta(matrixR);
+            //return matrixH? return matrixR_init?
         }
 
-        public void CalibrateLegPts(List<double> horizPos, List<double> vertPos, double[][] matrixH)
+        private double[][][] IterateThroughFrames(List<string> horizCSV, List<string> vertCSV, double[][][] calibratedTibFemGlob)
+        {
+            //format entire data sheet
+            List<List<string>> listStringDataH = String1DtoString2D(horizCSV);
+            List<List<string>> listStringDataV = String1DtoString2D(vertCSV);
+            //format again
+            double[][] horizPos = StringToDouble(listStringDataH);
+            double[][] vertPos = StringToDouble(listStringDataV);
+
+            double[][] tibiaNC2 = GetMatrixNC(calibratedTibFemGlob[0]);
+            double[][] femurNC2 = GetMatrixNC(calibratedTibFemGlob[1]);
+
+            int frames = horizPos.Length; //length here is the number of rows - rows are number of frames
+
+            double[][] tibMatrixR_init = new double[3][];
+            double[][] femMatrixR_init = new double[3][];
+
+            double[] tibiaTheta1 = new double[frames];
+            double[] tibiaTheta2 = new double[frames];
+            double[] tibiaTheta3 = new double[frames];
+
+            double[] femurTheta1 = new double[frames];
+            double[] femurTheta2 = new double[frames];
+            double[] femurTheta3 = new double[frames];
+
+            for (int i=0; i<frames; i++)
+            {
+                double[][] legPixelPts = new double[horizPos[0].Length][];    // # rows should be 12'
+                double[][] correctedPixelPts = new double[legPixelPts.Length][];
+
+                for(int row=0; row<legPixelPts.Length; row++)
+                {
+                    legPixelPts[row] = new double[] { horizPos[i][row], vertPos[i][row]};
+                }
+
+                for (int j = 0; j < legPixelPts.Length; j++)
+                {
+                    correctedPixelPts[j] = CorrectRadialDistortion(legPixelPts[j][0], legPixelPts[j][1]);
+                }
+
+                double[][][] separatedPixelPts = SeparateTibiaFemur(correctedPixelPts);
+                double[][] tibiaPixelPts = separatedPixelPts[0];
+                double[][] femurPixelPts = separatedPixelPts[1];
+
+                double[][] tibiaNC1 = GetMatrixNC(tibiaPixelPts);
+                double[][] femurNC1 = GetMatrixNC(femurPixelPts);
+
+                //need same clarification as above
+                double[][] calibratedTibiaPixel = ncMultiplication(tibiaNC1, tibiaPixelPts);
+                double[][] calibratedFemurPixel = ncMultiplication(femurNC1, femurPixelPts);
+
+                double[][] tibiaMatrixT = HomographicMatrixT(calibratedTibFemGlob[0], calibratedTibiaPixel);
+                double[][] femurMatrixT = HomographicMatrixT(calibratedTibFemGlob[1], calibratedFemurPixel);
+
+                double[] tibiaMatrixU = MatrixInverseProgram.MatVecProd(MatrixInverseProgram.MatInverse(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatTranspose(tibiaMatrixT), tibiaMatrixT)), TransposeMultPixelPts(tibiaMatrixT, tibiaPixelPts));
+                double[] femurMatrixU = MatrixInverseProgram.MatVecProd(MatrixInverseProgram.MatInverse(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatTranspose(femurMatrixT), femurMatrixT)), TransposeMultPixelPts(femurMatrixT, femurPixelPts));
+
+                //matrixH
+                double[][] tibiaMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(tibiaNC1), PopulateHMultplierMatLeg(tibiaMatrixU)), tibiaNC2);
+                double[][] femurMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(femurNC1), PopulateHMultplierMatLeg(femurMatrixU)), femurNC2);
+                //matrixR
+                double[][] tibiaMatrixR = CrossVectors(tibiaMatrixH, true);
+                double[][] femurMatrixR = CrossVectors(femurMatrixH, true);
+
+                if (i == 0)
+                {
+                    tibMatrixR_init = globalToCameraTheta(tibiaMatrixR);
+                    femMatrixR_init = globalToCameraTheta(femurMatrixR);
+                }
+
+                double[][] tibiaThetaVals = GetThetaValues(tibiaMatrixR, tibMatrixR_init);
+                double[][] femurThetaVals = GetThetaValues(femurMatrixR, femMatrixR_init);
+
+                tibiaTheta1[i] = tibiaThetaVals[0][0];
+                tibiaTheta2[i] = tibiaThetaVals[1][0];
+                tibiaTheta3[i] = tibiaThetaVals[2][0];
+
+                femurTheta1[i] = femurThetaVals[0][0];
+                femurTheta2[i] = femurThetaVals[1][0];
+                femurTheta3[i] = femurThetaVals[2][0];
+            }
+
+            double[][][] legThetas = new double[2][][];
+            legThetas[0][0] = tibiaTheta1;
+            legThetas[0][1] = tibiaTheta2;
+            legThetas[0][2] = tibiaTheta3;
+            legThetas[1][0] = femurTheta1;
+            legThetas[1][1] = femurTheta2;
+            legThetas[1][2] = femurTheta3;
+
+            return legThetas;
+        }
+
+        private void CalculateAngularVelocity(int frames, double[][][] legThetas)
+        {
+            double interval = 1 / frames; //technically this should be pulled from video info about frame rate
+
+            double[][] tibiaThetas = legThetas[0];
+            double[][] femurThetas = legThetas[1];
+
+            double[][] tibiaOmegaDots = GetOmegaDot(tibiaThetas, frames);
+            double[][] femurOmegaDots = GetOmegaDot(femurThetas, frames);
+        }
+
+        private double[][] GetOmegaDot(double[][] thetas, int frames)
+        {
+            //angles
+            double[] theta1dot = new double[frames];
+            double[] theta2dot = new double[frames];
+            double[] theta3dot = new double[frames];
+            //velocity
+            double[] omega1 = new double[frames];
+            double[] omega2 = new double[frames];
+            double[] omega3 = new double[frames];
+            //acceleration
+            double[] omega1dot = new double[frames];
+            double[] omega2dot = new double[frames];
+            double[] omega3dot = new double[frames];
+
+            for (int i = 1; i < frames - 1; i++)
+            {
+                theta1dot[i] = (thetas[0][i + 1] - thetas[0][i - 1]) / (2 * (1 / frames));
+                theta2dot[i] = (thetas[1][i + 1] - thetas[1][i - 1]) / (2 * (1 / frames));
+                theta3dot[i] = (thetas[2][i + 1] - thetas[2][i - 1]) / (2 * (1 / frames));
+
+                double[][] omegaPt1 = new double[3][];
+                omegaPt1[0] = new double[] { Math.Cos(thetas[1][i]) * Math.Cos(thetas[2][i]), -Math.Sin(thetas[2][i]), 0};
+                omegaPt1[1] = new double[] { Math.Cos(thetas[1][i]) * Math.Sin(thetas[2][i]), Math.Cos(thetas[2][i]), 0 };
+                omegaPt1[2] = new double[] { -Math.Sin(thetas[2][i]), 0, 1 };
+
+                double[] omegaPt2 = new double[3];
+                omegaPt2[0] = theta1dot[i];
+                omegaPt2[1] = theta2dot[i];
+                omegaPt2[2] = theta3dot[i];
+
+                double[] omegaPt3 = MatrixInverseProgram.MatVecProd(omegaPt1, omegaPt2);
+
+                omega1[i] = omegaPt3[0];
+                omega2[i] = omegaPt3[1];
+                omega3[i] = omegaPt3[2];
+            }
+
+            for(int i=2; i<frames-2; i++)
+            {
+                omega1dot[i] = (omega1[i + 1] - omega1[i - 1]) / (2 * 1 / frames);
+                omega2dot[i] = (omega2[i + 1] - omega2[i - 1]) / (2 * 1 / frames);
+                omega3dot[i] = (omega3[i + 1] - omega3[i - 1]) / (2 * 1 / frames);
+            }
+
+            double[][] omegaDots = new double[3][];
+            omegaDots[0] = omega1dot;
+            omegaDots[1] = omega2dot;
+            omegaDots[2] = omega3dot;
+
+            return omegaDots;
+        }
+
+        public double[][][] CalibrateLegPts(List<double> horizPos, List<double> vertPos, double[][] matrixH)
         {
             double[][] correctedPixelPts = new double[horizPos.Count][];
 
@@ -99,7 +268,14 @@ namespace CodeTranslation
             double[][] calibratedTibiaGlobal = ncMultiplication(tibiaNC2, tibiaGlobalPts);
             double[][] calibratedFemurGlobal = ncMultiplication(femurNC2, femurGlobalPts);
 
-            double[][][] separatedPixelPts = SeparateTibiaFemur(correctedPixelPts);
+            //okay stop here and this is where for loop begins
+            double[][][] bundleCalibratedTibFemGlob = new double[2][][];
+            bundleCalibratedTibFemGlob[0] = calibratedTibiaGlobal;
+            bundleCalibratedTibFemGlob[1] = calibratedFemurGlobal;
+
+            return bundleCalibratedTibFemGlob;
+
+/*            double[][][] separatedPixelPts = SeparateTibiaFemur(correctedPixelPts);
             double[][] tibiaPixelPts = separatedPixelPts[0];
             double[][] femurPixelPts = separatedPixelPts[1];
 
@@ -121,7 +297,7 @@ namespace CodeTranslation
             double[][] femurMatrixH = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(femurNC1), PopulateHMultplierMatLeg(femurMatrixU)), femurNC2);
             //matrixR
             double[][] tibiaThetaVals = CrossVectors(tibiaMatrixH, true);
-            double[][] femurThetaVals = CrossVectors(femurMatrixH, true);
+            double[][] femurThetaVals = CrossVectors(femurMatrixH, true);*/
         }
 
         private double[][] CrossVectors(double[][] matrix, bool isLeg)
@@ -154,15 +330,9 @@ namespace CodeTranslation
 
             double[][] matrixR = MatrixInverseProgram.MatTranspose(MatrixInverseProgram.MatProduct(ChangeArrayTypeBack(svd.LeftSingularVectors), MatrixInverseProgram.MatTranspose(ChangeArrayTypeBack(svd.RightSingularVectors))));
 
-            double[][] matrixR_init = globalToCameraTheta(matrixR);
+            return matrixR;
 
-            if (!isLeg)
-            {
-                return matrixR_init;
-            }
-            else
-            {
-                double[][] matrixR_new = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(matrixR_init), matrixR);
+/*                double[][] matrixR_new = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(matrixR_init), matrixR);
                 double theta3 = Math.Atan2(matrixR_new[1][0], matrixR_new[0][0]);
                 double theta1 = Math.Atan2(matrixR_new[2][1], matrixR_new[2][2]);
                 double theta2 = Math.Atan2(-(matrixR_new[2][0]), (matrixR_new[2][2] / Math.Cos(theta1)));
@@ -172,8 +342,22 @@ namespace CodeTranslation
                 thetaVals[1][0] = theta2;
                 thetaVals[2][0] = theta3;
 
-                return thetaVals;
-            }
+                return thetaVals;*/
+        }
+
+        private double[][] GetThetaValues(double[][] matrixR, double[][] matrixR_init)
+        {
+            double[][] matrixR_new = MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(matrixR_init), matrixR);
+            double theta3 = Math.Atan2(matrixR_new[1][0], matrixR_new[0][0]);
+            double theta1 = Math.Atan2(matrixR_new[2][1], matrixR_new[2][2]);
+            double theta2 = Math.Atan2(-(matrixR_new[2][0]), (matrixR_new[2][2] / Math.Cos(theta1)));
+
+            double[][] thetaVals = new double[3][]; //{ theta1, theta2, theta3 };
+            thetaVals[0][0] = theta1;
+            thetaVals[1][0] = theta2;
+            thetaVals[2][0] = theta3;
+
+            return thetaVals;
         }
 
         private void CalculateVelAcc(double[][] thetaVals)
@@ -295,11 +479,6 @@ namespace CodeTranslation
             }
 
             return returnMatrix;
-        }
-
-        private void CalculateAngularVelocity()
-        {
-
         }
 
         private double[][] PopulateHMultplierMat(double[] matrixU)
@@ -526,7 +705,7 @@ namespace CodeTranslation
             intrinsicMatrixGoPro[2] = new double[] { 0, 0, 1 };
         }
 
-        public List<double> CsvStringToListDouble(List<string> csvString)
+        public List<double> GetFirstFrameVals(List<string> csvString)
         {
             List<List<string>> listStringData = String1DtoString2D(csvString);
 
