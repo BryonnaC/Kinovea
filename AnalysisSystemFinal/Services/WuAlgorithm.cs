@@ -49,8 +49,24 @@ namespace CodeTranslation
             double height = 1.6; //meters - need to get this from the form too
 
             double g = 9.81; //gravity coeff
-            double thigh_CG_knees = 0.567;
 
+            double thigh_CG_knee = 0.567;
+            double thigh_mass = 0.1 * weight;
+            double thigh_length = (0.53-.285) * height;
+            double thigh_J_knee = thigh_mass * Math.Pow((thigh_length*thigh_CG_knee),2);
+            double thigh_J_center = thigh_J_knee-(thigh_mass*Math.Pow((thigh_length*thigh_CG_knee),2));
+            double jx_f = thigh_J_center;
+            double jy_f = thigh_J_center;
+            double jz_f = 0;
+
+            double leg_CG_ankle = 0.567;
+            double leg_mass = 0.0465 * weight;
+            double leg_length = (0.285 - 0.039) * height;
+            double leg_J_ankle = leg_mass * Math.Pow((0.643 * leg_length),2);
+            double leg_J_center = leg_J_ankle - (leg_mass * Math.Pow((leg_length*leg_CG_ankle), 2));
+            double jx_t = leg_J_center;
+            double jy_t = leg_J_center;
+            double jz_t = 0;
 
         }
 
