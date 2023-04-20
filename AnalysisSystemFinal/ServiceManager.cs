@@ -16,7 +16,7 @@ namespace AnalysisSystemFinal
             math = new WuAlgorithm();
             math.TestCSVFiles();
             math.GraphAdjusted();
-            //CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
+            CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
         }
 

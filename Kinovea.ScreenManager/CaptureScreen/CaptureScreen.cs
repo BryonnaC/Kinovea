@@ -201,7 +201,7 @@ namespace Kinovea.ScreenManager
         
         public CaptureScreen()
         {
-            // There are several nested lifetimes with symetric setup/teardown methods:
+            // There are several nested lifetimes with symmetric setup/teardown methods:
             // Screen -> ctor / BeforeClose.
             // Camera association -> LoadCamera / UnloadCamera.
             // Connection (frame grab) -> Connect / Disconnect.
