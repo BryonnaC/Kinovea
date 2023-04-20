@@ -10,11 +10,14 @@ namespace AnalysisSystemFinal
     class ServiceManager
     {
         WuAlgorithm math;
+        DeprecatedAlgorithm oldmath;
 
         public ServiceManager()
         {
-            //math = new WuAlgorithm();
-            //math.TestCSVFiles();
+            math = new WuAlgorithm();
+            oldmath = new DeprecatedAlgorithm();
+            oldmath.ImitateMATLAB();
+            math.TestCSVFiles();
             //math.GraphAdjusted();
             CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             //FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;

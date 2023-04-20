@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MatrixInverse;
 using Accord.Math;
 
-namespace AnalysisSystemFinal.Services
+namespace AnalysisSystemFinal
 {
     class DeprecatedAlgorithm
     { 
