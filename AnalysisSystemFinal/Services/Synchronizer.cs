@@ -30,7 +30,7 @@ namespace AnalysisSystemFinal
             SetCursorPos(sparkvueTarget.location.X, sparkvueTarget.location.Y);
 
             stopwatch.Start();
-            PressCaptureScreenHotkey(); // begin recording in Kinovea
+            //PressCaptureScreenHotkey(); // begin recording in Kinovea
             Click(sparkvueTarget.location);
             stopwatch.Stop();
 
