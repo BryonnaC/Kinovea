@@ -62,6 +62,51 @@ namespace AnalysisSystemFinal
             }
         }
 
+        public void TestCSVFiles()
+        {
+/*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
+            string path1 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_horz_pos";
+            string path2 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_vert_pos";
+
+            AnalysisSystemFinal.CsvFile csvFile1 = new AnalysisSystemFinal.CsvFile(path1);
+            AnalysisSystemFinal.CsvFile csvFile2 = new AnalysisSystemFinal.CsvFile(path2);
+
+            /*            AnalysisSystemFinal.CsvFile csvFile3 = new AnalysisSystemFinal.CsvFile(caliPath);
+                        double[][] caliPix = new double[csvFile3.columns.Count][];
+                        //caliPix = StringToDouble(csvFile3.columns);
+                        //caliPix = MatrixInverseProgram.MatTranspose(caliPix);
+                        double[][] caliX = new double[1][];
+            *//*            Console.WriteLine(csvFile3.col)
+
+                        for(int i = 0; i<8; i++)
+                        {
+                            caliX[0] = csvFile3.columns[0];
+                        }*/
+
+/*            List<double> horizData = GetFirstFrameVals(horizVals);
+            List<double> vertData = GetFirstFrameVals(vertVals);*/
+
+            /*            double[][] horizCSV = new double[csvFile1.columns.Count][];
+                        horizCSV = StringToDouble(csvFile1.columns);
+
+                        double[][] vertCSV = new double[csvFile2.columns.Count][];
+                        vertCSV = StringToDouble(csvFile2.columns);*/
+
+            /*            double[][] horizC = new double[1][];
+                        horizC[0] = new double[] { 329.49, 184.5, 472, 325.89, -381.09, -470.64, -244.4, -374.02 };
+
+                        double[][] vertC = new double[1][];
+                        vertC[0] = new double[] { -160.48, -557.33, -510.2, -269.83, -147.29, -488.99, -557.33, -246.26 };*/
+
+            List<double> horizCal = new List<double> { 329.49, 184.5, 472, 325.89, -381.09, -470.64, -244.4, -374.02 };
+            List<double> vertCal = new List<double> { -160.48, -557.33, -510.2, -269.83, -147.29, -488.99, -557.33, -246.26 };
+
+            double[][] matrixH = CalibrateObject(horizCal, vertCal);
+            calibrationComplete = true;
+
+            //CalibrateLegPts(horizCSV, vertCSV, matrixH);
+        }
+
         private void HandleForceData(double[][] forceData, double[][] tibiaOmegas, double[][] femurOmegas)
         {
             int samplingForce = 500; //sample frequency of PASCO force plate
@@ -114,7 +159,7 @@ namespace AnalysisSystemFinal
             }
         }
 
-        public void CalibrateObject(List<double> horizCali, List<double> vertCali)
+        public double[][] CalibrateObject(List<double> horizCali, List<double> vertCali)
         {
             //pull world space coordinates from save data? -- look into how to have save data with .net form
             double[][] worldPts = LoadPlaceholderCalibrationDimensions();
@@ -145,6 +190,7 @@ namespace AnalysisSystemFinal
             double[][] matrixR = CrossVectors(matrixH, false);
             double[][] matrixR_init = globalToCameraTheta(matrixR);
             //return matrixH? return matrixR_init?
+            return matrixH;
         }
 
         public void GraphAdjusted(List<string> horizCSV, List<string> vertCSV)
@@ -977,7 +1023,7 @@ namespace AnalysisSystemFinal
                     {
                         if (col < 3)
                         {
-                            homGraphT[row][col] = globalPts[GetAdjustedRow(row)][col];
+                            homGraphT[row][col] = globalPts[row/2][col];
                         }
                         else if (col == 3)
                         {
@@ -989,11 +1035,11 @@ namespace AnalysisSystemFinal
                         }
                         else if (col > 7 && col < 11)
                         {
-                            homGraphT[row][col] = globalPts[GetAdjustedRow(row)][col - 8]*pixelPts[GetAdjustedRow(row)][0];
+                            homGraphT[row][col] = globalPts[row / 2][col - 8]*pixelPts[row / 2][0];
                         }
                         else if(col == 11)
                         {
-                            homGraphT[row][col] = pixelPts[GetAdjustedRow(row)][0];
+                            homGraphT[row][col] = pixelPts[row / 2][0];
                         }
                     }
                     else
@@ -1004,7 +1050,7 @@ namespace AnalysisSystemFinal
                         }
                         else if (4 <= col && col < 7)
                         {
-                            homGraphT[row][col] = globalPts[GetAdjustedRow(row)][col-4];
+                            homGraphT[row][col] = globalPts[row / 2][col-4];
                         }
                         else if (col == 7)
                         {
@@ -1012,60 +1058,17 @@ namespace AnalysisSystemFinal
                         }
                         else if (col > 7 && col < 11)
                         {
-                            homGraphT[row][col] = -(globalPts[GetAdjustedRow(row)][col - 8] * pixelPts[GetAdjustedRow(row)][1]);
+                            homGraphT[row][col] = -(globalPts[row / 2][col - 8] * pixelPts[row / 2][1]);
                         }
                         else if (col == 11)
                         {
-                            homGraphT[row][col] = -(pixelPts[GetAdjustedRow(row)][1]);
+                            homGraphT[row][col] = -(pixelPts[row / 2][1]);
                         }
                     }
                 }
             }
 
             return homGraphT;
-        }
-
-        private int GetAdjustedRow(int row)
-        {
-            int adjustedRow = 0;
-
-            switch (row)
-            {
-                case 0:
-                case 1:
-                    adjustedRow = 0;
-                    break;
-                case 2:
-                case 3:
-                    adjustedRow = 1;
-                    break;
-                case 4:
-                case 5:
-                    adjustedRow = 2;
-                    break;
-                case 6:
-                case 7:
-                    adjustedRow = 3;
-                    break;
-                case 8:
-                case 9:
-                    adjustedRow = 4;
-                    break;
-                case 10:
-                case 11:
-                    adjustedRow = 5;
-                    break;
-                case 12:
-                case 13:
-                    adjustedRow = 6;
-                    break;
-                case 14:
-                case 15:
-                    adjustedRow = 7;
-                    break;
-            }
-
-            return adjustedRow;
         }
 
         //Correct Radial Distortion

@@ -14,6 +14,7 @@ namespace AnalysisSystemFinal
         public ServiceManager()
         {
             math = new WuAlgorithm();
+            math.TestCSVFiles();
             math.GraphAdjusted();
             //CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
@@ -28,7 +29,7 @@ namespace AnalysisSystemFinal
 
         private void CaptureScrView_RecordingStarted()
         {
-            //Synchronizer.Record(true);
+            Synchronizer.Record(true);
         }
 
         public static void DoMath()
