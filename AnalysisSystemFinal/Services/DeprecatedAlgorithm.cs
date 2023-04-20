@@ -195,8 +195,8 @@ namespace AnalysisSystemFinal
             double[,] matrixR = new double[3, 3];
             matrixR = globalToCameraTheta(matrixH);
 
-            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
-            string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";
+            string path1 = "C:\\Users\\bryy_\\Documents\\GoPro_Dummy_Horiz.csv";
+            string path2 = "C:\\Users\\bryy_\\Documents\\GoPro_Dummy_Vert.csv";
             AnalysisSystemFinal.CsvFile csvFile1 = new AnalysisSystemFinal.CsvFile(path1);
             AnalysisSystemFinal.CsvFile csvFile2 = new AnalysisSystemFinal.CsvFile(path2);
 

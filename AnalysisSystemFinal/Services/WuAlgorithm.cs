@@ -65,8 +65,8 @@ namespace AnalysisSystemFinal
         public void TestCSVFiles()
         {
             /*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
-            string path1 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_horz_pos.csv";
-            string path2 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_vert_pos.csv";
+            string path1 = "C:\\Users\\bryy_\\Documents\\Gopro_trial3_021023_horz_pos.csv";
+            string path2 = "C:\\Users\\bryy_\\Documents\\Gopro_trial3_021023_vert_pos.csv";
 /*            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
             string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";*/
 
@@ -98,7 +98,7 @@ namespace AnalysisSystemFinal
             double[][] tibaOm = omegaDotsTibFem[0];
             double[][] femOm = omegaDotsTibFem[1];
 
-            string forcepath = "C:\\Users\\Bryonna\\Documents\\floorsensor_trial3_021023.csv";
+            string forcepath = "C:\\Users\\bryy_\\Documents\\floorsensor_trial3_021023.csv";
             CsvFile forceCSV = new CsvFile(forcepath);
             double[][] forceData = new double[forceCSV.columns.Count][];
             forceData = StringToDouble(forceCSV.columns);
@@ -149,18 +149,18 @@ namespace AnalysisSystemFinal
             double[] My = new double[goproRate - 2];
             double[] Mz = new double[goproRate - 2];
 
-            int distance = 10; //placeholder?
+/*            int distance = 10; //placeholder?
             for(int i=3; i < goproRate - 2; i++)
             {
-                /*                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                *//*                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
                                 My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
 
-                                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];*/
+                                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];*//*
 
                 Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
                 My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
                 Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
-            }
+            }*/
         }
 
         public double[][] CalibrateObject(List<double> horizCali, List<double> vertCali)
