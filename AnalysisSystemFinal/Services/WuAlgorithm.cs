@@ -64,47 +64,45 @@ namespace AnalysisSystemFinal
 
         public void TestCSVFiles()
         {
-/*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
-            string path1 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_horz_pos";
-            string path2 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_vert_pos";
+            /*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
+            string path1 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_horz_pos.csv";
+            string path2 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_vert_pos.csv";
+/*            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
+            string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";*/
 
             AnalysisSystemFinal.CsvFile csvFile1 = new AnalysisSystemFinal.CsvFile(path1);
             AnalysisSystemFinal.CsvFile csvFile2 = new AnalysisSystemFinal.CsvFile(path2);
 
-            /*            AnalysisSystemFinal.CsvFile csvFile3 = new AnalysisSystemFinal.CsvFile(caliPath);
-                        double[][] caliPix = new double[csvFile3.columns.Count][];
-                        //caliPix = StringToDouble(csvFile3.columns);
-                        //caliPix = MatrixInverseProgram.MatTranspose(caliPix);
-                        double[][] caliX = new double[1][];
-            *//*            Console.WriteLine(csvFile3.col)
+            double[][] horizCSV = new double[csvFile1.columns.Count][];
+            horizCSV = StringToDouble(csvFile1.columns);
 
-                        for(int i = 0; i<8; i++)
-                        {
-                            caliX[0] = csvFile3.columns[0];
-                        }*/
-
-/*            List<double> horizData = GetFirstFrameVals(horizVals);
-            List<double> vertData = GetFirstFrameVals(vertVals);*/
-
-            /*            double[][] horizCSV = new double[csvFile1.columns.Count][];
-                        horizCSV = StringToDouble(csvFile1.columns);
-
-                        double[][] vertCSV = new double[csvFile2.columns.Count][];
-                        vertCSV = StringToDouble(csvFile2.columns);*/
-
-            /*            double[][] horizC = new double[1][];
-                        horizC[0] = new double[] { 329.49, 184.5, 472, 325.89, -381.09, -470.64, -244.4, -374.02 };
-
-                        double[][] vertC = new double[1][];
-                        vertC[0] = new double[] { -160.48, -557.33, -510.2, -269.83, -147.29, -488.99, -557.33, -246.26 };*/
+            double[][] vertCSV = new double[csvFile2.columns.Count][];
+            vertCSV = StringToDouble(csvFile2.columns);
 
             List<double> horizCal = new List<double> { 329.49, 184.5, 472, 325.89, -381.09, -470.64, -244.4, -374.02 };
             List<double> vertCal = new List<double> { -160.48, -557.33, -510.2, -269.83, -147.29, -488.99, -557.33, -246.26 };
 
+            List<double> horizList = new List<double> { horizCSV[1][0], horizCSV[2][0], horizCSV[3][0],
+                    horizCSV[4][0], horizCSV[5][0], horizCSV[6][0], horizCSV[7][0], horizCSV[8][0], horizCSV[9][0],
+                    horizCSV[10][0], horizCSV[11][0], horizCSV[12][0]};
+            List<double> vertList = new List<double> { vertCSV[1][0], vertCSV[2][0], vertCSV[3][0],
+                    vertCSV[4][0], vertCSV[5][0], vertCSV[6][0], vertCSV[7][0], vertCSV[8][0], vertCSV[9][0],
+                    vertCSV[10][0], vertCSV[11][0], vertCSV[12][0]};
+
             double[][] matrixH = CalibrateObject(horizCal, vertCal);
             calibrationComplete = true;
 
-            //CalibrateLegPts(horizCSV, vertCSV, matrixH);
+            double[][][] calibratedTibFemG = CalibrateLegPts(horizList, vertList, matrixH);
+            double[][][] omegaDotsTibFem = IterateThroughFrames(csvFile1.columns, csvFile2.columns, calibratedTibFemG);
+
+            double[][] tibaOm = omegaDotsTibFem[0];
+            double[][] femOm = omegaDotsTibFem[1];
+
+            string forcepath = "C:\\Users\\Bryonna\\Documents\\floorsensor_trial3_021023.csv";
+            CsvFile forceCSV = new CsvFile(forcepath);
+            double[][] forceData = new double[forceCSV.columns.Count][];
+            forceData = StringToDouble(forceCSV.columns);
+            HandleForceData(forceData, tibaOm, femOm);
         }
 
         private void HandleForceData(double[][] forceData, double[][] tibiaOmegas, double[][] femurOmegas)
@@ -135,6 +133,7 @@ namespace AnalysisSystemFinal
             double jz_t = 0;
 
             float[] downForce = new float[forceData.Length];
+
             for(int i=0; i<forceData.Length; i++)
             {
                 downForce[i] = Convert.ToSingle(forceData[i][6]);
@@ -153,9 +152,14 @@ namespace AnalysisSystemFinal
             int distance = 10; //placeholder?
             for(int i=3; i < goproRate - 2; i++)
             {
-                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
-                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
-                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                /*                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+
+                                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];*/
+
+                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
+                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
+                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
             }
         }
 
@@ -225,11 +229,8 @@ namespace AnalysisSystemFinal
             og.Dispose();
         }
 
-        private double[][][] IterateThroughFrames(List<string> horizCSV, List<string> vertCSV, double[][][] calibratedTibFemGlob)
+        private double[][][] IterateThroughFrames(List<List<string>> listStringDataH, List<List<string>> listStringDataV, double[][][] calibratedTibFemGlob)
         {
-            //format entire data sheet
-            List<List<string>> listStringDataH = String1DtoString2D(horizCSV);
-            List<List<string>> listStringDataV = String1DtoString2D(vertCSV);
             //format again
             double[][] horizPos = StringToDouble(listStringDataH);
             double[][] vertPos = StringToDouble(listStringDataV);
@@ -284,8 +285,14 @@ namespace AnalysisSystemFinal
                 double[][] calibratedTibiaPixel = ncMultiplication(tibiaNC1, tibiaPixelPts);
                 double[][] calibratedFemurPixel = ncMultiplication(femurNC1, femurPixelPts);
 
-                double[][] tibiaMatrixT = HomographicMatrixT(calibratedTibFemGlob[0], calibratedTibiaPixel);
-                double[][] femurMatrixT = HomographicMatrixT(calibratedTibFemGlob[1], calibratedFemurPixel);
+                double[][] tibiaMatrixT = HomographicMatrixTLEG(calibratedTibFemGlob[0], calibratedTibiaPixel);
+                double[][] femurMatrixT = HomographicMatrixTLEG(calibratedTibFemGlob[1], calibratedFemurPixel);
+
+/*                double[] step1 = TransposeMultPixelPts(tibiaMatrixT, tibiaPixelPts);
+                double[][] step2 = MatrixInverseProgram.MatTranspose(tibiaMatrixT);
+                double[][] step3 = MatrixInverseProgram.MatProduct(step2, tibiaMatrixT);
+                double[][] step4 = MatrixInverseProgram.MatInverse(step3);
+                double[] step5 = MatrixInverseProgram.MatVecProd(step4, step1);*/
 
                 double[] tibiaMatrixU = MatrixInverseProgram.MatVecProd(MatrixInverseProgram.MatInverse(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatTranspose(tibiaMatrixT), tibiaMatrixT)), TransposeMultPixelPts(tibiaMatrixT, tibiaPixelPts));
                 double[] femurMatrixU = MatrixInverseProgram.MatVecProd(MatrixInverseProgram.MatInverse(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatTranspose(femurMatrixT), femurMatrixT)), TransposeMultPixelPts(femurMatrixT, femurPixelPts));
@@ -343,6 +350,11 @@ namespace AnalysisSystemFinal
             GfemurTheta3 = femurTheta3;
 
             double[][][] legThetas = new double[2][][];
+            for( int i =0; i <legThetas.Length; i++)
+            {
+                legThetas[i] = new double[3][];
+            }
+
             legThetas[0][0] = tibiaTheta1;
             legThetas[0][1] = tibiaTheta2;
             legThetas[0][2] = tibiaTheta3;
@@ -356,13 +368,22 @@ namespace AnalysisSystemFinal
         private double[][] GetMultMatrixH(double[][] matrixH)
         {
             double[][] multiplierMatH = new double[matrixH.Length][];
+            for(int i =0; i < multiplierMatH.Length; i++)
+            {
+                multiplierMatH[i] = new double[3];
+            }
+
             for (int j = 0; j < multiplierMatH.Length; j++)
             {
-                multiplierMatH[j][0] = matrixH[j][3];
+                multiplierMatH[j][0] = matrixH[j][2];
             }
 
             double[][] matToNorm = new double[3][];
-            for(int j = 0; j<matToNorm.Length; j++)
+            for (int i = 0; i < matToNorm.Length; i++)
+            {
+                matToNorm[i] = new double[3];
+            }
+            for (int j = 0; j<matToNorm.Length; j++)
             {
                 matToNorm[j][0] = matrixH[2][j];
             }
@@ -370,6 +391,15 @@ namespace AnalysisSystemFinal
             double[][] returnMat =  MatrixScalarDiv(multiplierMatH, Norm.Norm2(matToNorm));
 
             return returnMat;
+        }
+
+        private double[][][] IterateThroughFrames(List<string> horizCSV, List<string> vertCSV, double[][][] calibratedTibFemGlob)
+        {
+            //format entire data sheet
+            List<List<string>> listStringDataH = String1DtoString2D(horizCSV);
+            List<List<string>> listStringDataV = String1DtoString2D(vertCSV);
+
+            return IterateThroughFrames(listStringDataH, listStringDataV, calibratedTibFemGlob);
         }
 
         private void CalculateAngularVelocity(int frames, double[][][] legThetas)
@@ -498,14 +528,39 @@ namespace AnalysisSystemFinal
             double[][] secondM = new double[1][];
 
             firstM[0] = new double[] {matrix[1][0], matrix[1][1], matrix[1][2]};
-            secondM[0] = new double[] { matrix[2][0], matrix[2][1], matrix[3][2] };
+            secondM[0] = new double[] { matrix[2][0], matrix[2][1], matrix[2][2] };
 
-            double[][] result = MatrixInverseProgram.MatProduct(firstM, secondM);
-            double norm = Norm.Norm2(result);
-            double[][] q1 = MatrixScalarDiv(result, norm);
+            double[] f = new double[] { matrix[1][0], matrix[1][1], matrix[1][2] };
+            double[] s = new double[] { matrix[2][0], matrix[2][1], matrix[2][2] };
+
+            double[] result = Accord.Math.Matrix.Cross(f, s);
+            double[][] result2 = new double[1][];
+            result2[0] = result;
+
+            //double[][] result = MatrixInverseProgram.MatProduct(secondM, firstM);
+            double norm = Norm.Norm2(result2);
+            double[][] q1 = MatrixScalarDiv(result2, norm);
 
             double[][] q3 = MatrixScalarDiv(secondM, Norm.Norm2(secondM));
-            double[][] q2 = MatrixInverseProgram.MatProduct(q3, q1);
+
+            double[] q1_1 = new double[q1[0].Length];
+            for(int i=0; i < q1_1.Length; i++)
+            {
+                q1_1[i] = q1[0][i];
+            }
+
+            double[] q3_1 = new double[q3[0].Length];
+            for (int i = 0; i < q3_1.Length; i++)
+            {
+                q3_1[i] = q3[0][i];
+            }
+
+            double[] q2_1 = Accord.Math.Matrix.Cross(q3_1, q1_1);
+            double[][] q2 = new double[1][];
+            q2[0] = q2_1;
+
+            //double[][] q2 = MatrixInverseProgram.MatProduct(q3, q1);
+            //double[] q2 = Accord.Math.Matrix.Cross(q3, q1);
 
             double[][] q1T = MatrixInverseProgram.MatTranspose(q1);
             double[][] q2T = MatrixInverseProgram.MatTranspose(q2);
@@ -533,6 +588,11 @@ namespace AnalysisSystemFinal
             double theta2 = Math.Atan2(-(matrixR_new[2][0]), (matrixR_new[2][2] / Math.Cos(theta1)));
 
             double[][] thetaVals = new double[3][]; //{ theta1, theta2, theta3 };
+            for (int i = 0; i < thetaVals.Length; i++)
+            {
+                thetaVals[i] = new double[1];
+            }
+
             thetaVals[0][0] = theta1;
             thetaVals[1][0] = theta2;
             thetaVals[2][0] = theta3;
@@ -576,10 +636,10 @@ namespace AnalysisSystemFinal
             double[] matrixUcol12 = new double[matrixU.Length];
             for(int i=0; i<matrixU.Length; i++)
             {
-                matrixUcol12[i] = matrixU[i][12];
+                matrixUcol12[i] = matrixU[i][11];
             }
 
-            double[][] matrixH = MatrixScalarProd(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(nc1), PopulateHMultplierMat(matrixUcol12)), nc2), matrixUcol12[12]);
+            double[][] matrixH = MatrixScalarProd(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(nc1), PopulateHMultplierMat(matrixUcol12)), nc2), matrixUcol12[11]);
             return matrixH;
         }
 
@@ -618,7 +678,10 @@ namespace AnalysisSystemFinal
 
         private double[][] GetUFromSVD(double[][] matrixT)
         {
-            Accord.Math.Decompositions.SingularValueDecomposition svd = new Accord.Math.Decompositions.SingularValueDecomposition(ChangeArrayType(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatInverse(matrixT), matrixT)));
+            //double[][] step1 = MatrixInverseProgram.MatTranpo(matrixT);
+            //double[][] step2 = MatrixInverseProgram.MatProduct(step1, matrixT);
+
+            Accord.Math.Decompositions.SingularValueDecomposition svd = new Accord.Math.Decompositions.SingularValueDecomposition(ChangeArrayType(MatrixInverseProgram.MatProduct(MatrixInverseProgram.MatTranspose(matrixT), matrixT)));
             double[][] matrixU = ChangeArrayTypeBack(svd.LeftSingularVectors);
 
             return matrixU;
@@ -644,6 +707,10 @@ namespace AnalysisSystemFinal
         private double[][] ChangeArrayTypeBack(double[,] matrix)
         {
             double[][] returnMatrix = new double[matrix.GetLength(0)][];
+            for (int x = 0; x < returnMatrix.Length; x++)
+            {
+                returnMatrix[x] = new double[matrix.GetLength(1)];
+            }
 
             for (int i = 0; i < returnMatrix.Length; i++)
             {
@@ -678,7 +745,7 @@ namespace AnalysisSystemFinal
 
         private double[] TransposeMultPixelPts(double[][] matrixT, double[][] pixelPts)
         {
-            double[] pixelPtVec = new double[pixelPts.Length * 2];
+            double[] pixelPtVec = new double[12];
             double[][] inverseT = MatrixInverseProgram.MatInverse(matrixT);
 
             for(int i=0; i<pixelPtVec.Length; i++)
@@ -696,10 +763,16 @@ namespace AnalysisSystemFinal
             return MatrixInverseProgram.MatVecProd(inverseT,pixelPtVec);
         }
 
+
         private double[][][] SeparateTibiaFemur(double[][] allPoints)
         {
             double[][] tibiaPts = new double[allPoints.Length / 2][];
             double[][] femurPts = new double[allPoints.Length / 2][];
+            for(int i=0; i<tibiaPts.Length; i++)
+            {
+                tibiaPts[i] = new double[allPoints[0].Length];
+                femurPts[i] = new double[allPoints[0].Length];
+            }
 
             for (int i = 0; i < allPoints.Length; i++)
             {
@@ -714,7 +787,7 @@ namespace AnalysisSystemFinal
                 {
                     for (int j = 0; j < allPoints[i].Length; j++)
                     {
-                        femurPts[i][j] = allPoints[i][j];
+                        femurPts[i/2][j] = allPoints[i][j];
                     }
                 }
             }
@@ -729,6 +802,10 @@ namespace AnalysisSystemFinal
         private double[][] FindGlobalLegCoords(double[][] legPts, double[][] matrixH)
         {
             double[][] globalPts = new double[legPts.Length][];
+            for(int i=0; i < globalPts.Length; i++)
+            {
+                globalPts[i] = new double[3];
+            }
 
             double[][] initialMatrix = new double[2][];
             double[][] inverseMatrix = new double[2][];
@@ -774,7 +851,7 @@ namespace AnalysisSystemFinal
 
         private double[][] GetMatrixNC(double[][] points)
         {
-            double[][] matrixNC = new double[points[0].Length+1][];
+            double[][] matrixNC = new double[points[0].Length+2][];
 
             double[] scaledXY = ScalePoints(points);
             double[] centeredXY = CenterPoints(points);
@@ -955,7 +1032,7 @@ namespace AnalysisSystemFinal
 
         private double[][] CreateNC2_2(double scalex, double scaley, double centerx, double centery)
         {
-            double[][] NC2 = new double[3][];
+            double[][] NC2 = new double[4][];
             NC2[0] = new double[] { scalex, 0, 0, -(centerx * scalex) };
             NC2[1] = new double[] { 0, scaley, 0, -(centery * scaley) };
             NC2[2] = new double[] { 0, 0, 1, 0 };
@@ -969,17 +1046,26 @@ namespace AnalysisSystemFinal
         {
             double[] scaledValues = new double[2];
 
-            double[] xPts = new double[8];
-            double[] yPts = new double[8];
+            double[] xPts = new double[points.Length];
+            double[] yPts = new double[points.Length];
 
             for(int i=0; i < points.Length; i++)
             {
                 xPts[i] = points[i][0];
-                yPts[i] = points[0][i];
+                yPts[i] = points[i][1];
             }
+/*
+            double xmax = xPts.Max();
+            double ymax = yPts.Max();
+
+            double xmin = xPts.Min();
+            double ymin = yPts.Min();
 
             scaledValues[0] = 1 / (xPts.Max() - xPts.Min());    //scaled x
-            scaledValues[1] = 1 / (yPts.Min() - yPts.Min());    //scaled y
+            scaledValues[1] = 1 / (yPts.Min() - yPts.Min());    //scaled y*/
+
+            scaledValues[0] = 1 / (48.56392067 - -138.6360859);    //scaled x
+            scaledValues[1] = 1 / (280.356706- -480.3869502);    //scaled y
 
             return scaledValues;
         }
@@ -989,15 +1075,15 @@ namespace AnalysisSystemFinal
         {
             double[] centeredValues = new double[2];
 
-            double[] xPts = new double[8];
-            double[] yPts = new double[8];
+            double[] xPts = new double[points.Length];
+            double[] yPts = new double[points.Length];
             double sumX = 0;
             double sumY = 0;
 
             for (int i = 0; i < points.Length; i++)
             {
                 xPts[i] = points[i][0];
-                yPts[i] = points[0][i];
+                yPts[i] = points[i][1];
 
                 sumX += xPts[i];
                 sumY += yPts[i];
@@ -1009,9 +1095,79 @@ namespace AnalysisSystemFinal
             return centeredValues;
         }
 
+        private double[][] HomographicMatrixTLEG(double[][] globalPts, double[][] pixelPts)
+        {
+            double[][] homGraphT = new double[12][];
+            for (int x = 0; x < homGraphT.Length; x++)
+            {
+                homGraphT[x] = new double[12];
+            }
+
+            for (int row = 0; row < homGraphT.Length; row++)
+            {
+                //we are iterating through the rows to populate the entire matrix
+                for (int col = 0; col < 12; col++)
+                {
+                    //the column defines the behavior - ie which type of value is populated - ex: x, y, z
+                    if (row % 2 == 0)
+                    {
+                        if (col < 3)
+                        {
+                            homGraphT[row][col] = globalPts[row / 2][col];
+                        }
+                        else if (col == 3)
+                        {
+                            homGraphT[row][col] = 1;
+                        }
+                        else if (3 < col && col <= 7)
+                        {
+                            homGraphT[row][col] = 0;
+                        }
+                        else if (col > 7 && col < 11)
+                        {
+                            homGraphT[row][col] = globalPts[row / 2][col - 8] * pixelPts[row / 2][0];
+                        }
+                        else if (col == 11)
+                        {
+                            homGraphT[row][col] = pixelPts[row / 2][0];
+                        }
+                    }
+                    else
+                    {
+                        if (col < 4)
+                        {
+                            homGraphT[row][col] = 0;
+                        }
+                        else if (4 <= col && col < 7)
+                        {
+                            homGraphT[row][col] = globalPts[row / 2][col - 4];
+                        }
+                        else if (col == 7)
+                        {
+                            homGraphT[row][col] = 1;
+                        }
+                        else if (col > 7 && col < 11)
+                        {
+                            homGraphT[row][col] = -(globalPts[row / 2][col - 8] * pixelPts[row / 2][1]);
+                        }
+                        else if (col == 11)
+                        {
+                            homGraphT[row][col] = -(pixelPts[row / 2][1]);
+                        }
+                    }
+                }
+            }
+
+            return homGraphT;
+        }
+
         private double[][] HomographicMatrixT(double[][] globalPts, double[][]pixelPts)
         {
             double[][] homGraphT = new double[(globalPts.Length + pixelPts.Length)][];
+            for(int x =0; x<homGraphT.Length; x++)
+            {
+                homGraphT[x] = new double[12];
+            }
 
             for(int row = 0; row<homGraphT.Length; row++)
             {
