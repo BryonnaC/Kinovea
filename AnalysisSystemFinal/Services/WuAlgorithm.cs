@@ -98,7 +98,7 @@ namespace AnalysisSystemFinal
             double[][] tibaOm = omegaDotsTibFem[0];
             double[][] femOm = omegaDotsTibFem[1];
 
-            string forcepath = "C:\\Users\\Bryonna\\Documents\floorsensor_trial3_021023.csv";
+            string forcepath = "C:\\Users\\Bryonna\\Documents\\floorsensor_trial3_021023.csv";
             CsvFile forceCSV = new CsvFile(forcepath);
             double[][] forceData = new double[forceCSV.columns.Count][];
             forceData = StringToDouble(forceCSV.columns);
@@ -152,9 +152,14 @@ namespace AnalysisSystemFinal
             int distance = 10; //placeholder?
             for(int i=3; i < goproRate - 2; i++)
             {
-                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
-                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
-                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                /*                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+
+                                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];*/
+
+                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
+                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
+                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
             }
         }
 
@@ -280,8 +285,8 @@ namespace AnalysisSystemFinal
                 double[][] calibratedTibiaPixel = ncMultiplication(tibiaNC1, tibiaPixelPts);
                 double[][] calibratedFemurPixel = ncMultiplication(femurNC1, femurPixelPts);
 
-                double[][] tibiaMatrixT = HomographicMatrixT(calibratedTibFemGlob[0], calibratedTibiaPixel);
-                double[][] femurMatrixT = HomographicMatrixT(calibratedTibFemGlob[1], calibratedFemurPixel);
+                double[][] tibiaMatrixT = HomographicMatrixTLEG(calibratedTibFemGlob[0], calibratedTibiaPixel);
+                double[][] femurMatrixT = HomographicMatrixTLEG(calibratedTibFemGlob[1], calibratedFemurPixel);
 
 /*                double[] step1 = TransposeMultPixelPts(tibiaMatrixT, tibiaPixelPts);
                 double[][] step2 = MatrixInverseProgram.MatTranspose(tibiaMatrixT);
@@ -345,6 +350,11 @@ namespace AnalysisSystemFinal
             GfemurTheta3 = femurTheta3;
 
             double[][][] legThetas = new double[2][][];
+            for( int i =0; i <legThetas.Length; i++)
+            {
+                legThetas[i] = new double[3][];
+            }
+
             legThetas[0][0] = tibiaTheta1;
             legThetas[0][1] = tibiaTheta2;
             legThetas[0][2] = tibiaTheta3;
@@ -358,13 +368,22 @@ namespace AnalysisSystemFinal
         private double[][] GetMultMatrixH(double[][] matrixH)
         {
             double[][] multiplierMatH = new double[matrixH.Length][];
+            for(int i =0; i < multiplierMatH.Length; i++)
+            {
+                multiplierMatH[i] = new double[3];
+            }
+
             for (int j = 0; j < multiplierMatH.Length; j++)
             {
-                multiplierMatH[j][0] = matrixH[j][3];
+                multiplierMatH[j][0] = matrixH[j][2];
             }
 
             double[][] matToNorm = new double[3][];
-            for(int j = 0; j<matToNorm.Length; j++)
+            for (int i = 0; i < matToNorm.Length; i++)
+            {
+                matToNorm[i] = new double[3];
+            }
+            for (int j = 0; j<matToNorm.Length; j++)
             {
                 matToNorm[j][0] = matrixH[2][j];
             }
@@ -523,7 +542,24 @@ namespace AnalysisSystemFinal
             double[][] q1 = MatrixScalarDiv(result2, norm);
 
             double[][] q3 = MatrixScalarDiv(secondM, Norm.Norm2(secondM));
-            double[][] q2 = MatrixInverseProgram.MatProduct(q3, q1);
+
+            double[] q1_1 = new double[q1[0].Length];
+            for(int i=0; i < q1_1.Length; i++)
+            {
+                q1_1[i] = q1[0][i];
+            }
+
+            double[] q3_1 = new double[q3[0].Length];
+            for (int i = 0; i < q3_1.Length; i++)
+            {
+                q3_1[i] = q3[0][i];
+            }
+
+            double[] q2_1 = Accord.Math.Matrix.Cross(q3_1, q1_1);
+            double[][] q2 = new double[1][];
+            q2[0] = q2_1;
+
+            //double[][] q2 = MatrixInverseProgram.MatProduct(q3, q1);
             //double[] q2 = Accord.Math.Matrix.Cross(q3, q1);
 
             double[][] q1T = MatrixInverseProgram.MatTranspose(q1);
@@ -552,6 +588,11 @@ namespace AnalysisSystemFinal
             double theta2 = Math.Atan2(-(matrixR_new[2][0]), (matrixR_new[2][2] / Math.Cos(theta1)));
 
             double[][] thetaVals = new double[3][]; //{ theta1, theta2, theta3 };
+            for (int i = 0; i < thetaVals.Length; i++)
+            {
+                thetaVals[i] = new double[1];
+            }
+
             thetaVals[0][0] = theta1;
             thetaVals[1][0] = theta2;
             thetaVals[2][0] = theta3;
@@ -704,7 +745,7 @@ namespace AnalysisSystemFinal
 
         private double[] TransposeMultPixelPts(double[][] matrixT, double[][] pixelPts)
         {
-            double[] pixelPtVec = new double[pixelPts.Length * 2];
+            double[] pixelPtVec = new double[12];
             double[][] inverseT = MatrixInverseProgram.MatInverse(matrixT);
 
             for(int i=0; i<pixelPtVec.Length; i++)
@@ -722,10 +763,16 @@ namespace AnalysisSystemFinal
             return MatrixInverseProgram.MatVecProd(inverseT,pixelPtVec);
         }
 
+
         private double[][][] SeparateTibiaFemur(double[][] allPoints)
         {
             double[][] tibiaPts = new double[allPoints.Length / 2][];
             double[][] femurPts = new double[allPoints.Length / 2][];
+            for(int i=0; i<tibiaPts.Length; i++)
+            {
+                tibiaPts[i] = new double[allPoints[0].Length];
+                femurPts[i] = new double[allPoints[0].Length];
+            }
 
             for (int i = 0; i < allPoints.Length; i++)
             {
@@ -740,7 +787,7 @@ namespace AnalysisSystemFinal
                 {
                     for (int j = 0; j < allPoints[i].Length; j++)
                     {
-                        femurPts[i][j] = allPoints[i][j];
+                        femurPts[i/2][j] = allPoints[i][j];
                     }
                 }
             }
@@ -755,6 +802,10 @@ namespace AnalysisSystemFinal
         private double[][] FindGlobalLegCoords(double[][] legPts, double[][] matrixH)
         {
             double[][] globalPts = new double[legPts.Length][];
+            for(int i=0; i < globalPts.Length; i++)
+            {
+                globalPts[i] = new double[3];
+            }
 
             double[][] initialMatrix = new double[2][];
             double[][] inverseMatrix = new double[2][];
@@ -995,8 +1046,8 @@ namespace AnalysisSystemFinal
         {
             double[] scaledValues = new double[2];
 
-            double[] xPts = new double[8];
-            double[] yPts = new double[8];
+            double[] xPts = new double[points.Length];
+            double[] yPts = new double[points.Length];
 
             for(int i=0; i < points.Length; i++)
             {
@@ -1024,8 +1075,8 @@ namespace AnalysisSystemFinal
         {
             double[] centeredValues = new double[2];
 
-            double[] xPts = new double[8];
-            double[] yPts = new double[8];
+            double[] xPts = new double[points.Length];
+            double[] yPts = new double[points.Length];
             double sumX = 0;
             double sumY = 0;
 
@@ -1042,6 +1093,72 @@ namespace AnalysisSystemFinal
             centeredValues[1] = (sumY / yPts.Length);
 
             return centeredValues;
+        }
+
+        private double[][] HomographicMatrixTLEG(double[][] globalPts, double[][] pixelPts)
+        {
+            double[][] homGraphT = new double[12][];
+            for (int x = 0; x < homGraphT.Length; x++)
+            {
+                homGraphT[x] = new double[12];
+            }
+
+            for (int row = 0; row < homGraphT.Length; row++)
+            {
+                //we are iterating through the rows to populate the entire matrix
+                for (int col = 0; col < 12; col++)
+                {
+                    //the column defines the behavior - ie which type of value is populated - ex: x, y, z
+                    if (row % 2 == 0)
+                    {
+                        if (col < 3)
+                        {
+                            homGraphT[row][col] = globalPts[row / 2][col];
+                        }
+                        else if (col == 3)
+                        {
+                            homGraphT[row][col] = 1;
+                        }
+                        else if (3 < col && col <= 7)
+                        {
+                            homGraphT[row][col] = 0;
+                        }
+                        else if (col > 7 && col < 11)
+                        {
+                            homGraphT[row][col] = globalPts[row / 2][col - 8] * pixelPts[row / 2][0];
+                        }
+                        else if (col == 11)
+                        {
+                            homGraphT[row][col] = pixelPts[row / 2][0];
+                        }
+                    }
+                    else
+                    {
+                        if (col < 4)
+                        {
+                            homGraphT[row][col] = 0;
+                        }
+                        else if (4 <= col && col < 7)
+                        {
+                            homGraphT[row][col] = globalPts[row / 2][col - 4];
+                        }
+                        else if (col == 7)
+                        {
+                            homGraphT[row][col] = 1;
+                        }
+                        else if (col > 7 && col < 11)
+                        {
+                            homGraphT[row][col] = -(globalPts[row / 2][col - 8] * pixelPts[row / 2][1]);
+                        }
+                        else if (col == 11)
+                        {
+                            homGraphT[row][col] = -(pixelPts[row / 2][1]);
+                        }
+                    }
+                }
+            }
+
+            return homGraphT;
         }
 
         private double[][] HomographicMatrixT(double[][] globalPts, double[][]pixelPts)
