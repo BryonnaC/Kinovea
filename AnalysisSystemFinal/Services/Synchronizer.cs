@@ -27,7 +27,7 @@ namespace AnalysisSystemFinal
 
             // pass in stopwatch to start after mouse_down but before mouse_up 
             //MoveToAndClick(sparkvueTarget.location, null, stopwatch); // might be more accurate to start stopwatch below the click?
-            SetCursorPos(sparkvueTarget.location.X, sparkvueTarget.location.Y);
+            SetCursorPos(sparkvueTarget.location.X + 10, sparkvueTarget.location.Y + 10);
 
             stopwatch.Start();
             //PressCaptureScreenHotkey(); // begin recording in Kinovea
