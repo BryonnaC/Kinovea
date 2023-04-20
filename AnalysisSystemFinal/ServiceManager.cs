@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CodeTranslation;
 using Kinovea.ScreenManager;
 
 namespace AnalysisSystemFinal
@@ -15,7 +14,7 @@ namespace AnalysisSystemFinal
         public ServiceManager()
         {
             math = new WuAlgorithm();
-            
+            math.GraphAdjusted();
             //CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
         }

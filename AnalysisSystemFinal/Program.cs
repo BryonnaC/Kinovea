@@ -73,6 +73,7 @@ namespace AnalysisSystemFinal
             screenManager.FirstSwitchToDashboard();
 
             Application.Run();
+            Application.Exit();
         }
     
         // NO LONGER USED STUFF
