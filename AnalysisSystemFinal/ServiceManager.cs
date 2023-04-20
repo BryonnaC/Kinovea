@@ -13,11 +13,11 @@ namespace AnalysisSystemFinal
 
         public ServiceManager()
         {
-            math = new WuAlgorithm();
-            math.TestCSVFiles();
-            math.GraphAdjusted();
+            //math = new WuAlgorithm();
+            //math.TestCSVFiles();
+            //math.GraphAdjusted();
             CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
-            FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
+            //FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
         }
 
         private void Kinematics_DoCustomMath(object sender, Kinovea.ScreenManager.GraphToCsvToMathEventArgs e)

@@ -56,7 +56,7 @@ namespace AnalysisSystemFinal
 
             // Set up actually just happens in the constructor
             ScreenManager screenManager = new ScreenManager();
-            //ServiceManager serviceManager = new ServiceManager();
+            ServiceManager serviceManager = new ServiceManager();
             FileBrowserKernel fileBrowser = new FileBrowserKernel();
 
             //function used to test formulas against matlab
