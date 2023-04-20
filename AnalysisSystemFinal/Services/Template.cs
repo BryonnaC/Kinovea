@@ -44,7 +44,7 @@ namespace AnalysisSystemFinal
         public int this[bool onScreen]
         {
             get { return thresholds[onScreen]; }
-            set 
+            set
             {
                 var temp = thresholds[onScreen];
                 thresholds[onScreen] = value;
@@ -72,34 +72,39 @@ namespace AnalysisSystemFinal
         }
     }
 
-    public struct TemplateDictionary : IEnumerable<KeyValuePair<Template, TemplateData>>
+    public struct TemplateDictionary : IEnumerable<KeyValuePair<Template, TemplateData[]>>
     {
-        public Dictionary<Template, TemplateData> templates;
+        public Dictionary<Template, TemplateData[]> templates;
 
         public IEnumerator GetEnumerator()
         {
             return ((IEnumerable)templates).GetEnumerator();
         }
 
-        IEnumerator<KeyValuePair<Template, TemplateData>> IEnumerable<KeyValuePair<Template, TemplateData>>.GetEnumerator()
+        IEnumerator<KeyValuePair<Template, TemplateData[]>> IEnumerable<KeyValuePair<Template, TemplateData[]>>.GetEnumerator()
         {
-            return ((IEnumerable<KeyValuePair<Template, TemplateData>>)templates).GetEnumerator();
+            return ((IEnumerable<KeyValuePair<Template, TemplateData[]>>)templates).GetEnumerator();
         }
 
-        public void Add(Template template, TemplateData templateData)
+        public void Add(Template template, TemplateData[] templateData)
         {
-            if (templates == null) templates = new Dictionary<Template, TemplateData>();
+            if (templates == null) templates = new Dictionary<Template, TemplateData[]>();
             templates.Add(template, templateData);
         }
 
-        public Mat this[Template key]
+        public TemplateData[] this[Template key]
         {
-            get { return templates[key].mat; }
+            get { return templates[key]; }
         }
 
-        public int this[Template templateKey, bool thresholdKey]
+        public Mat this[Template key, int idx]
         {
-            get { return templates[templateKey][thresholdKey]; }
+            get { return templates[key][idx].mat; }
+        }
+
+        public int this[Template templateKey, int idx, bool thresholdKey]
+        {
+            get { return templates[templateKey][idx][thresholdKey]; }
         }
     }
 
@@ -112,6 +117,6 @@ namespace AnalysisSystemFinal
             CvInvoke.CvtColor(bitmap.ToMat(), matBgr, ColorConversion.Rgba2Bgr);
 
             return matBgr;
-        }  
+        }
     }
 }
