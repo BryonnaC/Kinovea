@@ -9,13 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OxyPlot;
 using OxyPlot.Axes;
+using OxyPlot.Series;
 
 namespace AnalysisSystemFinal
 {
     public partial class OutputGraph : Form
     {
-
-
         public OutputGraph()
         {
             InitializeComponent();
@@ -45,6 +44,10 @@ namespace AnalysisSystemFinal
             model.Axes.Add(yAxis);
 
             plotView.Model = model;
+
+            LineSeries series = new LineSeries();
+            series.Title = "line";
+            series.MarkerType = MarkerType.None;
 
             //Application.Run();
         }
