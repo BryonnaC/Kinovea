@@ -8,7 +8,7 @@ using System.Linq;
 using static System.Math;
 using static System.Convert;
 using static AnalysisSystemFinal.FakeUser;
-using static AnalysisSystemFinal.Math;
+using static AnalysisSystemFinal.FFTAlgMath;
 
 namespace AnalysisSystemFinal
 {

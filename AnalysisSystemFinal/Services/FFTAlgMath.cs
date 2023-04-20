@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace AnalysisSystemFinal
 {
-    internal static class Math
+    internal static class FFTAlgMath
     { 
         /// <summary> Courtesy of ChatGPT:
         ///     This code defines a helper function named BitReversal that performs bit 

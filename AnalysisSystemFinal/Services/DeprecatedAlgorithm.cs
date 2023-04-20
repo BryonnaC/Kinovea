@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using MatrixInverse;
 using Accord.Math;
 
-namespace CodeTranslation
+namespace AnalysisSystemFinal.Services
 {
-    class MatrixMath
-    {
+    class DeprecatedAlgorithm
+    { 
         #region Old Test Vals
         double aFx = 256.98;
         double aFy = -201.43;
@@ -86,7 +86,7 @@ namespace CodeTranslation
 
         double[,] matrixT;
         double[,] matrixT_Transposed;
-
+        
         #region test method
         //This is just a testing method, should be able to get positions from Kinovea tracking
         public void InitLists()
@@ -128,78 +128,6 @@ namespace CodeTranslation
             globalFSY.Add(DSy);
         }
         #endregion
-
-        //This is where the most up to date variables start for the most recent version of the code
-
-        //Camera calibration specifications
-        double k1 = 0.0136;
-        double k2 = 0.0363;
-        double fx, fy = 2060;
-
-        //double[][] intrinsicMatrixGoPro = new double[3][];
-
-        public void TakeInValues(List<string> horizVals, List<string> vertVals)
-        {
-            
-            
-            List<double> horizData = CsvStringToListDouble(horizVals);
-            List<double> vertData = CsvStringToListDouble(vertVals);
-            //now we need to decide whether we are calibrating or calculating
-
-        }
-
-        public void Calibrate(List<string> horizCali, List<string> vertCali)
-        {
-            InitGoProInMat();
-        }
-
-        private void InitGoProInMat()
-        {
-            // GoPro camera intrinsic matrix
-            double[][] intrinsicMatrixGoPro = new double[3][];
-            intrinsicMatrixGoPro[0] = new double[] { fx, 0, 0 };
-            intrinsicMatrixGoPro[1] = new double[] { 0, fy, 0 };
-            intrinsicMatrixGoPro[2] = new double[] { 0, 0, 1 };
-        }
-
-        public List<double> CsvStringToListDouble(List<string> csvString)
-        {
-            List<List<string>> listStringData = String1DtoString2D(csvString);
-
-            double[][] doubleCSV = new double[listStringData.Count][];
-            doubleCSV = StringToDouble(listStringData);
-
-            if(listStringData.Count == 8)
-            {
-                //format of calibration object (two sets of 4)
-                List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
-                    doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0]};
-                return listCSVdouble;
-            }
-            else if(listStringData.Count == 12)
-            {
-                //format of leg marker set of 12
-                List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
-                    doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0], doubleCSV[9][0],
-                    doubleCSV[10][0], doubleCSV[11][0], doubleCSV[12][0]};
-                return listCSVdouble;
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-
-        public void PerformRealization()
-        {
-            //this is where we realize the 2D pixel space points into 3D world space points
-        }
-
-        public void GraphResults()
-        {
-
-        }
 
         public void ImitateMATLAB()
         {
@@ -290,57 +218,168 @@ namespace CodeTranslation
             Console.WriteLine("yay no errors");
         }
 
-        //I don't want the count, I want the first column and parse it. It should have 12 tracking values.
-        //thats not true, I do want the count but I also need to part each string of the list 
-
-        public List<List<string>> String1DtoString2D(List<string> csvString)
+private double[,] CalculateMatrix_U(double[,] matrixT)
         {
-            List<List<string>> headlessCSV = new List<List<string>>();
-            //might need to check this for zeros in the time dimension oops
-            for(int row = 1; row < csvString.Count; row++)
+            //find the transpose of matrix T
+            matrixT_Transposed = TransposeMatrix(matrixT, 16, 11);
+
+            //multiply the transpose and T together
+            double[,] tCrossTtranspose = MatrixMultiplication(matrixT, matrixT_Transposed);
+
+            //take the inverse of that product
+            //but first change type to match matrix inverse found in Visual Studio Magazine
+            double[][] standardMatrix = new double[tCrossTtranspose.GetLength(0)][];
+            standardMatrix = ChangeArrayType(tCrossTtranspose);
+
+            //then change that matrix back to my preferred format - unneccsary step but the problem is that I'd have to change my initial code and that's not right now's problem
+            double[,] inversedProduct = new double[standardMatrix.Length, standardMatrix[0].Length];
+            inversedProduct = McCaffreyMatrixInverse(standardMatrix);
+
+            //don't forget to multiple T' by the pixel position 16x1 matrix
+            double[,] transposedXpixelpos = new double[inversedProduct.GetLength(0), 1];
+            List<double> allPixelsNormed = new List<double>();
+            allPixelsNormed.AddRange(frontPixelPosNormed);
+            allPixelsNormed.AddRange(sidePixelPosNormed);
+            transposedXpixelpos = TransposeCrossPixels(matrixT_Transposed, allPixelsNormed);
+
+            //now multiply that by the inversed product
+            return MatrixMultiplication(transposedXpixelpos, inversedProduct);
+        }
+        public double[,] CreateNC1(double scalePx, double scalePy, double centerPx, double centerPy)
+        {
+            double[,] nc1 = new double[3, 3]
             {
-                headlessCSV[row-1].AddRange(csvString[row].Split(','));
+                { scalePx, 0, -(centerPx * scalePx) },
+                { 0, scalePy, -(centerPy * scalePy) },
+                { 0, 0, 1 }
+            };
+            return nc1;
+        }
+        public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
+        {
+            #region Just for me to visualize
+            double[] row1 = new double[] { scalePx, 0, -(centerPx * scalePx) };
+            double[] row2 = new double[] { 0, scalePy, -(centerPy * scalePy) };
+            double[] row3 = new double[] { 0, 0, 1 };
+            #endregion
+
+            NC1 = new double[3, 3]
+            {
+                { scalePx, 0, -(centerPx * scalePx) },
+                { 0, scalePy, -(centerPy * scalePy) },
+                { 0, 0, 1 }
+            };
+        }
+        public double[,] CreateNC2(double scalex, double scaley, double centerx, double centery)
+        {
+            double[,] nc2 = new double[4, 4]
+            {
+                { scalex, 0, 0, -(centerx * scalex) },
+                { 0, scaley, 0, -(centery * scaley) },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
+            };
+
+            return nc2;
+        }
+        public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
+        {
+            NC2 = new double[4, 4]
+            {
+                { scalex, 0, 0, -(centerx * scalex) },
+                { 0, scaley, 0, -(centery * scaley) },
+                { 0, 0, 1, 0 },
+                { 0, 0, 0, 1 }
+            };
+        }
+        private List<double> SetNewValues(double[,] newMatrix, List<double> points)
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                points[i] = newMatrix[i, 0];
+                //Console.WriteLine(points[i]);
             }
 
-            return headlessCSV;
+            return points;
         }
 
-        public double[][] StringToDouble(List<string> csvString)
+        public List<double> MatrixMultiplicationPixel(double[,] nc1, double pointX, double pointY)
         {
-            double[][] csvAsDoubleMatrix = new double[csvString.Count][];
+            double[,] someF = new double[3, 1]{
+                {0},
+                {0},
+                {0}
+            };
 
-            return csvAsDoubleMatrix;
-        }
-
-        public double[][] StringToDouble(List<List<string>> loadedCSV)
-        {
-            double[][] csvAsDoubleMatrix = new double[loadedCSV.Count][];
-
-            for (int row = 0; row < loadedCSV.Count; row++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int col = 0; col < loadedCSV[row].Count; col++)
-                {
-                    if (col == 0)
-                    {
-                        csvAsDoubleMatrix[row] = new double[loadedCSV[row].Count];
-                    }
-
-                    csvAsDoubleMatrix[row][col] = double.Parse(loadedCSV[row][col]);
-                }
+                someF[i, 0] = ((nc1[i, 0] * pointX) + (nc1[i, 1] * pointY) + (nc1[i, 2] * 1));
             }
 
-            return csvAsDoubleMatrix;
+            /*            for(int j=0; j<3; j++)
+                        {
+                            Console.WriteLine(someF[j, 0]);
+                        }*/
+
+            List<double> points = new List<double> { pointX, pointY };
+
+            return SetNewValues(someF, points);
         }
 
-        public double[,] ListToArray(List<double> list)
+        public List<double> MatrixMultiplicationGlobal(double[,] nc2, double pointX, double pointY, double pointZ)
         {
-            double[,] array = new double[list.Count, 1];
+            double[,] someF = new double[4, 1]{
+                {0},
+                {0},
+                {0},
+                {0}
+            };
 
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < 4; i++)
             {
-                array[i, 0] = list[i];
+                someF[i, 0] = ((nc2[i, 0] * pointX) + (nc2[i, 1] * pointY) + (nc2[i, 2] * pointZ) + (nc2[i, 3] * 1));
             }
-            return array;
+
+            /*            for (int j = 0; j < 4; j++)
+                        {
+                            Console.WriteLine(someF[j, 0]);
+                        }*/
+
+            List<double> points = new List<double> { pointX, pointY, pointZ };
+
+            return SetNewValues(someF, points);
+        }
+        public double CenterPoints(List<double> points)
+        {
+            double centeredValue;
+            double aggregateValue = 0;
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                aggregateValue += points[i];
+            }
+
+            centeredValue = (aggregateValue / points.Count);
+            //Console.WriteLine("centered: " centeredValue + "\n");
+
+            return centeredValue;
+        }
+
+        //pass in all front X's and side X's OR all front Y's and side Y's
+        public double ScalePoints(List<double> points)
+        {
+            double maxPoint;
+            double minPoint;
+            double scaledValue;
+
+            //maxPoint = GetMax(points);
+            maxPoint = points.Max();
+            minPoint = points.Min();
+
+            scaledValue = (1 / (maxPoint - minPoint));
+            //Console.WriteLine("scaled: " + scaledValue + "\n");
+
+            return scaledValue;
         }
 
         private void HandleLegMarkerData(List<double> dataHoriz, List<double> dataVert, double[,] matrixH)
@@ -569,20 +608,6 @@ namespace CodeTranslation
             matrixT_leg = HomgraphicMatrixLeg(allGlobalMarkers, allPixelMarkers);
         }
 
-        private double[,] MatrixSubtraction(double[,] matrix1, double[,] matrix2)
-        {
-            double[,] matrixSub = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
-
-            for (int i = 0; i < matrix1.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix1.GetLength(1); j++)
-                {
-                    matrixSub[i, j] = matrix1[i, j] - matrix2[i, j];
-                }
-            }
-            return matrixSub;
-        }
-
         #region Deprecated(lmao)
         //don't need the matrices here anymore, but i'll keep it in case I do one day
         private void WorkWithLegMarkerDataFromCSV(double[][] dataHorizontal, double[][] dataVertical, double[,] matrixH) //this needs to be refactored - but a lot of stuff does tbh 
@@ -721,6 +746,55 @@ namespace CodeTranslation
         }
         #endregion
 
+        private double[,] CalculateMatrix_H(double[,] matrixU)
+        {
+            double[,] matrixH;
+            double[][] nc1_std = new double[3][];
+            nc1_std[0] = new double[] { NC1[0, 0], NC1[0, 1], NC1[0, 2] };
+            nc1_std[1] = new double[] { NC1[1, 0], NC1[1, 1], NC1[1, 2] };
+            nc1_std[2] = new double[] { NC1[2, 0], NC1[2, 1], NC1[2, 2] };
+
+            //invert the NC1
+            double[,] inversedNC1 = new double[nc1_std.Length, 1];
+            inversedNC1 = McCaffreyMatrixInverse(nc1_std);
+
+            //make new matrix from U values according to specs
+            double[,] specialUMatrix = new double[3, 4]
+            {
+                { matrixU[0,0], matrixU[1,0], matrixU[2,0], matrixU[3,0] },
+                { matrixU[4,0], matrixU[5,0], matrixU[6,0], matrixU[7,0] },
+                { matrixU[8,0], matrixU[9,0], matrixU[10,0], 1 }
+            };
+
+            //now multiply this U matrix by NC2
+            double[,] uByNC2 = new double[specialUMatrix.GetLength(0), NC2.GetLength(1)];
+            uByNC2 = MatrixMultiplication(NC2, specialUMatrix);
+
+            //and finally multiply that product by the inversed nc1
+            matrixH = MatrixMultiplication(uByNC2, inversedNC1);
+
+            return matrixH;
+        }
+
+        private double[,] globalToCameraTheta(double[,] h)
+        {
+            double theta1;
+            double theta2;
+            double theta3;
+
+            theta3 = System.Math.Atan2(h[1, 0], h[0, 0]);
+            theta1 = System.Math.Atan2(h[2, 1], h[2, 2]);
+            theta2 = System.Math.Atan2(-(h[2, 0]), (h[2, 2] / System.Math.Cos(theta1)));
+
+            double[,] matrixR = new double[3, 3]
+            {
+                { System.Math.Cos(theta2)*System.Math.Cos(theta3), -System.Math.Sin(theta3)*System.Math.Cos(theta1)+System.Math.Sin(theta1)*System.Math.Sin(theta2)*System.Math.Cos(theta3), System.Math.Sin(theta1)*System.Math.Sin(theta3)+System.Math.Cos(theta1)*System.Math.Sin(theta2)*System.Math.Cos(theta3) },
+                { System.Math.Cos(theta2)*System.Math.Sin(theta3), System.Math.Cos(theta1)*System.Math.Cos(theta3)+System.Math.Sin(theta1)*System.Math.Sin(theta2)*System.Math.Sin(theta3), -System.Math.Sin(theta1)*System.Math.Cos(theta3)+System.Math.Cos(theta1)*System.Math.Sin(theta2)*System.Math.Sin(theta3) },
+                { -System.Math.Sin(theta2), System.Math.Sin(theta1)*System.Math.Cos(theta2), System.Math.Cos(theta1)*System.Math.Cos(theta2) }
+            };
+            return matrixR;
+        }
+        
         // formula 1 - used for first 4 of 6 markers
         private double[,] FindGlobalCoordsF1(double tn_x, double tn_y, double[,] matrixH)
         {
@@ -781,251 +855,60 @@ namespace CodeTranslation
 
             return matrixFinal;
         }
-
-        private double[,] CalculateMatrix_H(double[,] matrixU)
+        
+        public double[][] StringToDouble(List<string> csvString)
         {
-            double[,] matrixH;
-            double[][] nc1_std = new double[3][];
-            nc1_std[0] = new double[] { NC1[0, 0], NC1[0, 1], NC1[0, 2] };
-            nc1_std[1] = new double[] { NC1[1, 0], NC1[1, 1], NC1[1, 2] };
-            nc1_std[2] = new double[] { NC1[2, 0], NC1[2, 1], NC1[2, 2] };
+            double[][] csvAsDoubleMatrix = new double[csvString.Count][];
 
-            //invert the NC1
-            double[,] inversedNC1 = new double[nc1_std.Length, 1];
-            inversedNC1 = McCaffreyMatrixInverse(nc1_std);
-
-            //make new matrix from U values according to specs
-            double[,] specialUMatrix = new double[3, 4]
-            {
-                { matrixU[0,0], matrixU[1,0], matrixU[2,0], matrixU[3,0] },
-                { matrixU[4,0], matrixU[5,0], matrixU[6,0], matrixU[7,0] },
-                { matrixU[8,0], matrixU[9,0], matrixU[10,0], 1 }
-            };
-
-            //now multiply this U matrix by NC2
-            double[,] uByNC2 = new double[specialUMatrix.GetLength(0), NC2.GetLength(1)];
-            uByNC2 = MatrixMultiplication(NC2, specialUMatrix);
-
-            //and finally multiply that product by the inversed nc1
-            matrixH = MatrixMultiplication(uByNC2, inversedNC1);
-
-            return matrixH;
+            return csvAsDoubleMatrix;
         }
 
-        private double[,] globalToCameraTheta(double[,] h)
+        public double[][] StringToDouble(List<List<string>> loadedCSV)
         {
-            double theta1;
-            double theta2;
-            double theta3;
+            double[][] csvAsDoubleMatrix = new double[loadedCSV.Count][];
 
-            theta3 = Math.Atan2(h[1, 0], h[0, 0]);
-            theta1 = Math.Atan2(h[2, 1], h[2, 2]);
-            theta2 = Math.Atan2(-(h[2, 0]), (h[2, 2] / Math.Cos(theta1)));
-
-            double[,] matrixR = new double[3, 3]
+            for (int row = 0; row < loadedCSV.Count; row++)
             {
-                { Math.Cos(theta2)*Math.Cos(theta3), -Math.Sin(theta3)*Math.Cos(theta1)+Math.Sin(theta1)*Math.Sin(theta2)*Math.Cos(theta3), Math.Sin(theta1)*Math.Sin(theta3)+Math.Cos(theta1)*Math.Sin(theta2)*Math.Cos(theta3) },
-                { Math.Cos(theta2)*Math.Sin(theta3), Math.Cos(theta1)*Math.Cos(theta3)+Math.Sin(theta1)*Math.Sin(theta2)*Math.Sin(theta3), -Math.Sin(theta1)*Math.Cos(theta3)+Math.Cos(theta1)*Math.Sin(theta2)*Math.Sin(theta3) },
-                { -Math.Sin(theta2), Math.Sin(theta1)*Math.Cos(theta2), Math.Cos(theta1)*Math.Cos(theta2) }
-            };
-            return matrixR;
-        }
+                for (int col = 0; col < loadedCSV[row].Count; col++)
+                {
+                    if (col == 0)
+                    {
+                        csvAsDoubleMatrix[row] = new double[loadedCSV[row].Count];
+                    }
 
-        /*        R=[cosd(theta2)*cosd(theta3) -sind(theta3)*cosd(theta1)+sind(theta1)*sind(theta2)*cosd(theta3) sind(theta1)*sind(theta3)+cosd(theta1)*sind(theta2)*cosd(theta3);
-                     cosd(theta2)*sind(theta3) cosd(theta1)*cosd(theta3)+sind(theta1)*sind(theta2)*sind(theta3) -sind(theta1)*cosd(theta3)+cosd(theta1)*sind(theta2)*sind(theta3);
-                     -sind(theta2) sind(theta1)*cosd(theta2) cosd(theta1)*cosd(theta2)
-                ];*/
-
-        private double[,] CalculateMatrix_U(double[,] matrixT)
-        {
-            //find the transpose of matrix T
-            matrixT_Transposed = TransposeMatrix(matrixT, 16, 11);
-
-            //multiply the transpose and T together
-            double[,] tCrossTtranspose = MatrixMultiplication(matrixT, matrixT_Transposed);
-
-            //take the inverse of that product
-            //but first change type to match matrix inverse found in Visual Studio Magazine
-            double[][] standardMatrix = new double[tCrossTtranspose.GetLength(0)][];
-            standardMatrix = ChangeArrayType(tCrossTtranspose);
-
-            //then change that matrix back to my preferred format - unneccsary step but the problem is that I'd have to change my initial code and that's not right now's problem
-            double[,] inversedProduct = new double[standardMatrix.Length, standardMatrix[0].Length];
-            inversedProduct = McCaffreyMatrixInverse(standardMatrix);
-
-            //don't forget to multiple T' by the pixel position 16x1 matrix
-            double[,] transposedXpixelpos = new double[inversedProduct.GetLength(0), 1];
-            List<double> allPixelsNormed = new List<double>();
-            allPixelsNormed.AddRange(frontPixelPosNormed);
-            allPixelsNormed.AddRange(sidePixelPosNormed);
-            transposedXpixelpos = TransposeCrossPixels(matrixT_Transposed, allPixelsNormed);
-
-            //now multiply that by the inversed product
-            return MatrixMultiplication(transposedXpixelpos, inversedProduct);
-        }
-
-        public void CreateNC1Matrix(double scalePx, double scalePy, double centerPx, double centerPy)
-        {
-            #region Just for me to visualize
-            double[] row1 = new double[] { scalePx, 0, -(centerPx * scalePx) };
-            double[] row2 = new double[] { 0, scalePy, -(centerPy * scalePy) };
-            double[] row3 = new double[] { 0, 0, 1 };
-            #endregion
-
-            NC1 = new double[3, 3]
-            {
-                { scalePx, 0, -(centerPx * scalePx) },
-                { 0, scalePy, -(centerPy * scalePy) },
-                { 0, 0, 1 }
-            };
-        }
-
-        public double[,] CreateNC1(double scalePx, double scalePy, double centerPx, double centerPy)
-        {
-            double[,] nc1 = new double[3, 3]
-            {
-                { scalePx, 0, -(centerPx * scalePx) },
-                { 0, scalePy, -(centerPy * scalePy) },
-                { 0, 0, 1 }
-            };
-            return nc1;
-        }
-
-        public void CreateNC2Matrix(double scalex, double scaley, double centerx, double centery)
-        {
-            NC2 = new double[4, 4]
-            {
-                { scalex, 0, 0, -(centerx * scalex) },
-                { 0, scaley, 0, -(centery * scaley) },
-                { 0, 0, 1, 0 },
-                { 0, 0, 0, 1 }
-            };
-        }
-
-        public double[,] CreateNC2(double scalex, double scaley, double centerx, double centery)
-        {
-            double[,] nc2 = new double[4, 4]
-            {
-                { scalex, 0, 0, -(centerx * scalex) },
-                { 0, scaley, 0, -(centery * scaley) },
-                { 0, 0, 1, 0 },
-                { 0, 0, 0, 1 }
-            };
-
-            return nc2;
-        }
-
-        private List<double> SetNewValues(double[,] newMatrix, List<double> points)
-        {
-            for (int i = 0; i < points.Count; i++)
-            {
-                points[i] = newMatrix[i, 0];
-                //Console.WriteLine(points[i]);
+                    csvAsDoubleMatrix[row][col] = double.Parse(loadedCSV[row][col]);
+                }
             }
 
-            return points;
+            return csvAsDoubleMatrix;
         }
 
-        public List<double> MatrixMultiplicationPixel(double[,] nc1, double pointX, double pointY)
+        public double[,] ListToArray(List<double> list)
         {
-            double[,] someF = new double[3, 1]{
-                {0},
-                {0},
-                {0}
-            };
+            double[,] array = new double[list.Count, 1];
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                someF[i, 0] = ((nc1[i, 0] * pointX) + (nc1[i, 1] * pointY) + (nc1[i, 2] * 1));
+                array[i, 0] = list[i];
             }
-
-            /*            for(int j=0; j<3; j++)
-                        {
-                            Console.WriteLine(someF[j, 0]);
-                        }*/
-
-            List<double> points = new List<double> { pointX, pointY };
-
-            return SetNewValues(someF, points);
+            return array;
         }
 
-        public List<double> MatrixMultiplicationGlobal(double[,] nc2, double pointX, double pointY, double pointZ)
-        {
-            double[,] someF = new double[4, 1]{
-                {0},
-                {0},
-                {0},
-                {0}
-            };
 
-            for (int i = 0; i < 4; i++)
+
+        private double[,] MatrixSubtraction(double[,] matrix1, double[,] matrix2)
+        {
+            double[,] matrixSub = new double[matrix1.GetLength(0), matrix1.GetLength(1)];
+
+            for (int i = 0; i < matrix1.GetLength(0); i++)
             {
-                someF[i, 0] = ((nc2[i, 0] * pointX) + (nc2[i, 1] * pointY) + (nc2[i, 2] * pointZ) + (nc2[i, 3] * 1));
+                for (int j = 0; j < matrix1.GetLength(1); j++)
+                {
+                    matrixSub[i, j] = matrix1[i, j] - matrix2[i, j];
+                }
             }
-
-            /*            for (int j = 0; j < 4; j++)
-                        {
-                            Console.WriteLine(someF[j, 0]);
-                        }*/
-
-            List<double> points = new List<double> { pointX, pointY, pointZ };
-
-            return SetNewValues(someF, points);
+            return matrixSub;
         }
-
-        public double CenterPoints(List<double> points)
-        {
-            double centeredValue;
-            double aggregateValue = 0;
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                aggregateValue += points[i];
-            }
-
-            centeredValue = (aggregateValue / points.Count);
-            //Console.WriteLine("centered: " centeredValue + "\n");
-
-            return centeredValue;
-        }
-
-        //pass in all front X's and side X's OR all front Y's and side Y's
-        public double ScalePoints(List<double> points)
-        {
-            double maxPoint;
-            double minPoint;
-            double scaledValue;
-
-            //maxPoint = GetMax(points);
-            maxPoint = points.Max();
-            minPoint = points.Min();
-
-            scaledValue = (1 / (maxPoint - minPoint));
-            //Console.WriteLine("scaled: " + scaledValue + "\n");
-
-            return scaledValue;
-        }
-
-        //Holy shit this thing is HUGE
-        /*
-         * T=[
-         AFx AFy AFz 1 0 0 0 0 AFx*aFx AFy*aFx AFz*aFx;
-         0 0 0 0 AFx AFy AFz 1 -AFx*aFy -AFy*aFy -AFz*aFy;
-         BFx BFy BFz 1 0 0 0 0 BFx*bFx BFy*bFx BFz*bFx;
-         0 0 0 0 BFx BFy BFz 1 -BFx*bFy -BFy*bFy -BFz*bFy;
-         CFx CFy CFz 1 0 0 0 0 CFx*cFx CFy*cFx CFz*cFx;
-         0 0 0 0 CFx CFy CFz 1 -CFx*cFy -CFy*cFy -CFz*cFy;
-         DFx DFy DFz 1 0 0 0 0 DFx*dFx DFy*dFx DFz*dFx;
-         0 0 0 0 DFx DFy DFz 1 -DFx*dFy -DFy*dFy -DFz*dFy;
-         ASx ASy ASz 1 0 0 0 0 ASx*aSx ASy*aSx ASz*aSx;
-         0 0 0 0 ASx ASy ASz 1 -ASx*aSy -ASy*aSy -ASz*aSy;
-         BSx BSy BSz 1 0 0 0 0 BSx*bSx BSy*bSx BSz*bSx;
-         0 0 0 0 BSx BSy BSz 1 -BSx*bSy -BSy*bSy -BSz*bSy;
-         CSx CSy CSz 1 0 0 0 0 CSx*cSx CSy*cSx CSz*cSx;
-         0 0 0 0 CSx CSy CSz 1 -CSx*cSy -CSy*cSy -CSz*cSy;
-         DSx DSy DSz 1 0 0 0 0 DSx*dSx DSy*dSx DSz*dSx;
-         0 0 0 0 DSx DSy DSz 1 -DSx*dSy -DSy*dSy -DSz*dSy; 
-         ];*/
 
         private double[,] HomgraphicMatrix(List<double> globalsFront, List<double> pixelsFront, List<double> globalsSide, List<double> pixelsSide)
         {
@@ -1401,7 +1284,7 @@ namespace CodeTranslation
         private double[,] McCaffreyMatrixInverse(double[][] matrixToInvert)
         {
             double d = MatrixInverseProgram.MatDeterminant(matrixToInvert);
-            if (Math.Abs(d) < 1.0e-5)
+            if (System.Math.Abs(d) < 1.0e-5)
                 Console.WriteLine("\nMatrix has no inverse");
             else
                 Console.WriteLine("\nDet(m) = " + d.ToString("F4"));
@@ -1416,46 +1299,6 @@ namespace CodeTranslation
             MatrixInverseProgram.MatShow(prod, 1, 6);
 
             return ChangeArrayTypeBACK(inv);
-        }
-
-
-        //Correct Radial Distortion
-        //% k1, k2 are the distortion coefficents
-        //% fx, fy are the scaling factors along x and y direction
-        //% x_measured, y_measured are the measured pixels reading along x, y direction
-        public double[] CorrectRadialDistortion(double k1, double k2, double fx, double fy, double x_measured, double y_measured)
-        {
-            double[] x = new double[10];
-            double[] y = new double[10];
-            x[0] = x_measured;
-            y[0] = y_measured;
-
-            for (int i = 0; i < 8; i++)
-            {
-                x[i + 1] = x_measured - (x[i] * k1 * ((Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))) - (x[i] * k2 * (Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))));
-                y[i + 1] = y_measured - (y[i] * k1 * ((Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))) - (y[i] * k2 * (Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))));
-            }
-
-            //x_cor = x(9)
-            //y_cor = y(9)
-            double[] cor_double = new double[2];
-            cor_double[0] = x[9];
-            cor_double[1] = y[9];
-
-            return cor_double;
-        }
-
-        //Tune Side Coordinates
-
-        public double[] TuneSideCoordinates(double[] x, double[] T3, double[] T4, double L45, double L36, double L56)
-        {
-            double[] f = new double[3];
-
-            f[0] = (Math.Pow(T4[0] - x[0], 2) + Math.Pow(T4[1] - x[1], 2) + Math.Pow(Math.Pow(T4[2] - x[2], 2) - Math.Pow(L45, 2), 2));
-            f[1] = (Math.Pow(T3[0] - x[3], 2) + Math.Pow(T3[1] - x[4], 2) + Math.Pow(Math.Pow(T3[2] - x[5], 2) - Math.Pow(L36, 2), 2));
-            f[2] = (Math.Pow(x[0] - x[3], 2) + Math.Pow(x[1] - x[4], 2) + Math.Pow(Math.Pow(x[2] - x[5], 2) - Math.Pow(L56, 2), 2));
-
-            return f;
         }
     }
 }

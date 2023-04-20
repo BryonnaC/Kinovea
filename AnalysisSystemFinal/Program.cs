@@ -21,6 +21,9 @@ namespace AnalysisSystemFinal
         [STAThread]
         static void Main()
         {
+/*            Console.WriteLine("Hello World");
+            return;*/
+
             // C# winforms default
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -70,6 +73,7 @@ namespace AnalysisSystemFinal
             screenManager.FirstSwitchToDashboard();
 
             Application.Run();
+            Application.Exit();
         }
     
         // NO LONGER USED STUFF
