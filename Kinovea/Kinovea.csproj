@@ -374,6 +374,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnalysisSystemFinal\AnalysisSystemFinal.csproj">
+      <Project>{b3a23b1c-e139-4009-9547-1d0692c2e5bd}</Project>
+      <Name>AnalysisSystemFinal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kinovea.Camera.DirectShow\Kinovea.Camera.DirectShow.csproj">
       <Project>{104b98b4-961d-4ed4-b7c3-7e790065aaed}</Project>
       <Name>Kinovea.Camera.DirectShow</Name>

@@ -78,6 +78,9 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
 
+            //AnalysisSystemFinal.AnalysisMain am = new AnalysisSystemFinal.AnalysisMain();
+            //AnalysisMain am = new AnalysisMain();
+
             RootKernel kernel = new RootKernel();
             kernel.Prepare();
             
