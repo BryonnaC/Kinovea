@@ -15,7 +15,8 @@ namespace AnalysisSystemFinal
         //Camera calibration specifications
         double k1 = 0.0136;
         double k2 = 0.0363;
-        double fx, fy = 2060;
+        double fx = 2060;
+        double fy = 2060;
 
         //Have we calibrated?
         private bool calibrationComplete = false;
@@ -138,28 +139,32 @@ namespace AnalysisSystemFinal
             {
                 downForce[i] = Convert.ToSingle(forceData[i][6]);
             }
-
-            NWaves.Signals.DiscreteSignal ds = new NWaves.Signals.DiscreteSignal(samplingForce, downForce, false);
+            //this part needs to be fixed - need to find a different way to resample I think 
+/*            NWaves.Signals.DiscreteSignal ds = new NWaves.Signals.DiscreteSignal(samplingForce, downForce, true);
             NWaves.Operations.Resampler rs = new NWaves.Operations.Resampler();
 
-            NWaves.Signals.DiscreteSignal downSampledForce = rs.Resample(ds, goproRate);
+            //NWaves.Signals.DiscreteSignal downSampledForce = rs.Resample(ds, goproRate);
+            ds = rs.Resample(ds, goproRate);
 
             //Mx.Length = frames-2
             double[] Mx = new double[goproRate - 2];
             double[] My = new double[goproRate - 2];
             double[] Mz = new double[goproRate - 2];
 
-/*            int distance = 10; //placeholder?
-            for(int i=3; i < goproRate - 2; i++)
+            //float[] newSamples = downSampledForce.Samples;
+            float[] newSamples = ds.Samples;
+
+            int distance = 10; //placeholder?
+            for (int i = 3; i < goproRate - 2; i++)
             {
-                *//*                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
-                                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
+                My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
 
-                                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];*//*
+                Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
 
-                Mx[i] = downSampledForce[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
-                My[i] = downSampledForce[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
-                Mz[i] = downSampledForce[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
+                Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
+                My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
+                Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
             }*/
         }
 
@@ -1054,18 +1059,18 @@ namespace AnalysisSystemFinal
                 xPts[i] = points[i][0];
                 yPts[i] = points[i][1];
             }
-/*
-            double xmax = xPts.Max();
+
+/*            double xmax = xPts.Max();
             double ymax = yPts.Max();
 
             double xmin = xPts.Min();
-            double ymin = yPts.Min();
+            double ymin = yPts.Min();*/
 
             scaledValues[0] = 1 / (xPts.Max() - xPts.Min());    //scaled x
-            scaledValues[1] = 1 / (yPts.Min() - yPts.Min());    //scaled y*/
+            scaledValues[1] = 1 / (yPts.Max() - yPts.Min());    //scaled y
 
-            scaledValues[0] = 1 / (48.56392067 - -138.6360859);    //scaled x
-            scaledValues[1] = 1 / (280.356706- -480.3869502);    //scaled y
+/*            scaledValues[0] = 1 / (48.56392067 - -138.6360859);    //scaled x
+            scaledValues[1] = 1 / (280.356706- -480.3869502);    //scaled y*/
 
             return scaledValues;
         }
@@ -1238,7 +1243,7 @@ namespace AnalysisSystemFinal
             x[0] = x_measured;
             y[0] = y_measured;
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 9; i++)
             {
                 x[i + 1] = x_measured - (x[i] * k1 * ((Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))) - (x[i] * k2 * (Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))));
                 y[i + 1] = y_measured - (y[i] * k1 * ((Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))) - (y[i] * k2 * (Math.Pow(x[i], 2) / Math.Pow(fx, 2)) + (Math.Pow(y[i], 2) / Math.Pow(fy, 2))));
