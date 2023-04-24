@@ -40,11 +40,18 @@ namespace AnalysisSystemFinal
         double[] GfemurTheta2 = new double[240];
         double[] GfemurTheta3 = new double[240];
 
+        double[] mxGlobal = new double[234];
+        double[] myGlobal = new double[234];
+        double[] mzGlobal = new double[234];
 
         public void TakeInPositionValues(List<string> horizVals, List<string> vertVals)
         {
             List<double> horizData = GetFirstFrameVals(horizVals);
             List<double> vertData = GetFirstFrameVals(vertVals);
+
+            TestCSVFiles();
+
+            return;
             //now we need to decide whether we are calibrating or calculating
             if (horizData.Count == 8)
             {
@@ -104,6 +111,7 @@ namespace AnalysisSystemFinal
             double[][] forceData = new double[forceCSV.columns.Count][];
             forceData = StringToDouble(forceCSV.columns);
             HandleForceData(forceData, tibaOm, femOm);
+            GraphMoment(horizCSV);
         }
 
         private void HandleForceData(double[][] forceData, double[][] tibiaOmegas, double[][] femurOmegas)
@@ -159,13 +167,16 @@ namespace AnalysisSystemFinal
             {
                 Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][i] - (jy_t - jz_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
                 My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
-
                 Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
 
-                Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
+/*                Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
                 My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
-                Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
+                Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];*/
             }
+            Console.WriteLine("wow you did it!");
+            mxGlobal = Mx;
+            myGlobal = My;
+            mzGlobal = Mz;
         }
 
         public double[][] CalibrateObject(List<double> horizCali, List<double> vertCali)
@@ -218,18 +229,14 @@ namespace AnalysisSystemFinal
 
         public void GraphAdjusted()
         {
-            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
-            string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";
-            AnalysisSystemFinal.CsvFile csvFile1 = new AnalysisSystemFinal.CsvFile(path1);
-            AnalysisSystemFinal.CsvFile csvFile2 = new AnalysisSystemFinal.CsvFile(path2);
-
-            double[][] horizCSV = new double[csvFile1.columns.Count][];
-            horizCSV = StringToDouble(csvFile1.columns);
-
-            double[][] vertCSV = new double[csvFile2.columns.Count][];
-            vertCSV = StringToDouble(csvFile2.columns);
-
             OutputGraph og = new OutputGraph();
+            og.ShowDialog();
+            og.Dispose();
+        }
+
+        public void GraphMoment(double[][] data)
+        {
+            OutputGraph og = new OutputGraph("horizontal position", "moment", 240, mxGlobal, myGlobal, mzGlobal, data);
             og.ShowDialog();
             og.Dispose();
         }
@@ -266,12 +273,12 @@ namespace AnalysisSystemFinal
 
             for (int i=0; i<frames; i++)
             {
-                double[][] legPixelPts = new double[horizPos.Length][];    // # rows should be 12'
+                double[][] legPixelPts = new double[horizPos.Length-1][];    // # rows should be 12'
                 double[][] correctedPixelPts = new double[legPixelPts.Length][];
 
-                for(int row=0; row<legPixelPts.Length; row++)
+                for(int row=1; row<horizPos.Length; row++)
                 {
-                    legPixelPts[row] = new double[] { horizPos[row][i], vertPos[row][i]};
+                    legPixelPts[row-1] = new double[] { horizPos[row][i], vertPos[row][i]};
                 }
 
                 for (int j = 0; j < legPixelPts.Length; j++)
@@ -755,13 +762,21 @@ namespace AnalysisSystemFinal
 
             for(int i=0; i<pixelPtVec.Length; i++)
             {
-                if (i % 2 == 0)
+                if (i % 2 == 0 && i < 6)
                 {
                     pixelPtVec[i] = -pixelPts[i][0];
                 }
-                else
+                else if (i % 2 == 0 && i > 6)
+                {
+                    pixelPtVec[i-6] = -pixelPts[i-6][0];
+                }
+                else if (i % 2 != 0 && i < 6)
                 {
                     pixelPtVec[i] = pixelPts[i][1];
+                }
+                else if (i % 2 != 0 && i > 6)
+                {
+                    pixelPtVec[i-6] = pixelPts[i-6][1];
                 }
             }
 
@@ -792,7 +807,7 @@ namespace AnalysisSystemFinal
                 {
                     for (int j = 0; j < allPoints[i].Length; j++)
                     {
-                        femurPts[i/2][j] = allPoints[i][j];
+                        femurPts[i-6][j] = allPoints[i][j];
                     }
                 }
             }

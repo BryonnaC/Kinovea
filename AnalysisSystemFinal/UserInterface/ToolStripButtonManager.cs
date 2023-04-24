@@ -72,7 +72,7 @@ namespace AnalysisSystemFinal
             mnuGeneratePositionGraph.Click += mnuGeneratePositionGraph_Click;
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnucalibrationTemplate, mnuleg12pointsTemplate, mnutrackingMarker, mnuGeneratePositionGraph});
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnucalibrationTemplate, mnuleg12pointsTemplate, mnuGeneratePositionGraph});
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
@@ -159,11 +159,11 @@ namespace AnalysisSystemFinal
 
             mnuFileBrowser.Click += MnuFileBrowser_Click;
 
-            mnuRecord.Text = "Record Live Video";
-            mnuRecord.Click += MnuRecord_Click;
+/*            mnuRecord.Text = "Record Live Video";
+            mnuRecord.Click += MnuRecord_Click;*/
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuCalibrationObject, mnuRecord, mnuDataGraphing, mnuFileBrowser });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuDataGraphing, mnuFileBrowser });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);

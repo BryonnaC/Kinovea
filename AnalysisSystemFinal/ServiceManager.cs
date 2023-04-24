@@ -17,7 +17,7 @@ namespace AnalysisSystemFinal
             math = new WuAlgorithm();
             oldmath = new DeprecatedAlgorithm();
             oldmath.ImitateMATLAB();
-            //math.TestCSVFiles();
+            math.TestCSVFiles();
             //math.GraphAdjusted();
             CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             //FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
@@ -25,7 +25,7 @@ namespace AnalysisSystemFinal
 
         private void Kinematics_DoCustomMath(object sender, Kinovea.ScreenManager.GraphToCsvToMathEventArgs e)
         {
-            DoMath();   //this is placeholder, we're gonna need the *numbers* bby
+            //DoMath();   //this is placeholder, we're gonna need the *numbers* bby
 
             math.TakeInPositionValues(e.csv_StringHoriz, e.csv_StringVert);
         }
