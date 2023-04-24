@@ -29,6 +29,7 @@ namespace AnalysystemTakeTwo
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrame));
             this.SuspendLayout();
             // 
             // MainFrame
@@ -37,6 +38,7 @@ namespace AnalysystemTakeTwo
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(124)))));
             this.ClientSize = new System.Drawing.Size(1184, 961);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(1200, 600);
             this.Name = "MainFrame";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -9,9 +9,9 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kinovea.Root</RootNamespace>
-    <AssemblyName>Kinovea</AssemblyName>
+    <AssemblyName>KneeAnalysis</AssemblyName>
     <StartupObject>Kinovea.Root.Program</StartupObject>
-    <ApplicationIcon>kinovea-256x256.ico</ApplicationIcon>
+    <ApplicationIcon>kinovea_blue_256.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>4199BE45A0B72AC0126562F0FD2A5A5B02D397DA</ManifestCertificateThumbprint>
     <ManifestKeyFile>Root_TemporaryKey.pfx</ManifestKeyFile>
@@ -174,6 +174,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=2.0.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -542,6 +548,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="kinovea-256x256.ico" />
+    <Content Include="kinovea_blue_256.ico" />
+    <Content Include="Resources\kinovea_blue_256.ico" />
     <None Include="Resources\kinovea-256x256.ico" />
     <None Include="Resources\translators.txt" />
     <None Include="Resources\file_txt.png" />

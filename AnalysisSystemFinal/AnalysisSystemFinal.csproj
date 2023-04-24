@@ -82,6 +82,9 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>kinovea_blue_256.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accord, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
       <HintPath>..\packages\Accord.3.8.0\lib\net462\Accord.dll</HintPath>
@@ -382,6 +385,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="kinovea_blue_256.ico" />
+    <Content Include="Resources\kinovea_blue_256.ico" />
     <Content Include="Resources\triangle.png" />
   </ItemGroup>
   <ItemGroup>

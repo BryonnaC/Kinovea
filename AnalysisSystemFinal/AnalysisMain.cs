@@ -12,12 +12,10 @@ using Kinovea.ScreenManager;
 
 namespace AnalysisSystemFinal
 {
-    class AnalysisMain
+    public class AnalysisMain
     {
         public AnalysisMain()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
 
             // Set up essential to mimicking Kinovea
             Assembly assembly = Assembly.GetExecutingAssembly();

@@ -17,7 +17,7 @@ namespace AnalysisSystemFinal
             math = new WuAlgorithm();
             oldmath = new DeprecatedAlgorithm();
             oldmath.ImitateMATLAB();
-            math.TestCSVFiles();
+            //math.TestCSVFiles();
             //math.GraphAdjusted();
             CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             //FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;

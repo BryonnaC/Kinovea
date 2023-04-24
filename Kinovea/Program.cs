@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Reflection;
 using Kinovea.Services;
 using System.Diagnostics;
+using AnalysisSystemFinal;
 
 namespace Kinovea.Root
 {
@@ -78,8 +79,8 @@ namespace Kinovea.Root
             splashForm.Show();
             splashForm.Update();
 
-            //AnalysisSystemFinal.AnalysisMain am = new AnalysisSystemFinal.AnalysisMain();
-            //AnalysisMain am = new AnalysisMain();
+            AnalysisMain am = new AnalysisMain();
+/*            //AnalysisMain am = new AnalysisMain();
 
             RootKernel kernel = new RootKernel();
             kernel.Prepare();
@@ -88,7 +89,7 @@ namespace Kinovea.Root
             splashForm.Close();
 
             log.Debug("Launching.");
-            kernel.Launch();
+            kernel.Launch();*/
         }
         
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)

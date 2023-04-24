@@ -66,8 +66,8 @@ namespace AnalysisSystemFinal
         public void TestCSVFiles()
         {
             /*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
-            string path1 = "C:\\Users\\bryy_\\Documents\\Gopro_trial3_021023_horz_pos.csv";
-            string path2 = "C:\\Users\\bryy_\\Documents\\Gopro_trial3_021023_vert_pos.csv";
+            string path1 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_horz_pos.csv";
+            string path2 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_vert_pos.csv";
 /*            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
             string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";*/
 
@@ -99,7 +99,7 @@ namespace AnalysisSystemFinal
             double[][] tibaOm = omegaDotsTibFem[0];
             double[][] femOm = omegaDotsTibFem[1];
 
-            string forcepath = "C:\\Users\\bryy_\\Documents\\floorsensor_trial3_021023.csv";
+            string forcepath = "C:\\Users\\Bryonna\\Documents\\floorsensor_trial3_021023.csv";
             CsvFile forceCSV = new CsvFile(forcepath);
             double[][] forceData = new double[forceCSV.columns.Count][];
             forceData = StringToDouble(forceCSV.columns);
@@ -133,14 +133,14 @@ namespace AnalysisSystemFinal
             double jy_t = leg_J_center;
             double jz_t = 0;
 
-            float[] downForce = new float[forceData.Length];
+            float[] downForce = new float[forceData[0].Length];
 
-            for(int i=0; i<forceData.Length; i++)
+            for(int i=0; i<forceData[0].Length; i++)
             {
-                downForce[i] = Convert.ToSingle(forceData[i][6]);
+                downForce[i] = Convert.ToSingle(forceData[5][i]);
             }
             //this part needs to be fixed - need to find a different way to resample I think 
-/*            NWaves.Signals.DiscreteSignal ds = new NWaves.Signals.DiscreteSignal(samplingForce, downForce, true);
+            NWaves.Signals.DiscreteSignal ds = new NWaves.Signals.DiscreteSignal(samplingForce, downForce, true);
             NWaves.Operations.Resampler rs = new NWaves.Operations.Resampler();
 
             //NWaves.Signals.DiscreteSignal downSampledForce = rs.Resample(ds, goproRate);
@@ -165,7 +165,7 @@ namespace AnalysisSystemFinal
                 Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
                 My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
                 Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];
-            }*/
+            }
         }
 
         public double[][] CalibrateObject(List<double> horizCali, List<double> vertCali)
@@ -243,7 +243,7 @@ namespace AnalysisSystemFinal
             double[][] tibiaNC2 = GetMatrixNC(calibratedTibFemGlob[0]);
             double[][] femurNC2 = GetMatrixNC(calibratedTibFemGlob[1]);
 
-            int frames = horizPos.Length; //length here is the number of rows - rows are number of frames
+            int frames = horizPos[0].Length; //length here is the number of rows - rows are number of frames
 
             double[] xt = new double[frames];
             double[] yt = new double[frames];
@@ -266,12 +266,12 @@ namespace AnalysisSystemFinal
 
             for (int i=0; i<frames; i++)
             {
-                double[][] legPixelPts = new double[horizPos[0].Length][];    // # rows should be 12'
+                double[][] legPixelPts = new double[horizPos.Length][];    // # rows should be 12'
                 double[][] correctedPixelPts = new double[legPixelPts.Length][];
 
                 for(int row=0; row<legPixelPts.Length; row++)
                 {
-                    legPixelPts[row] = new double[] { horizPos[i][row], vertPos[i][row]};
+                    legPixelPts[row] = new double[] { horizPos[row][i], vertPos[row][i]};
                 }
 
                 for (int j = 0; j < legPixelPts.Length; j++)
