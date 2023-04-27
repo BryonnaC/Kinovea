@@ -14,8 +14,8 @@ namespace AnalysisSystemFinal
         private ToolStripMenuItem mnuInfoCollection = new ToolStripMenuItem();
         private ToolStripMenuItem mnuCalibrationObject = new ToolStripMenuItem();
         private ToolStripMenuItem mnuRecord = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuDataGraphing = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuFileBrowser = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuProperties = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuVideo = new ToolStripMenuItem();
 
         private Button calibrationTemplate = new Button();
         private Button leg12pointsTemplate = new Button();
@@ -49,7 +49,7 @@ namespace AnalysisSystemFinal
 
         }
 
-        public void PopulateButtonToolStrip(ToolStrip toolStrip)
+        public void PopulateVideoToolStrip(ToolStrip toolStrip)
         {
             toolStrip.AllowMerge = true;
 
@@ -131,54 +131,69 @@ namespace AnalysisSystemFinal
             buttonPanel.Controls.Add(trackingMarker);
         }
 
-        public void PopulateToolBar(ToolStrip toolStrip)
+        public void PopulateStaticToolBar(ToolStrip toolStrip)
         {
             toolStrip.AllowMerge = true;
             openVid.Text = "Open Video...";
+            openVid.Click += DropDownVideo_Click;
             openCam.Text = "Open Camera...";
+            openCam.Click += DropDownCam_Click;
             subInf.Text = "Subject Info";
+            subInf.Click += DropDownSub_Click;
             calibrationObj.Text = "Calibration Obj";
+            calibrationObj.Click += DropDownCali_Click;
             trackWindow.Text = "Marker Properties";
-            //openVid.Size.Width = 50;
 
-            mnuInfoCollection.Text = "Subject Info";
-            mnuInfoCollection.Click += mnuInfoCollection_Click;
+            openVid.Width = 80;
+            subInf.Width = 90;
 
-            mnuCalibrationObject.Text = "Calibration Object";
-            mnuCalibrationObject.Click += mnuCalibrationObject_Click;
+            mnuProperties.Text = "Properties";
+            mnuProperties.DropDownItems.Add(trackWindow);
+            mnuProperties.DropDownItems.Add(subInf);
+            mnuProperties.DropDownItems.Add(calibrationObj);
+            mnuProperties.Click += MnuProperties_Click;
 
-            mnuDataGraphing.Text = "Properties";
-            mnuDataGraphing.DropDownItems.Add(trackWindow);
-            mnuDataGraphing.DropDownItems.Add(subInf);
-            mnuDataGraphing.DropDownItems.Add(calibrationObj);
-            mnuDataGraphing.Click += MnuDataGraphing_Click;
+            mnuVideo.Text = "Video";
+            mnuVideo.DropDownItems.Add(openVid);
+            mnuVideo.DropDownItems.Add(openCam);
 
-            mnuFileBrowser.Text = "Video";
-            mnuFileBrowser.DropDownItems.Add(openVid);
-            mnuFileBrowser.DropDownItems.Add(openCam);
-
-            mnuFileBrowser.Click += MnuFileBrowser_Click;
-
-/*            mnuRecord.Text = "Record Live Video";
-            mnuRecord.Click += MnuRecord_Click;*/
+            mnuVideo.Click += mnuVideo_Click;
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuInfoCollection, mnuDataGraphing, mnuFileBrowser });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuProperties, mnuVideo });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
         }
 
-        private void MnuRecord_Click(object sender, EventArgs e)
+        private void DropDownCali_Click(object sender, EventArgs e)
+        {
+            number = 2;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+        }
+
+        private void DropDownSub_Click(object sender, EventArgs e)
+        {
+            number = 1;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+        }
+
+        private void DropDownCam_Click(object sender, EventArgs e)
         {
             number = 5;
             ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
         }
 
-        private void MnuFileBrowser_Click(object sender, EventArgs e)
+        private void DropDownVideo_Click(object sender, EventArgs e)
         {
+            //open file browser to choose a video to load 
             number = 4;
             ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+        }
+
+        private void mnuVideo_Click(object sender, EventArgs e)
+        {
+            //Just open the drop down
         }
 
         public void ChangeHelpfulMessage()
@@ -186,21 +201,9 @@ namespace AnalysisSystemFinal
             //todo: want messages to guide user through basic use of the system
         }
 
-        private void MnuDataGraphing_Click(object sender, EventArgs e)
+        private void MnuProperties_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("IMPLEMENT ME!");
-        }
-
-        private void mnuCalibrationObject_Click(object sender, EventArgs e)
-        {
-            number = 2;
-            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
-        }
-
-        private void mnuInfoCollection_Click(object sender, EventArgs e)
-        {
-            number = 1;
-            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+            //just open drop down
         }
     }
 }

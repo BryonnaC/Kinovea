@@ -187,6 +187,12 @@
     <Compile Include="UserInterface\FileSelection.Designer.cs">
       <DependentUpon>FileSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\PropertiesPopUp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\PropertiesPopUp.Designer.cs">
+      <DependentUpon>PropertiesPopUp.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\SizeHelper.cs" />
     <Compile Include="UserInterface\EventArgs.cs" />
     <Compile Include="UserInterface\CalibrationObjectDimensions.cs">
@@ -238,6 +244,12 @@
     <Compile Include="UserInterface\SubjectInformationScreen.designer.cs">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\TrackingDimensionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserInterface\TrackingDimensionsControl.Designer.cs">
+      <DependentUpon>TrackingDimensionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\VideoScreenControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -283,11 +295,17 @@
     <EmbeddedResource Include="UserInterface\MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PropertiesPopUp.resx">
+      <DependentUpon>PropertiesPopUp.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\RecordingControl.resx">
       <DependentUpon>RecordingControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\SubjectInformationScreen.resx">
       <DependentUpon>SubjectInformationScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\TrackingDimensionsControl.resx">
+      <DependentUpon>TrackingDimensionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\VideoScreenControl.resx">
       <DependentUpon>VideoScreenControl.cs</DependentUpon>

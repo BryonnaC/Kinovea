@@ -21,8 +21,6 @@ namespace AnalysisSystemFinal
         //Have we calibrated?
         private bool calibrationComplete = false;
 
-        //double[][] intrinsicMatrixGoPro = new double[3][];
-
         //placehold these here for now so I can graph
         double[] xtG = new double[240];
         double[] ytG = new double[240];
@@ -78,8 +76,8 @@ namespace AnalysisSystemFinal
 /*            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
             string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";*/
 
-            AnalysisSystemFinal.CsvFile csvFile1 = new AnalysisSystemFinal.CsvFile(path1);
-            AnalysisSystemFinal.CsvFile csvFile2 = new AnalysisSystemFinal.CsvFile(path2);
+            CsvFile csvFile1 = new CsvFile(path1);
+            CsvFile csvFile2 = new CsvFile(path2);
 
             double[][] horizCSV = new double[csvFile1.columns.Count][];
             horizCSV = StringToDouble(csvFile1.columns);

@@ -16,14 +16,14 @@ namespace AnalysisSystemFinal
         {
             math = new WuAlgorithm();
             oldmath = new DeprecatedAlgorithm();
-            oldmath.ImitateMATLAB();
-            math.TestCSVFiles();
+            //oldmath.ImitateMATLAB();
+            //math.TestCSVFiles();
             //math.GraphAdjusted();
             CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             //FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
         }
 
-        private void Kinematics_DoCustomMath(object sender, Kinovea.ScreenManager.GraphToCsvToMathEventArgs e)
+        private void Kinematics_DoCustomMath(object sender, GraphToCsvToMathEventArgs e)
         {
             //DoMath();   //this is placeholder, we're gonna need the *numbers* bby
 

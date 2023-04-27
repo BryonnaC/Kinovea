@@ -38,13 +38,4 @@ namespace AnalysisSystemFinal
         }
     }
 
-    class GraphToCsvToMathEventArgs : EventArgs
-    {
-        public readonly List<string> csv_String;
-
-        public GraphToCsvToMathEventArgs()
-        {
-
-        }
-    }
 }

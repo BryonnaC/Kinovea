@@ -18,6 +18,9 @@ namespace AnalysisSystemFinal
     class ScreenManager : ScreenManagerKernel
     {
         MainFrame mainFrame;
+
+        PropertiesPopUp properties;
+
         ChooseAScreen chooseScreen = new ChooseAScreen();
         RecordingControl recordingControl = new RecordingControl();
         VideoScreenControl videoControl = new VideoScreenControl();
@@ -45,7 +48,7 @@ namespace AnalysisSystemFinal
             CameraTypeManager.CameraLoadAsked += CameraTypeManager_CameraLoadAsked;
             //ChooseAScreen.ButtonClicked += ChooseAScreen_ButtonClicked;
             CustomSplashscreen.StartDashboard += CustomSplashscreen_StartDashboard;
-            ToolStripButtonManager.ToolBarClick += DashboardNav_ToolBarClick;
+            ToolStripButtonManager.ToolBarClick += MainNav_ToolBarClick;
             VideoTypeManager.VideoLoadAsked += VideoTypeManager_VideoLoadAsked;
             RecordingControl.ReturnToDash += RecordingControl_ReturnToDash;
             ToolStripButtonManager.TrajectoryClick += ToolStrip_TrajectoryClick;
@@ -154,7 +157,7 @@ namespace AnalysisSystemFinal
         }
 
         #region EventHandlers
-        private void DashboardNav_ToolBarClick(object sender, ButtonClickedEventArgs e)
+        private void MainNav_ToolBarClick(object sender, ButtonClickedEventArgs e)
         {
             switch (e.buttonNumber)
             {
@@ -253,7 +256,7 @@ namespace AnalysisSystemFinal
 
         private void CreateVideoScreen()
         {
-            dashNav.PopulateButtonToolStrip(videoControl.toolStrip1);
+            dashNav.PopulateVideoToolStrip(videoControl.toolStrip1);
             videoControl.panel1.Controls.Clear();
             videoControl.panel1.Controls.Add(base.screenList[whichScreen].UI);
         }
@@ -285,7 +288,7 @@ namespace AnalysisSystemFinal
         public void FirstSwitchToDashboard()
         {
             HideCurrentScreen();
-            dashNav.PopulateToolBar(dashboardScr.toolStrip1);
+            dashNav.PopulateStaticToolBar(dashboardScr.toolStrip1);
 
             ScreenManagerUserInterface scrMgUI = new ScreenManagerUserInterface();
 
@@ -323,18 +326,32 @@ namespace AnalysisSystemFinal
 
         private void ShowSubjectInfoCollection()
         {
+            properties = new PropertiesPopUp();
+            
             SubjectInformationScreen subjInfoScr = new SubjectInformationScreen();
-            dashboardScr.panel1.Controls.Clear();
+            properties.mainPanel.Controls.Add(subjInfoScr);
+
+            properties.ShowDialog();
+            properties.Dispose();
+
+/*            dashboardScr.panel1.Controls.Clear();
             dashboardScr.PageTitle.Text = "Information Collection Phase";
-            dashboardScr.panel1.Controls.Add(subjInfoScr);
+            dashboardScr.panel1.Controls.Add(subjInfoScr);*/
         }
 
         private void ShowCalibrationObjForm()
         {
+            properties = new PropertiesPopUp();
+
             CalibrationObjectDimensions calibObjControl = new CalibrationObjectDimensions();
-            dashboardScr.panel1.Controls.Clear();
+            properties.mainPanel.Controls.Add(calibObjControl);
+
+            properties.ShowDialog();
+            properties.Dispose();
+
+/*            dashboardScr.panel1.Controls.Clear();
             dashboardScr.PageTitle.Text = "Calibration Object Phase";
-            dashboardScr.panel1.Controls.Add(calibObjControl);
+            dashboardScr.panel1.Controls.Add(calibObjControl);*/
         }
 
         #endregion
