@@ -54,6 +54,8 @@ namespace AnalysisSystemFinal
             if(hasPositionData && hasForceData)
             {
                 math.CaclulateFromImportedCSV(horizPath, vertPath, forcePath);
+                hasPositionData = false;
+                hasForceData = false;
             }
         }
 
