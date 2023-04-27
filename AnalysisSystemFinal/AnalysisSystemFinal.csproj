@@ -187,6 +187,18 @@
     <Compile Include="UserInterface\FileSelection.Designer.cs">
       <DependentUpon>FileSelection.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserInterface\ForceSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\ForceSelector.Designer.cs">
+      <DependentUpon>ForceSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserInterface\PositionDataSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserInterface\PositionDataSelection.Designer.cs">
+      <DependentUpon>PositionDataSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserInterface\PropertiesPopUp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -292,8 +304,14 @@
     <EmbeddedResource Include="UserInterface\FileSelection.resx">
       <DependentUpon>FileSelection.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\ForceSelector.resx">
+      <DependentUpon>ForceSelector.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\MainFrame.resx">
       <DependentUpon>MainFrame.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserInterface\PositionDataSelection.resx">
+      <DependentUpon>PositionDataSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserInterface\PropertiesPopUp.resx">
       <DependentUpon>PropertiesPopUp.cs</DependentUpon>

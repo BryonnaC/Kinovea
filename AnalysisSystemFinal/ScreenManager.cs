@@ -54,24 +54,49 @@ namespace AnalysisSystemFinal
             ToolStripButtonManager.TrajectoryClick += ToolStrip_TrajectoryClick;
             ToolStripButtonManager.CalibrationClick += ToolStrip_CalibrationClick;
             ToolStripButtonManager.LegTemplateClick += ToolStrip_LegTemplateClick;
+            ToolStripButtonManager.TrackerClick += ToolStrip_SingleTrackClick;
+            ToolStripButtonManager.ImportPositionClick += ToolStrip_ImportPositionClick;
+            ToolStripButtonManager.ImportForceClick += ToolStrip_ImportForceClick;
+        }
+
+        private void ToolStrip_ImportForceClick()
+        {
+            /*            OpenFileDialog ofd = new OpenFileDialog();
+                        ofd.ShowDialog();
+                        ofd.Dispose();*/
+            ForceSelector fs = new ForceSelector();
+            fs.ShowDialog();
+            fs.Dispose();
+        }
+
+        private void ToolStrip_ImportPositionClick()
+        {
+            PositionDataSelection ps = new PositionDataSelection();
+            ps.ShowDialog();
+            ps.Dispose();
+        }
+
+        private void ToolStrip_SingleTrackClick()
+        {
+            whichTemplate = 3;
+            PlayerScreenUserInterface.MouseClicked += PlayerScreenUI_MouseClicked;
         }
 
         private void ToolStrip_LegTemplateClick()
         {
             //We need mouse position which is best found by using PlayerScreenUserInterface
             whichTemplate = 2;
-            PlayerScreenUserInterface.MouseClicked += PSUI_MouseClicked;
-
+            PlayerScreenUserInterface.MouseClicked += PlayerScreenUI_MouseClicked;
         }
 
         private void ToolStrip_CalibrationClick()
         {
             //We need mouse position which is best found by using PlayerScreenUserInterface
             whichTemplate = 1;
-            PlayerScreenUserInterface.MouseClicked += PSUI_MouseClicked;
+            PlayerScreenUserInterface.MouseClicked += PlayerScreenUI_MouseClicked;
         }
 
-        private void PSUI_MouseClicked(object sender, MouseEventArgs e)
+        private void PlayerScreenUI_MouseClicked(object sender, MouseEventArgs e)
         {
             //Console.WriteLine(base.screenList[whichScreen].view.m_DescaledMouse);
             Console.WriteLine("alright, I'm in.");
@@ -97,19 +122,19 @@ namespace AnalysisSystemFinal
                     //#1 - start with tibia
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#2
-                    ps.view.m_DescaledMouse.X += 30;
+                    ps.view.m_DescaledMouse.X += 40;
                     //ps.view.m_DescaledMouse.Y -= 10;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#3
-                    //ps.view.m_DescaledMouse.X += 0;
+                    ps.view.m_DescaledMouse.X += 25;
                     ps.view.m_DescaledMouse.Y -= 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#4
-                    ps.view.m_DescaledMouse.X -= 45;
-                    //ps.view.m_DescaledMouse.Y += 0;
+                    ps.view.m_DescaledMouse.X -= 85;
+                    ps.view.m_DescaledMouse.Y -= 10;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#5 - tibia side
-                    ps.view.m_DescaledMouse.X += 75;
+                    ps.view.m_DescaledMouse.X += 85;
                     ps.view.m_DescaledMouse.Y += 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#6
@@ -141,9 +166,12 @@ namespace AnalysisSystemFinal
                     ps.view.m_DescaledMouse.Y -= 250;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     break;
+                case 3:
+                    ps.view.mnuDirectTrack_Click(sender, e);
+                    break;
             }
 
-            PlayerScreenUserInterface.MouseClicked -= PSUI_MouseClicked;
+            PlayerScreenUserInterface.MouseClicked -= PlayerScreenUI_MouseClicked;
             whichTemplate = 0;
         }
 
@@ -177,7 +205,21 @@ namespace AnalysisSystemFinal
                     HideCurrentScreen();
                     FirstSwitchToDashboard();
                     return;
+                case 6:
+                    ShowTrackWindowProperties();
+                    return;
             }
+        }
+
+        private void ShowTrackWindowProperties()
+        {
+            properties = new PropertiesPopUp();
+
+            TrackingDimensionsControl trackingDims = new TrackingDimensionsControl();
+            properties.mainPanel.Controls.Add(trackingDims);
+
+            properties.ShowDialog();
+            properties.Dispose();
         }
 
         private void RecordingControl_ReturnToDash()
@@ -205,27 +247,7 @@ namespace AnalysisSystemFinal
             DoLoadCameraInScreen(e.Source, e.Target);
         }
 
-        //this was for testing
-/*        private void ChooseAScreen_ButtonClicked(object sender, ButtonClickedEventArgs e)
-        {
-            switch (e.buttonNumber)
-            {
-                case 1:
-                    ShowCamChooser();
-                    break;
-                case 2:
-                    Console.WriteLine("Not Implemented");
-                    break;
-                case 3:
-                    Console.WriteLine("Not Implemented");
-                    break;
-                case 4:
-                    ShowSubjectInfoScreen();
-                    break;
-            }
-        }*/
-
-        new private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
+        private void VideoTypeManager_VideoLoadAsked(object sender, VideoLoadAskedEventArgs e)
         {
             /*            mainFrame.Controls.Clear();
                         mainFrame.Controls.Add(recordingControl);*/
@@ -245,7 +267,7 @@ namespace AnalysisSystemFinal
 
         public static async Task DelaySplashScreen()
         {
-            await Task.Delay(2000);
+            await Task.Delay(500);
         }
 
         public void CreateCaptureScreen()
@@ -272,13 +294,6 @@ namespace AnalysisSystemFinal
             base.DoLoadCameraInScreen(summary, targetScreen);
             CreateCaptureScreen();
         }
-
-/*        public void ShowSubjectInfoScreen()
-        {
-            SubjectInformationScreen subInfoScr = new SubjectInformationScreen();
-            mainFrame.Controls.Remove(chooseScreen);
-            mainFrame.Controls.Add(subInfoScr);
-        }*/
 
         public void HideCurrentScreen()
         {
@@ -333,10 +348,6 @@ namespace AnalysisSystemFinal
 
             properties.ShowDialog();
             properties.Dispose();
-
-/*            dashboardScr.panel1.Controls.Clear();
-            dashboardScr.PageTitle.Text = "Information Collection Phase";
-            dashboardScr.panel1.Controls.Add(subjInfoScr);*/
         }
 
         private void ShowCalibrationObjForm()
@@ -348,39 +359,8 @@ namespace AnalysisSystemFinal
 
             properties.ShowDialog();
             properties.Dispose();
-
-/*            dashboardScr.panel1.Controls.Clear();
-            dashboardScr.PageTitle.Text = "Calibration Object Phase";
-            dashboardScr.panel1.Controls.Add(calibObjControl);*/
         }
 
-        #endregion
-
-        #region Not Permanent/Not In Use
-        public void ShowCaptureScreen()
-        {
-
-        }
-
-        public void ShowPlaybackScreen()
-        {
-
-        }
-
-        public void ShowCamChooser()
-        {
-            mainFrame.Controls.Remove(chooseScreen);
-            availableCamerasScreen = new CameraSourceViewer();
-            mainFrame.Controls.Add(availableCamerasScreen);
-        }
-
-        public void ShowInitialScreen()
-        {
-            mainFrame.Controls.Remove(customSplash);
-            mainFrame.Controls.Add(chooseScreen);
-
-            mainFrame.Show();
-        }
         #endregion
     }
 }

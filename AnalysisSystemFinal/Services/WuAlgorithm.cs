@@ -68,6 +68,43 @@ namespace AnalysisSystemFinal
             }
         }
 
+        public void CaclulateFromImportedCSV(string horiz, string vert, string force)
+        {
+            CsvFile csvHoriz = new CsvFile(horiz);
+            CsvFile csvVert = new CsvFile(vert);
+            CsvFile csvForce = new CsvFile(force);
+
+            double[][] horizCSV = new double[csvHoriz.columns.Count][];
+            horizCSV = StringToDouble(csvHoriz.columns);
+
+            double[][] vertCSV = new double[csvVert.columns.Count][];
+            vertCSV = StringToDouble(csvVert.columns);
+
+            List<double> horizCal = new List<double> { 329.49, 184.5, 472, 325.89, -381.09, -470.64, -244.4, -374.02 };
+            List<double> vertCal = new List<double> { -160.48, -557.33, -510.2, -269.83, -147.29, -488.99, -557.33, -246.26 };
+
+            List<double> horizList = new List<double> { horizCSV[1][0], horizCSV[2][0], horizCSV[3][0],
+                    horizCSV[4][0], horizCSV[5][0], horizCSV[6][0], horizCSV[7][0], horizCSV[8][0], horizCSV[9][0],
+                    horizCSV[10][0], horizCSV[11][0], horizCSV[12][0]};
+            List<double> vertList = new List<double> { vertCSV[1][0], vertCSV[2][0], vertCSV[3][0],
+                    vertCSV[4][0], vertCSV[5][0], vertCSV[6][0], vertCSV[7][0], vertCSV[8][0], vertCSV[9][0],
+                    vertCSV[10][0], vertCSV[11][0], vertCSV[12][0]};
+
+            double[][] matrixH = CalibrateObject(horizCal, vertCal);
+            calibrationComplete = true;
+
+            double[][][] calibratedTibFemG = CalibrateLegPts(horizList, vertList, matrixH);
+            double[][][] omegaDotsTibFem = IterateThroughFrames(csvHoriz.columns, csvVert.columns, calibratedTibFemG);
+
+            double[][] tibaOm = omegaDotsTibFem[0];
+            double[][] femOm = omegaDotsTibFem[1];
+
+            double[][] forceData = new double[csvForce.columns.Count][];
+            forceData = StringToDouble(csvForce.columns);
+            HandleForceData(forceData, tibaOm, femOm);
+            GraphMoment(horizCSV);
+        }
+
         public void TestCSVFiles()
         {
             /*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
@@ -234,7 +271,7 @@ namespace AnalysisSystemFinal
 
         public void GraphMoment(double[][] data)
         {
-            OutputGraph og = new OutputGraph("horizontal position", "moment", 240, mxGlobal, myGlobal, mzGlobal, data);
+            OutputGraph og = new OutputGraph("frame", "moment", 240, mxGlobal, myGlobal, mzGlobal, data);
             og.ShowDialog();
             og.Dispose();
         }

@@ -59,7 +59,7 @@ namespace AnalysisSystemFinal
             PlotModel model = new PlotModel();
             model.PlotType = PlotType.XY;
 
-            model.Title = "Moment vs Horizontal Position";
+            model.Title = "Moment vs Frame";
 
             LinearAxis xAxis = new LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
@@ -82,7 +82,7 @@ namespace AnalysisSystemFinal
 
             plotView.Model = model;
 
-            LineSeries series = new LineSeries();
+/*            LineSeries series = new LineSeries();
             series.Title = "marker 1";
             series.MarkerType = MarkerType.None;
 
@@ -152,11 +152,30 @@ namespace AnalysisSystemFinal
                 series5.Points.Add(new DataPoint(dataHorizontal[6][i], Mx[i]));
             }
 
-            plotView.Model.Series.Add(series5);
+            plotView.Model.Series.Add(series5);*/
 
-            //OxyPlot.
+            LineSeries momentX = new LineSeries();
+            LineSeries momentY = new LineSeries();
+            LineSeries momentZ = new LineSeries();
 
-            //series.Points
+            momentX.Title = "moment in X";
+            momentY.Title = "moment in Y";
+            momentZ.Title = "moment in Z";
+
+            momentX.MarkerType = MarkerType.None;
+            momentY.MarkerType = MarkerType.None;
+            momentZ.MarkerType = MarkerType.None;
+
+            for (int i = 0; i < frames-3; i++)
+            {
+                momentX.Points.Add(new DataPoint(i, Mx[i]));
+                momentY.Points.Add(new DataPoint(i, My[i]));
+                momentZ.Points.Add(new DataPoint(i, Mz[i]));
+            }
+
+            plotView.Model.Series.Add(momentX);
+            plotView.Model.Series.Add(momentY);
+            plotView.Model.Series.Add(momentZ);
         }
     }
 }

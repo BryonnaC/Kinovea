@@ -28,7 +28,7 @@ namespace AnalysisSystemFinal
         }
     }
 
-    class NaviClickEventArgs : EventArgs
+    public class NaviClickEventArgs : EventArgs
     {
         public readonly int navigationChoice;
 
@@ -38,4 +38,25 @@ namespace AnalysisSystemFinal
         }
     }
 
+    public class ForceFileEventArgs : EventArgs
+    {
+        public readonly string filePath;
+
+        public ForceFileEventArgs(string path)
+        {
+            this.filePath = path;
+        }
+    }
+
+    public class PositionFileEventArgs : EventArgs
+    {
+        public readonly string horizPath;
+        public readonly string vertPath;
+
+        public PositionFileEventArgs(string hpath, string vpath)
+        {
+            this.horizPath = hpath;
+            this.vertPath = vpath;
+        }
+    }
 }

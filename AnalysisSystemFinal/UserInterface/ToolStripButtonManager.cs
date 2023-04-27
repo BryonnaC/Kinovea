@@ -11,26 +11,22 @@ namespace AnalysisSystemFinal
 {
     class ToolStripButtonManager
     {
-        private ToolStripMenuItem mnuInfoCollection = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuCalibrationObject = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuRecord = new ToolStripMenuItem();
         private ToolStripMenuItem mnuProperties = new ToolStripMenuItem();
         private ToolStripMenuItem mnuVideo = new ToolStripMenuItem();
-
-        private Button calibrationTemplate = new Button();
-        private Button leg12pointsTemplate = new Button();
-        private Button trackingMarker = new Button();
+        private ToolStripMenuItem mnuCaclulations = new ToolStripMenuItem();
         
-        private ToolStripMenuItem mnucalibrationTemplate = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuleg12pointsTemplate = new ToolStripMenuItem();
-        private ToolStripMenuItem mnutrackingMarker = new ToolStripMenuItem();
-        private ToolStripMenuItem mnuGeneratePositionGraph = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuCalibrationTemplate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnu12PointLegTemplate = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuTrackingMarker = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuGenerateTrackingGraph = new ToolStripMenuItem();
 
         private ToolStripDropDownButton openVid = new ToolStripDropDownButton();
         private ToolStripDropDownButton openCam = new ToolStripDropDownButton();
         private ToolStripDropDownButton subInf = new ToolStripDropDownButton();
         private ToolStripDropDownButton calibrationObj = new ToolStripDropDownButton();
         private ToolStripDropDownButton trackWindow = new ToolStripDropDownButton();
+        private ToolStripDropDownButton importForce = new ToolStripDropDownButton();
+        private ToolStripDropDownButton importMarkerData = new ToolStripDropDownButton();
 
         private ToolStripDropDownButton placeCaliTemp = new ToolStripDropDownButton();
         private ToolStripDropDownButton saveCaliPos = new ToolStripDropDownButton();
@@ -43,6 +39,9 @@ namespace AnalysisSystemFinal
         public static event EventHandler<EventArgs> TrajectoryClick;
         public static event Action CalibrationClick;
         public static event Action LegTemplateClick;
+        public static event Action TrackerClick;
+        public static event Action ImportForceClick;
+        public static event Action ImportPositionClick;
 
         public ToolStripButtonManager()
         {
@@ -53,84 +52,30 @@ namespace AnalysisSystemFinal
         {
             toolStrip.AllowMerge = true;
 
-            mnucalibrationTemplate.Text = "Calibration Object";
+            mnuCalibrationTemplate.Text = "Calibration Object";
             placeCaliTemp.Text = "Track Calibration Object";
             placeCaliTemp.Click += placeCaliTemp_Click;
             saveCaliPos.Text = "Save Object Position";
             saveCaliPos.Click += saveCaliPos_Click;
-            mnucalibrationTemplate.DropDownItems.Add(placeCaliTemp);
-            mnucalibrationTemplate.DropDownItems.Add(saveCaliPos);
+            saveCaliPos.Width = 120;
 
-            //mnucalibrationTemplate.Image = Image.FromFile("C:/Users/Bryonna/Documents/GitHub/Kinovea/AnalysisSystemFinal/Resources/triangle.png");
-            mnuleg12pointsTemplate.Text = "Leg 12 Points";
-            mnutrackingMarker.Text = "Single Marker";
-            mnuGeneratePositionGraph.Text = "Graph Position";
+            mnuCalibrationTemplate.DropDownItems.Add(placeCaliTemp);
+            mnuCalibrationTemplate.DropDownItems.Add(saveCaliPos);
 
-            //mnucalibrationTemplate.Click += mnuCalibrationTemplate_Click;
-            mnuleg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;
-            mnutrackingMarker.Click += mnuTrackingMarker_Click;
-            mnuGeneratePositionGraph.Click += mnuGeneratePositionGraph_Click;
+            mnu12PointLegTemplate.Text = "Leg 12 Points";
+            mnuTrackingMarker.Text = "Single Marker";
+            mnuGenerateTrackingGraph.Text = "Graph Position";
+
+            mnu12PointLegTemplate.Click += mnuLeg12pointsTemplate_Click;
+            mnuTrackingMarker.Click += mnuTrackingMarker_Click;
+            mnuGenerateTrackingGraph.Click += mnuGeneratePositionGraph_Click;
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnucalibrationTemplate, mnuleg12pointsTemplate, mnuGeneratePositionGraph});
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuTrackingMarker, mnuCalibrationTemplate, mnu12PointLegTemplate, mnuGenerateTrackingGraph});
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
         }
-
-        private void mnuGeneratePositionGraph_Click(object sender, EventArgs e)
-        {
-            /*            PlayerScreen ps = new PlayerScreen();
-                        ps.ShowTrajectoryAnalysis();*/
-
-            TrajectoryClick?.Invoke(sender, e);
-        }
-
-        private void saveCaliPos_Click(object sender, EventArgs e)
-        {
-            /*            PlayerScreen ps = new PlayerScreen();
-                        ps.ShowTrajectoryAnalysis();*/
-
-            TrajectoryClick?.Invoke(sender, e);
-        }
-
-        private void InitAnalysisButtons()
-        {
-/*            calibrationTemplate.Text = "Place Triangle Template";
-            calibrationTemplate.Click += mnuCalibrationTemplate_Click;
-
-            leg12pointsTemplate.Text = "Place Leg Tracking Template";
-            leg12pointsTemplate.Click += mnuLeg12pointsTemplate_Click;
-
-            trackingMarker.Text = "Place Individual Tracker";
-            trackingMarker.Click += mnuTrackingMarker_Click;*/
-        }
-
-        private void mnuTrackingMarker_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void mnuLeg12pointsTemplate_Click(object sender, EventArgs e)
-        {
-            LegTemplateClick?.Invoke();
-        }
-
-        private void placeCaliTemp_Click(object sender, EventArgs e)
-        {
-            //maybe make a call to handle it in screenmanager
-            CalibrationClick?.Invoke();
-        }
-
-        public void PlaceButtons(Panel buttonPanel)
-        {
-            InitAnalysisButtons();
-
-            buttonPanel.Controls.Add(leg12pointsTemplate);
-            buttonPanel.Controls.Add(calibrationTemplate);
-            buttonPanel.Controls.Add(trackingMarker);
-        }
-
         public void PopulateStaticToolBar(ToolStrip toolStrip)
         {
             toolStrip.AllowMerge = true;
@@ -143,7 +88,13 @@ namespace AnalysisSystemFinal
             calibrationObj.Text = "Calibration Obj";
             calibrationObj.Click += DropDownCali_Click;
             trackWindow.Text = "Marker Properties";
-
+            trackWindow.Click += DropDownTrackWindow_Click;
+            importForce.Text = "Import Force Data";
+            importForce.Click += DropDownImpForce_Click;
+            importMarkerData.Text = "Use Existing Position Data";
+            importMarkerData.Click += DropDownImpMarkers_Click;
+            
+            importMarkerData.Width = 130;
             openVid.Width = 80;
             subInf.Width = 90;
 
@@ -159,11 +110,57 @@ namespace AnalysisSystemFinal
 
             mnuVideo.Click += mnuVideo_Click;
 
+            mnuCaclulations.Text = "Calculations";
+            mnuCaclulations.DropDownItems.Add(importForce);
+            mnuCaclulations.DropDownItems.Add(importMarkerData);
+            
+
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuProperties, mnuVideo });
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] {  mnuProperties, mnuVideo, mnuCaclulations });
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+
+        private void DropDownImpMarkers_Click(object sender, EventArgs e)
+        {
+            ImportPositionClick?.Invoke();
+        }
+
+        private void DropDownImpForce_Click(object sender, EventArgs e)
+        {
+            ImportForceClick?.Invoke();
+        }
+
+        private void mnuGeneratePositionGraph_Click(object sender, EventArgs e)
+        {
+            TrajectoryClick?.Invoke(sender, e);
+        }
+
+        private void saveCaliPos_Click(object sender, EventArgs e)
+        {
+            TrajectoryClick?.Invoke(sender, e);
+        }
+
+        private void mnuTrackingMarker_Click(object sender, EventArgs e)
+        {
+            TrackerClick?.Invoke();
+        }
+
+        private void mnuLeg12pointsTemplate_Click(object sender, EventArgs e)
+        {
+            LegTemplateClick?.Invoke();
+        }
+
+        private void placeCaliTemp_Click(object sender, EventArgs e)
+        {
+            CalibrationClick?.Invoke();
+        }
+
+        private void DropDownTrackWindow_Click(object sender, EventArgs e)
+        {
+            number = 6;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
         }
 
         private void DropDownCali_Click(object sender, EventArgs e)
@@ -194,11 +191,6 @@ namespace AnalysisSystemFinal
         private void mnuVideo_Click(object sender, EventArgs e)
         {
             //Just open the drop down
-        }
-
-        public void ChangeHelpfulMessage()
-        {
-            //todo: want messages to guide user through basic use of the system
         }
 
         private void MnuProperties_Click(object sender, EventArgs e)
