@@ -93,13 +93,10 @@ namespace AnalysystemTakeTwo
             return null;
         }
 
-        //REFACTOR THIS TOO already using this twice too
         private void saveInfoToFile()
         {
-            string desiredFileName = @"C:\Users\bryy_\Documents\calibrationInfo.txt";
-
-            File.WriteAllText(desiredFileName, toBeWritten);
-            Console.WriteLine(File.ReadAllText(desiredFileName));
+            saveFileDialog1.ShowDialog();
+            saveFileDialog1.Dispose();
         }
 
         private void lengthCm_CheckedChanged(object sender, EventArgs e)
@@ -112,6 +109,12 @@ namespace AnalysystemTakeTwo
         {
             widthIn.Checked = true;
             heightIn.Checked = true;
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            File.WriteAllText(saveFileDialog1.FileName, toBeWritten);
+            Console.WriteLine(File.ReadAllText(saveFileDialog1.FileName));
         }
     }
 }

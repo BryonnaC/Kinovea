@@ -57,7 +57,6 @@ namespace AnalysystemTakeTwo
             this.radioButton11 = new System.Windows.Forms.RadioButton();
             this.radioButton12 = new System.Windows.Forms.RadioButton();
             this.maskedTextBox5 = new System.Windows.Forms.MaskedTextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.maskedTextBox6 = new System.Windows.Forms.MaskedTextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.femaleRadio = new System.Windows.Forms.RadioButton();
@@ -65,19 +64,21 @@ namespace AnalysystemTakeTwo
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // nextButton
             // 
-            this.nextButton.BackColor = System.Drawing.Color.LimeGreen;
+            this.nextButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(163)))), ((int)(((byte)(158)))));
             this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.nextButton.Location = new System.Drawing.Point(516, 393);
+            this.nextButton.Location = new System.Drawing.Point(491, 329);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(102, 40);
             this.nextButton.TabIndex = 30;
@@ -102,7 +103,7 @@ namespace AnalysystemTakeTwo
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(354, 272);
+            this.label6.Location = new System.Drawing.Point(6, 16);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(94, 29);
             this.label6.TabIndex = 32;
@@ -113,7 +114,7 @@ namespace AnalysystemTakeTwo
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(69, 160);
+            this.label5.Location = new System.Drawing.Point(6, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(60, 29);
             this.label5.TabIndex = 31;
@@ -122,7 +123,7 @@ namespace AnalysystemTakeTwo
             // weightInput
             // 
             this.weightInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.weightInput.Location = new System.Drawing.Point(363, 304);
+            this.weightInput.Location = new System.Drawing.Point(338, 240);
             this.weightInput.Name = "weightInput";
             this.weightInput.Size = new System.Drawing.Size(58, 20);
             this.weightInput.TabIndex = 29;
@@ -145,7 +146,7 @@ namespace AnalysystemTakeTwo
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(69, 272);
+            this.label7.Location = new System.Drawing.Point(33, 205);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(62, 29);
             this.label7.TabIndex = 33;
@@ -167,7 +168,7 @@ namespace AnalysystemTakeTwo
             // inchInput
             // 
             this.inchInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.inchInput.Location = new System.Drawing.Point(359, 217);
+            this.inchInput.Location = new System.Drawing.Point(334, 153);
             this.inchInput.Name = "inchInput";
             this.inchInput.Size = new System.Drawing.Size(58, 20);
             this.inchInput.TabIndex = 35;
@@ -180,7 +181,7 @@ namespace AnalysystemTakeTwo
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(354, 160);
+            this.label8.Location = new System.Drawing.Point(6, 16);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(89, 29);
             this.label8.TabIndex = 34;
@@ -189,7 +190,7 @@ namespace AnalysystemTakeTwo
             // feetInput
             // 
             this.feetInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.feetInput.Location = new System.Drawing.Point(359, 191);
+            this.feetInput.Location = new System.Drawing.Point(334, 127);
             this.feetInput.Name = "feetInput";
             this.feetInput.Size = new System.Drawing.Size(58, 20);
             this.feetInput.TabIndex = 28;
@@ -199,7 +200,7 @@ namespace AnalysystemTakeTwo
             // ageInput
             // 
             this.ageInput.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.ageInput.Location = new System.Drawing.Point(70, 304);
+            this.ageInput.Location = new System.Drawing.Point(45, 240);
             this.ageInput.Name = "ageInput";
             this.ageInput.Size = new System.Drawing.Size(100, 20);
             this.ageInput.TabIndex = 27;
@@ -211,7 +212,8 @@ namespace AnalysystemTakeTwo
             this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.groupBox4.Controls.Add(this.imperialHeight);
             this.groupBox4.Controls.Add(this.metricHeight);
-            this.groupBox4.Location = new System.Drawing.Point(359, 140);
+            this.groupBox4.Controls.Add(this.label8);
+            this.groupBox4.Location = new System.Drawing.Point(334, 76);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(200, 100);
             this.groupBox4.TabIndex = 36;
@@ -231,6 +233,7 @@ namespace AnalysystemTakeTwo
             // 
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.groupBox5.Controls.Add(this.maskedTextBox7);
+            this.groupBox5.Controls.Add(this.label6);
             this.groupBox5.Controls.Add(this.imperialWeight);
             this.groupBox5.Controls.Add(this.metricWeight);
             this.groupBox5.Controls.Add(this.label12);
@@ -239,10 +242,9 @@ namespace AnalysystemTakeTwo
             this.groupBox5.Controls.Add(this.label11);
             this.groupBox5.Controls.Add(this.groupBox8);
             this.groupBox5.Controls.Add(this.maskedTextBox5);
-            this.groupBox5.Controls.Add(this.label10);
             this.groupBox5.Controls.Add(this.maskedTextBox6);
             this.groupBox5.Controls.Add(this.label9);
-            this.groupBox5.Location = new System.Drawing.Point(359, 256);
+            this.groupBox5.Location = new System.Drawing.Point(334, 192);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(200, 100);
             this.groupBox5.TabIndex = 37;
@@ -382,17 +384,6 @@ namespace AnalysystemTakeTwo
             this.maskedTextBox5.TabIndex = 6;
             this.maskedTextBox5.Text = "age";
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(-5, 16);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(94, 29);
-            this.label10.TabIndex = 16;
-            this.label10.Text = "Weight:";
-            // 
             // maskedTextBox6
             // 
             this.maskedTextBox6.ForeColor = System.Drawing.SystemColors.WindowFrame;
@@ -438,8 +429,9 @@ namespace AnalysystemTakeTwo
             this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.groupBox6.Controls.Add(this.femaleRadio);
             this.groupBox6.Controls.Add(this.maleRadio);
+            this.groupBox6.Controls.Add(this.label5);
             this.groupBox6.Controls.Add(this.declineRadio);
-            this.groupBox6.Location = new System.Drawing.Point(55, 140);
+            this.groupBox6.Location = new System.Drawing.Point(30, 76);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(200, 129);
             this.groupBox6.TabIndex = 38;
@@ -448,7 +440,7 @@ namespace AnalysystemTakeTwo
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(181, 103);
+            this.textBox1.Location = new System.Drawing.Point(156, 39);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(236, 31);
@@ -459,22 +451,24 @@ namespace AnalysystemTakeTwo
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
-            this.panel1.Location = new System.Drawing.Point(28, 67);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(561, 320);
             this.panel1.TabIndex = 39;
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // SubjectInformationScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.Controls.Add(this.nextButton);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.weightInput);
-            this.Controls.Add(this.label7);
             this.Controls.Add(this.inchInput);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.feetInput);
             this.Controls.Add(this.ageInput);
             this.Controls.Add(this.groupBox4);
@@ -483,7 +477,7 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.panel1);
             this.Name = "SubjectInformationScreen";
-            this.Size = new System.Drawing.Size(672, 536);
+            this.Size = new System.Drawing.Size(597, 372);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -494,6 +488,8 @@ namespace AnalysystemTakeTwo
             this.groupBox8.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -529,7 +525,6 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.RadioButton radioButton11;
         private System.Windows.Forms.RadioButton radioButton12;
         private System.Windows.Forms.MaskedTextBox maskedTextBox5;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.MaskedTextBox maskedTextBox6;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.RadioButton femaleRadio;
@@ -537,5 +532,6 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }

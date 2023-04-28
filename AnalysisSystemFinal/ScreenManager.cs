@@ -61,9 +61,6 @@ namespace AnalysisSystemFinal
 
         private void ToolStrip_ImportForceClick()
         {
-            /*            OpenFileDialog ofd = new OpenFileDialog();
-                        ofd.ShowDialog();
-                        ofd.Dispose();*/
             ForceSelector fs = new ForceSelector();
             fs.ShowDialog();
             fs.Dispose();
@@ -109,13 +106,36 @@ namespace AnalysisSystemFinal
                 case 0:
                     return;
                 case 1:
+                    //front plane calibration triangle
                     ps.view.mnuDirectTrack_Click(sender, e);
 
-                    ps.view.m_DescaledMouse.X -= 60;
+                    ps.view.m_DescaledMouse.X -= 150;
                     ps.view.m_DescaledMouse.Y += 395;
                     ps.view.mnuDirectTrack_Click(sender, e);
 
-                    ps.view.m_DescaledMouse.X += 200;
+                    ps.view.m_DescaledMouse.X += 300;
+                    ps.view.m_DescaledMouse.Y += 40;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+
+                    ps.view.m_DescaledMouse.X -= 150;
+                    ps.view.m_DescaledMouse.Y -= 295;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+
+                    //side plane calibration triangle
+                    ps.view.m_DescaledMouse.X -= 800;
+                    ps.view.m_DescaledMouse.Y -= 150;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+
+                    ps.view.m_DescaledMouse.X -= 150;
+                    ps.view.m_DescaledMouse.Y += 395;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+
+                    ps.view.m_DescaledMouse.X += 300;
+                    ps.view.m_DescaledMouse.Y += 40;
+                    ps.view.mnuDirectTrack_Click(sender, e);
+
+                    ps.view.m_DescaledMouse.X -= 150;
+                    ps.view.m_DescaledMouse.Y -= 295;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     break;
                 case 2:

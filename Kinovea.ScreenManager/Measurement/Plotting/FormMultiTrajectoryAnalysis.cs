@@ -28,7 +28,7 @@ namespace Kinovea.ScreenManager
         private PlotHelper plotHelper;
         private bool manualUpdate;
 
-        public static event EventHandler<GraphToCsvToMathEventArgs> DoCustomMath;
+        public static event EventHandler<GraphToCsvToMathEventArgs> UseLivePosition;
 
         public FormMultiTrajectoryAnalysis(Metadata metadata)
         {
@@ -648,8 +648,9 @@ namespace Kinovea.ScreenManager
             btnExportData_Click(sender, e);
             List<string> vertEventCSV = GetCSV();
 
+            UseLivePosition?.Invoke(sender, new GraphToCsvToMathEventArgs(horizEventCSV, vertEventCSV));
             //this event handler is being listened to in ServiceManager.cs
-            DoCustomMath?.Invoke(this, new GraphToCsvToMathEventArgs(horizEventCSV, vertEventCSV));
+            //DoCustomMath?.Invoke(this, new GraphToCsvToMathEventArgs(horizEventCSV, vertEventCSV));
         }
 
         public void SetUpHorizGraph()

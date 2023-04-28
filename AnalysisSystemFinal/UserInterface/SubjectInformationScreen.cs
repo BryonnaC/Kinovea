@@ -57,10 +57,8 @@ namespace AnalysystemTakeTwo
 
         private void saveInfoToFile()
         {
-            string desiredFileName = @"C:\Users\bryy_\Documents\informationCollection.txt";
-
-            File.WriteAllText(desiredFileName, toBeWritten);
-            Console.WriteLine(File.ReadAllText(desiredFileName));
+            saveFileDialog1.ShowDialog();
+            saveFileDialog1.Dispose();
         }
 
         private string getHeight()
@@ -202,6 +200,12 @@ namespace AnalysystemTakeTwo
         private void inchInput_TabIndexChanged_1(object sender, EventArgs e)
         {
             inchInput.Text = "";
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            File.WriteAllText(saveFileDialog1.FileName, toBeWritten);
+            Console.WriteLine(File.ReadAllText(saveFileDialog1.FileName));
         }
     }
 }

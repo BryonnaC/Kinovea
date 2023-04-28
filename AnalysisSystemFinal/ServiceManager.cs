@@ -17,6 +17,9 @@ namespace AnalysisSystemFinal
         private string horizPath;
         private string vertPath;
         private string forcePath;
+        private List<string> csv_Horiz;
+        private List<string> csv_Vert;
+
 
         public ServiceManager()
         {
@@ -24,13 +27,36 @@ namespace AnalysisSystemFinal
             oldmath = new DeprecatedAlgorithm();
             hasForceData = false;
             hasPositionData = false;
+            csv_Horiz = new List<string>();
+            csv_Vert = new List<string>();
+
             //oldmath.ImitateMATLAB();
             //math.TestCSVFiles();
             //math.GraphAdjusted();
+
             CaptureScreenView.RecordingStarted += CaptureScrView_RecordingStarted;
             ForceSelector.ImportForce += FileSelect_ImportForce;
             PositionDataSelection.ImportPositionData += FileSelect_ImportPosition;
-            //FormMultiTrajectoryAnalysis.DoCustomMath += Kinematics_DoCustomMath;
+            FormMultiTrajectoryAnalysis.UseLivePosition += Kinematics_UseLivePosition;
+        }
+
+        private void Kinematics_UseLivePosition(object sender, GraphToCsvToMathEventArgs e)
+        {
+            csv_Horiz = e.csv_StringHoriz;
+            csv_Vert = e.csv_StringVert;
+
+            if(csv_Horiz.Count > 9)
+            {
+                hasPositionData = true;
+            }
+            else
+            {
+                math.CalibratePlane(csv_Horiz, csv_Vert);
+            }
+
+            horizPath = null;
+            vertPath = null;
+            CheckToCalculate();
         }
 
         private void FileSelect_ImportPosition(object sender, PositionFileEventArgs e)
@@ -53,17 +79,18 @@ namespace AnalysisSystemFinal
         {
             if(hasPositionData && hasForceData)
             {
-                math.CaclulateFromImportedCSV(horizPath, vertPath, forcePath);
+                if(horizPath == null)
+                {
+                    math.TakeInPositionValues(csv_Horiz, csv_Vert, forcePath);
+                }
+                else
+                {
+                    math.CaclulateFromImportedCSV(horizPath, vertPath, forcePath);
+                }
+
                 hasPositionData = false;
                 hasForceData = false;
             }
-        }
-
-        private void Kinematics_DoCustomMath(object sender, GraphToCsvToMathEventArgs e)
-        {
-            //DoMath();   //this is placeholder, we're gonna need the *numbers* bby
-
-            math.TakeInPositionValues(e.csv_StringHoriz, e.csv_StringVert);
         }
 
         private void CaptureScrView_RecordingStarted()
@@ -71,11 +98,5 @@ namespace AnalysisSystemFinal
             Synchronizer.Record(true);
         }
 
-        public static void DoMath()
-        {
-            //MatrixMath math = new MatrixMath();
-
-            //math.ImitateMATLAB();
-        }
     }
 }

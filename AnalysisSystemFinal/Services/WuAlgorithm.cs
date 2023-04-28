@@ -42,25 +42,22 @@ namespace AnalysisSystemFinal
         double[] myGlobal = new double[234];
         double[] mzGlobal = new double[234];
 
-        public void TakeInPositionValues(List<string> horizVals, List<string> vertVals)
+        double[][] matrixH = new double[3][];
+
+        public void TakeInPositionValues(List<string> horizVals, List<string> vertVals, string forcePath)
         {
-            List<double> horizData = GetFirstFrameVals(horizVals);
-            List<double> vertData = GetFirstFrameVals(vertVals);
-
-            TestCSVFiles();
-
-            return;
-            //now we need to decide whether we are calibrating or calculating
-            if (horizData.Count == 8)
+            List<double> horizData = GetFirstFrameValsIMPORT(horizVals);
+            List<double> vertData = GetFirstFrameValsIMPORT(vertVals);
+            
+            if(horizData.Count == 12 && calibrationComplete)
             {
-                //InitGoProInMat();
-                CalibrateObject(horizData, vertData);
-                calibrationComplete = true;
-            }
-            else if(horizData.Count == 12 && calibrationComplete)
-            {
-                //CalibrateLegPts(horizData, vertData);
-                //IterateThroughFrames(horizVals, vertVals);
+                double[][][] calibratedLegPts = CalibrateLegPts(horizData, vertData, matrixH);
+                double[][][] omegaValues = IterateThroughFrames(horizVals, vertVals, calibratedLegPts);
+                double[][] tibaOm = omegaValues[0];
+                double[][] femOm = omegaValues[1];
+
+                HandleForceCalculations(forcePath, tibaOm, femOm);
+                GraphMoment(tibaOm);
             }
             else
             {
@@ -68,11 +65,23 @@ namespace AnalysisSystemFinal
             }
         }
 
+        public void CalibratePlane(List<string> horizVals, List<string> vertVals)
+        {
+            List<double> horizData = GetFirstFrameValsIMPORT(horizVals);
+            List<double> vertData = GetFirstFrameValsIMPORT(vertVals);
+
+            if (horizData.Count == 8)
+            {
+                //InitGoProInMat();
+                matrixH = CalibrateObject(horizData, vertData);
+                calibrationComplete = true;
+            }
+        }
+
         public void CaclulateFromImportedCSV(string horiz, string vert, string force)
         {
             CsvFile csvHoriz = new CsvFile(horiz);
             CsvFile csvVert = new CsvFile(vert);
-            CsvFile csvForce = new CsvFile(force);
 
             double[][] horizCSV = new double[csvHoriz.columns.Count][];
             horizCSV = StringToDouble(csvHoriz.columns);
@@ -94,24 +103,32 @@ namespace AnalysisSystemFinal
             calibrationComplete = true;
 
             double[][][] calibratedTibFemG = CalibrateLegPts(horizList, vertList, matrixH);
-            double[][][] omegaDotsTibFem = IterateThroughFrames(csvHoriz.columns, csvVert.columns, calibratedTibFemG);
+
+            double[][] horizPos = StringToDouble(csvHoriz.columns);
+            double[][] vertPos = StringToDouble(csvVert.columns);
+
+            double[][][] omegaDotsTibFem = IterateThroughFrames(horizPos, vertPos, calibratedTibFemG);
 
             double[][] tibaOm = omegaDotsTibFem[0];
             double[][] femOm = omegaDotsTibFem[1];
 
+            HandleForceCalculations(force, tibaOm, femOm);
+            GraphMoment(horizCSV);
+        }
+
+        private void HandleForceCalculations(string force, double[][] tibaOm, double[][] femOm)
+        {
+            CsvFile csvForce = new CsvFile(force);
+
             double[][] forceData = new double[csvForce.columns.Count][];
             forceData = StringToDouble(csvForce.columns);
             HandleForceData(forceData, tibaOm, femOm);
-            GraphMoment(horizCSV);
         }
 
         public void TestCSVFiles()
         {
-            /*            string caliPath = "C:\\Users\\Bryonna\\Documents\\calibrationTestData021023 - Sheet1";*/
             string path1 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_horz_pos.csv";
             string path2 = "C:\\Users\\Bryonna\\Documents\\Gopro_trial3_021023_vert_pos.csv";
-/*            string path1 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Horiz.csv";
-            string path2 = "C:\\Users\\Bryonna\\Documents\\GoPro_Dummy_Vert.csv";*/
 
             CsvFile csvFile1 = new CsvFile(path1);
             CsvFile csvFile2 = new CsvFile(path2);
@@ -136,7 +153,10 @@ namespace AnalysisSystemFinal
             calibrationComplete = true;
 
             double[][][] calibratedTibFemG = CalibrateLegPts(horizList, vertList, matrixH);
-            double[][][] omegaDotsTibFem = IterateThroughFrames(csvFile1.columns, csvFile2.columns, calibratedTibFemG);
+
+            double[][] horizPos = StringToDouble(csvFile1.columns);
+            double[][] vertPos = StringToDouble(csvFile2.columns);
+            double[][][] omegaDotsTibFem = IterateThroughFrames(horizPos, vertPos, calibratedTibFemG);
 
             double[][] tibaOm = omegaDotsTibFem[0];
             double[][] femOm = omegaDotsTibFem[1];
@@ -248,7 +268,7 @@ namespace AnalysisSystemFinal
             return matrixH;
         }
 
-        public void GraphAdjusted(List<string> horizCSV, List<string> vertCSV)
+/*        public void GraphAdjusted(List<string> horizCSV, List<string> vertCSV)
         {
             //format entire data sheet
             List<List<string>> listStringDataH = String1DtoString2D(horizCSV);
@@ -260,7 +280,7 @@ namespace AnalysisSystemFinal
             OxyPlot.PlotModel pm = new PlotModel();
             pm.Title = "testme";
 
-        }
+        }*/
 
         public void GraphAdjusted()
         {
@@ -276,12 +296,8 @@ namespace AnalysisSystemFinal
             og.Dispose();
         }
 
-        private double[][][] IterateThroughFrames(List<List<string>> listStringDataH, List<List<string>> listStringDataV, double[][][] calibratedTibFemGlob)
+        private double[][][] IterateThroughFrames(double[][] horizPos, double[][] vertPos, double[][][] calibratedTibFemGlob)
         {
-            //format again
-            double[][] horizPos = StringToDouble(listStringDataH);
-            double[][] vertPos = StringToDouble(listStringDataV);
-
             double[][] tibiaNC2 = GetMatrixNC(calibratedTibFemGlob[0]);
             double[][] femurNC2 = GetMatrixNC(calibratedTibFemGlob[1]);
 
@@ -443,10 +459,13 @@ namespace AnalysisSystemFinal
         private double[][][] IterateThroughFrames(List<string> horizCSV, List<string> vertCSV, double[][][] calibratedTibFemGlob)
         {
             //format entire data sheet
-            List<List<string>> listStringDataH = String1DtoString2D(horizCSV);
-            List<List<string>> listStringDataV = String1DtoString2D(vertCSV);
+/*            List<List<string>> listStringDataH = String1DtoString2D(horizCSV);
+            List<List<string>> listStringDataV = String1DtoString2D(vertCSV);*/
 
-            return IterateThroughFrames(listStringDataH, listStringDataV, calibratedTibFemGlob);
+            double[][] doubleHoriz = String1DtoString2D(horizCSV);
+            double[][] doubleVert = String1DtoString2D(vertCSV);
+
+            return IterateThroughFrames(doubleHoriz, doubleVert, calibratedTibFemGlob);
         }
 
         private void CalculateAngularVelocity(int frames, double[][][] legThetas)
@@ -1014,21 +1033,19 @@ namespace AnalysisSystemFinal
             return intrinsicMatrixGoPro;
         }
 
-        public List<double> GetFirstFrameVals(List<string> csvString)
+        public List<double> GetFirstFrameValsIMPORT(List<string> csvString)
         {
-            List<List<string>> listStringData = String1DtoString2D(csvString);
 
-            double[][] doubleCSV = new double[listStringData.Count][];
-            doubleCSV = StringToDouble(listStringData);
+            double[][] doubleCSV = String1DtoString2D(csvString);
 
-            if(listStringData.Count == 8)
+            if (doubleCSV.Length == 8)
             {
                 //format of calibration object (two sets of 4)
                 List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
                     doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0]};
                 return listCSVdouble;
             }
-            else if(listStringData.Count == 12)
+            else if(doubleCSV.Length == 12)
             {
                 //format of leg marker set of 12
                 List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
@@ -1043,13 +1060,55 @@ namespace AnalysisSystemFinal
 
         }
 
-        public List<List<string>> String1DtoString2D(List<string> csvString)
+        public List<double> GetFirstFrameValsLIVE(List<string> csvString)
         {
-            List<List<string>> headlessCSV = new List<List<string>>();
-            //might need to check this for zeros in the time dimension oops
-            for(int row = 1; row < csvString.Count; row++)
+
+            double[][] doubleCSV = String1DtoString2D(csvString);
+
+            if (doubleCSV.Length == 8)
             {
-                headlessCSV[row-1].AddRange(csvString[row].Split(','));
+                //format of calibration object (two sets of 4)
+                List<double> listCSVdouble = new List<double> { doubleCSV[0][0], doubleCSV[1][0], doubleCSV[2][0],
+                    doubleCSV[3][0], doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0]};
+                return listCSVdouble;
+            }
+            else if (doubleCSV.Length == 12)
+            {
+                //format of leg marker set of 12
+                List<double> listCSVdouble = new List<double> { doubleCSV[0][0], doubleCSV[1][0], doubleCSV[2][0],
+                    doubleCSV[3][0], doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0],
+                    doubleCSV[9][0], doubleCSV[10][0], doubleCSV[11][0]};
+                return listCSVdouble;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        public double[][] String1DtoString2D(List<string> csvString)
+        {
+            string[][] temp = new string[csvString.Count][];
+
+            for (int row = 0; row < csvString.Count; row++)
+            {
+                temp[row] = csvString[row].Split(',');
+            }
+
+
+            double[][] headlessCSV = new double[temp[0].Length-1][];
+            for(int i=0; i<headlessCSV.Length; i++)
+            {
+                headlessCSV[i] = new double[temp.Length];
+            }
+
+            for(int row=1; row< temp[0].Length - 1; row++)
+            {
+                for (int col = 1; col < temp.Length; col++)
+                {
+                    headlessCSV[row - 1][col-1] = double.Parse(temp[col][row]);
+                }
             }
 
             return headlessCSV;

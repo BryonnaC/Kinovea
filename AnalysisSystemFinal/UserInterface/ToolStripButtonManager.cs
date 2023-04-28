@@ -19,6 +19,7 @@ namespace AnalysisSystemFinal
         private ToolStripMenuItem mnu12PointLegTemplate = new ToolStripMenuItem();
         private ToolStripMenuItem mnuTrackingMarker = new ToolStripMenuItem();
         private ToolStripMenuItem mnuGenerateTrackingGraph = new ToolStripMenuItem();
+        private ToolStripMenuItem mnuImportForce = new ToolStripMenuItem();
 
         private ToolStripDropDownButton openVid = new ToolStripDropDownButton();
         private ToolStripDropDownButton openCam = new ToolStripDropDownButton();
@@ -64,18 +65,21 @@ namespace AnalysisSystemFinal
 
             mnu12PointLegTemplate.Text = "Leg 12 Points";
             mnuTrackingMarker.Text = "Single Marker";
-            mnuGenerateTrackingGraph.Text = "Graph Position";
+            mnuGenerateTrackingGraph.Text = "Plot Position";
+            mnuImportForce.Text = "Add Force Data";
 
             mnu12PointLegTemplate.Click += mnuLeg12pointsTemplate_Click;
             mnuTrackingMarker.Click += mnuTrackingMarker_Click;
             mnuGenerateTrackingGraph.Click += mnuGeneratePositionGraph_Click;
+            mnuImportForce.Click += mnuImportForce_Click;
 
             MenuStrip thisMenuStrip = new MenuStrip();
-            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuTrackingMarker, mnuCalibrationTemplate, mnu12PointLegTemplate, mnuGenerateTrackingGraph});
+            thisMenuStrip.Items.AddRange(new ToolStripItem[] { mnuTrackingMarker, mnuCalibrationTemplate, mnu12PointLegTemplate, mnuGenerateTrackingGraph, mnuImportForce});
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
         }
+
         public void PopulateStaticToolBar(ToolStrip toolStrip)
         {
             toolStrip.AllowMerge = true;
@@ -120,6 +124,10 @@ namespace AnalysisSystemFinal
             thisMenuStrip.AllowMerge = true;
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
+        }
+        private void mnuImportForce_Click(object sender, EventArgs e)
+        {
+            ImportForceClick?.Invoke();
         }
 
         private void DropDownImpMarkers_Click(object sender, EventArgs e)

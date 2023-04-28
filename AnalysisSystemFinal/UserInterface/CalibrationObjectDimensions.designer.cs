@@ -47,9 +47,11 @@ namespace AnalysystemTakeTwo
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // nextButton
@@ -57,7 +59,7 @@ namespace AnalysystemTakeTwo
             this.nextButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(163)))), ((int)(((byte)(158)))));
             this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.nextButton.Location = new System.Drawing.Point(545, 357);
+            this.nextButton.Location = new System.Drawing.Point(470, 286);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(102, 40);
             this.nextButton.TabIndex = 26;
@@ -225,7 +227,7 @@ namespace AnalysystemTakeTwo
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.White;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(227, 38);
+            this.label1.Location = new System.Drawing.Point(133, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(230, 31);
             this.label1.TabIndex = 16;
@@ -234,15 +236,21 @@ namespace AnalysystemTakeTwo
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
-            this.panel1.Location = new System.Drawing.Point(44, 21);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Location = new System.Drawing.Point(12, 21);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(560, 259);
             this.panel1.TabIndex = 27;
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // CalibrationObjectDimensions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
             this.Controls.Add(this.nextButton);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
@@ -253,16 +261,17 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Name = "CalibrationObjectDimensions";
-            this.Size = new System.Drawing.Size(650, 400);
+            this.Size = new System.Drawing.Size(587, 330);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,5 +297,6 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
