@@ -1041,16 +1041,16 @@ namespace AnalysisSystemFinal
             if (doubleCSV.Length == 8)
             {
                 //format of calibration object (two sets of 4)
-                List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
-                    doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0]};
+                List<double> listCSVdouble = new List<double> { doubleCSV[0][0], doubleCSV[1][0], doubleCSV[2][0],
+                    doubleCSV[3][0], doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0]};
                 return listCSVdouble;
             }
-            else if(doubleCSV.Length == 12)
+            else if (doubleCSV.Length == 12)
             {
                 //format of leg marker set of 12
-                List<double> listCSVdouble = new List<double> { doubleCSV[1][0], doubleCSV[2][0], doubleCSV[3][0],
-                    doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0], doubleCSV[9][0],
-                    doubleCSV[10][0], doubleCSV[11][0], doubleCSV[12][0]};
+                List<double> listCSVdouble = new List<double> { doubleCSV[0][0], doubleCSV[1][0], doubleCSV[2][0],
+                    doubleCSV[3][0], doubleCSV[4][0], doubleCSV[5][0], doubleCSV[6][0], doubleCSV[7][0], doubleCSV[8][0],
+                    doubleCSV[9][0], doubleCSV[10][0], doubleCSV[11][0]};
                 return listCSVdouble;
             }
             else
