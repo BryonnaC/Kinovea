@@ -142,48 +142,48 @@ namespace AnalysisSystemFinal
                     //#1 - start with tibia
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#2
-                    ps.view.m_DescaledMouse.X += 40;
-                    //ps.view.m_DescaledMouse.Y -= 10;
+                    //ps.view.m_DescaledMouse.X -= 40;
+                    ps.view.m_DescaledMouse.Y += 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#3
-                    ps.view.m_DescaledMouse.X += 25;
-                    ps.view.m_DescaledMouse.Y -= 400;
+                    ps.view.m_DescaledMouse.X -= 40;
+                    //ps.view.m_DescaledMouse.Y -= 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#4
-                    ps.view.m_DescaledMouse.X -= 85;
-                    ps.view.m_DescaledMouse.Y -= 10;
+                    //ps.view.m_DescaledMouse.X -= 85;
+                    ps.view.m_DescaledMouse.Y -= 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#5 - tibia side
-                    ps.view.m_DescaledMouse.X += 85;
-                    ps.view.m_DescaledMouse.Y += 400;
+                    ps.view.m_DescaledMouse.X -= 60;
+                    //ps.view.m_DescaledMouse.Y += 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#6
                     //ps.view.m_DescaledMouse.X -= 0;
-                    ps.view.m_DescaledMouse.Y -= 400;
+                    ps.view.m_DescaledMouse.Y += 400;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#7 - start femur
-                    ps.view.m_DescaledMouse.X -= 75;
-                    ps.view.m_DescaledMouse.Y -= 200;
+                    ps.view.m_DescaledMouse.X += 160;
+                    ps.view.m_DescaledMouse.Y -= 900;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#8
-                    ps.view.m_DescaledMouse.X += 30;
-                    //ps.view.m_DescaledMouse.Y += 0;
+                    //ps.view.m_DescaledMouse.X -= 30;
+                    ps.view.m_DescaledMouse.Y += 250;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#9
-                    ps.view.m_DescaledMouse.X -= 30;
-                    ps.view.m_DescaledMouse.Y -= 250;
+                    ps.view.m_DescaledMouse.X -= 50;
+                    //ps.view.m_DescaledMouse.Y -= 250;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#10
-                    ps.view.m_DescaledMouse.X += 30;
-                    //ps.view.m_DescaledMouse.Y += 0;
+                    //ps.view.m_DescaledMouse.X += 30;
+                    ps.view.m_DescaledMouse.Y -= 250;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#11 - femur side
-                    ps.view.m_DescaledMouse.X += 60;
-                    ps.view.m_DescaledMouse.Y += 250;
+                    ps.view.m_DescaledMouse.X -= 60;
+                    //ps.view.m_DescaledMouse.Y += 250;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     //#12
                     //ps.view.m_DescaledMouse.X -= 0;
-                    ps.view.m_DescaledMouse.Y -= 250;
+                    ps.view.m_DescaledMouse.Y += 250;
                     ps.view.mnuDirectTrack_Click(sender, e);
                     break;
                 case 3:

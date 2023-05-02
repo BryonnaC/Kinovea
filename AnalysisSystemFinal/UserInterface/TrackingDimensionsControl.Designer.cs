@@ -40,6 +40,7 @@ namespace AnalysisSystemFinal.UserInterface
             this.tbBlockHeight = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.tbBlockWidth = new System.Windows.Forms.TextBox();
+            this.save = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblDescription
@@ -76,6 +77,7 @@ namespace AnalysisSystemFinal.UserInterface
             this.cmbSearchWindowUnit.Name = "cmbSearchWindowUnit";
             this.cmbSearchWindowUnit.Size = new System.Drawing.Size(116, 21);
             this.cmbSearchWindowUnit.TabIndex = 78;
+            this.cmbSearchWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbSearchWindowUnit_SelectedIndexChanged);
             // 
             // cmbBlockWindowUnit
             // 
@@ -84,6 +86,7 @@ namespace AnalysisSystemFinal.UserInterface
             this.cmbBlockWindowUnit.Name = "cmbBlockWindowUnit";
             this.cmbBlockWindowUnit.Size = new System.Drawing.Size(116, 21);
             this.cmbBlockWindowUnit.TabIndex = 77;
+            this.cmbBlockWindowUnit.SelectedIndexChanged += new System.EventHandler(this.cmbBlockWindowUnit_SelectedIndexChanged);
             // 
             // tbSearchHeight
             // 
@@ -91,6 +94,7 @@ namespace AnalysisSystemFinal.UserInterface
             this.tbSearchHeight.Name = "tbSearchHeight";
             this.tbSearchHeight.Size = new System.Drawing.Size(30, 20);
             this.tbSearchHeight.TabIndex = 76;
+            this.tbSearchHeight.TextChanged += new System.EventHandler(this.tbSearchHeight_TextChanged);
             // 
             // label5
             // 
@@ -107,6 +111,7 @@ namespace AnalysisSystemFinal.UserInterface
             this.tbSearchWidth.Name = "tbSearchWidth";
             this.tbSearchWidth.Size = new System.Drawing.Size(30, 20);
             this.tbSearchWidth.TabIndex = 74;
+            this.tbSearchWidth.TextChanged += new System.EventHandler(this.tbSearchWidth_TextChanged);
             // 
             // tbBlockHeight
             // 
@@ -114,6 +119,7 @@ namespace AnalysisSystemFinal.UserInterface
             this.tbBlockHeight.Name = "tbBlockHeight";
             this.tbBlockHeight.Size = new System.Drawing.Size(30, 20);
             this.tbBlockHeight.TabIndex = 73;
+            this.tbBlockHeight.TextChanged += new System.EventHandler(this.tbBlockHeight_TextChanged);
             // 
             // label4
             // 
@@ -130,11 +136,23 @@ namespace AnalysisSystemFinal.UserInterface
             this.tbBlockWidth.Name = "tbBlockWidth";
             this.tbBlockWidth.Size = new System.Drawing.Size(30, 20);
             this.tbBlockWidth.TabIndex = 71;
+            this.tbBlockWidth.TextChanged += new System.EventHandler(this.tbBlockWidth_TextChanged);
+            // 
+            // save
+            // 
+            this.save.Location = new System.Drawing.Point(344, 152);
+            this.save.Name = "save";
+            this.save.Size = new System.Drawing.Size(75, 23);
+            this.save.TabIndex = 79;
+            this.save.Text = "Save";
+            this.save.UseVisualStyleBackColor = true;
+            this.save.Click += new System.EventHandler(this.save_Click);
             // 
             // TrackingDimensionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.save);
             this.Controls.Add(this.cmbSearchWindowUnit);
             this.Controls.Add(this.cmbBlockWindowUnit);
             this.Controls.Add(this.tbSearchHeight);
@@ -166,5 +184,6 @@ namespace AnalysisSystemFinal.UserInterface
         private System.Windows.Forms.TextBox tbBlockHeight;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tbBlockWidth;
+        private System.Windows.Forms.Button save;
     }
 }
