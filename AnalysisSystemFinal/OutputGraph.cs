@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -15,6 +11,8 @@ namespace AnalysisSystemFinal
 {
     public partial class OutputGraph : Form
     {
+        private string savableCSV;
+
         public OutputGraph()
         {
             InitializeComponent();
@@ -176,6 +174,35 @@ namespace AnalysisSystemFinal
             plotView.Model.Series.Add(momentX);
             plotView.Model.Series.Add(momentY);
             plotView.Model.Series.Add(momentZ);
+        }
+
+        public void SaveDataToFile(double[] Mx, double[] My, double[] Mz)
+        {
+            List<string> csvToSave = new List<string>();
+
+            csvToSave.Add("Frame,X,Y,Z");
+
+            for(int i = 1; i < Mx.Length; i++)
+            {
+                csvToSave.Add(i + "," + Mx[i] + "," + My[i] + "," + Mz[i]);
+            }
+
+            StringBuilder b = new StringBuilder();
+
+            foreach (string line in csvToSave)
+            {
+                b.AppendLine(line);
+            }
+
+            savableCSV = b.ToString();
+
+            saveFileDialog1.ShowDialog();
+            saveFileDialog1.Dispose();
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            File.WriteAllText(saveFileDialog1.FileName, savableCSV);
         }
     }
 }

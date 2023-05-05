@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MatrixInverse;
 using Accord.Math;
 using NWaves;
@@ -38,9 +36,9 @@ namespace AnalysisSystemFinal
         double[] GfemurTheta2 = new double[240];
         double[] GfemurTheta3 = new double[240];
 
-        double[] mxGlobal = new double[234];
-        double[] myGlobal = new double[234];
-        double[] mzGlobal = new double[234];
+        public double[] mxGlobal = new double[234];
+        public double[] myGlobal = new double[234];
+        public double[] mzGlobal = new double[234];
 
         double[][] matrixH = new double[3][];
 
@@ -51,6 +49,8 @@ namespace AnalysisSystemFinal
 
         public static double subj_weight = 0;
         public static double subj_height = 0;
+
+        OutputGraph output = new OutputGraph();
 
         public void TakeInPositionValues(List<string> horizVals, List<string> vertVals, string forcePath)
         {
@@ -66,6 +66,7 @@ namespace AnalysisSystemFinal
 
                 HandleForceCalculations(forcePath, tibaOm, femOm);
                 GraphMoment(tibaOm);
+                output.SaveDataToFile(mxGlobal, myGlobal, mzGlobal);
             }
             else
             {
@@ -122,6 +123,7 @@ namespace AnalysisSystemFinal
 
             HandleForceCalculations(force, tibaOm, femOm);
             GraphMoment(horizCSV);
+            output.SaveDataToFile(mxGlobal, myGlobal, mzGlobal);
         }
 
         private void HandleForceCalculations(string force, double[][] tibaOm, double[][] femOm)

@@ -30,6 +30,7 @@ namespace AnalysisSystemFinal
         private void InitializeComponent()
         {
             this.plotView = new OxyPlot.WindowsForms.PlotView();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // plotView
@@ -43,6 +44,10 @@ namespace AnalysisSystemFinal
             this.plotView.ZoomHorizontalCursor = System.Windows.Forms.Cursors.SizeWE;
             this.plotView.ZoomRectangleCursor = System.Windows.Forms.Cursors.SizeNWSE;
             this.plotView.ZoomVerticalCursor = System.Windows.Forms.Cursors.SizeNS;
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // OutputGraph
             // 
@@ -59,5 +64,6 @@ namespace AnalysisSystemFinal
         #endregion
 
         private OxyPlot.WindowsForms.PlotView plotView;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
