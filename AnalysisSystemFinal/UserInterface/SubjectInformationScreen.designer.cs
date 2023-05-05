@@ -137,9 +137,9 @@ namespace AnalysystemTakeTwo
             this.metricHeight.AutoSize = true;
             this.metricHeight.Location = new System.Drawing.Point(115, 51);
             this.metricHeight.Name = "metricHeight";
-            this.metricHeight.Size = new System.Drawing.Size(39, 17);
+            this.metricHeight.Size = new System.Drawing.Size(33, 17);
             this.metricHeight.TabIndex = 19;
-            this.metricHeight.Text = "cm";
+            this.metricHeight.Text = "m";
             this.metricHeight.UseVisualStyleBackColor = true;
             this.metricHeight.CheckedChanged += new System.EventHandler(this.metricHeight_CheckedChanged_1);
             // 

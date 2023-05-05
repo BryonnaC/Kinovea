@@ -47,9 +47,9 @@ namespace AnalysystemTakeTwo
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -246,10 +246,6 @@ namespace AnalysystemTakeTwo
             this.panel1.Size = new System.Drawing.Size(560, 291);
             this.panel1.TabIndex = 27;
             // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -269,6 +265,10 @@ namespace AnalysystemTakeTwo
             this.label6.Size = new System.Drawing.Size(297, 20);
             this.label6.TabIndex = 36;
             this.label6.Text = "If dimensions are not entered and saved,";
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // CalibrationObjectDimensions
             // 
