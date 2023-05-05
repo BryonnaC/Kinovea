@@ -48,6 +48,8 @@ namespace AnalysystemTakeTwo
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -59,7 +61,7 @@ namespace AnalysystemTakeTwo
             this.nextButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(163)))), ((int)(((byte)(158)))));
             this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.nextButton.Location = new System.Drawing.Point(470, 286);
+            this.nextButton.Location = new System.Drawing.Point(482, 318);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(102, 40);
             this.nextButton.TabIndex = 26;
@@ -236,15 +238,37 @@ namespace AnalysystemTakeTwo
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Location = new System.Drawing.Point(12, 21);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(560, 259);
+            this.panel1.Size = new System.Drawing.Size(560, 291);
             this.panel1.TabIndex = 27;
             // 
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(3, 263);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(279, 20);
+            this.label5.TabIndex = 37;
+            this.label5.Text = "a default calibration object will be used";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(3, 243);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(297, 20);
+            this.label6.TabIndex = 36;
+            this.label6.Text = "If dimensions are not entered and saved,";
             // 
             // CalibrationObjectDimensions
             // 
@@ -263,7 +287,7 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panel1);
             this.Name = "CalibrationObjectDimensions";
-            this.Size = new System.Drawing.Size(587, 330);
+            this.Size = new System.Drawing.Size(587, 361);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -298,5 +322,7 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

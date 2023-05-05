@@ -683,11 +683,19 @@ namespace Kinovea.ScreenManager
     {
         public readonly List<string> csv_StringHoriz;
         public readonly List<string> csv_StringVert;
+        public readonly bool isPositionData;
 
         public GraphToCsvToMathEventArgs(List<string> csvX, List<string> csvY)
         {
             this.csv_StringHoriz = csvX;
             this.csv_StringVert = csvY;
+        }
+
+        public GraphToCsvToMathEventArgs(List<string> csvX, List<string> csvY, bool isPosition)
+        {
+            this.csv_StringHoriz = csvX;
+            this.csv_StringVert = csvY;
+            this.isPositionData = isPosition;
         }
     }
 }

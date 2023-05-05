@@ -64,6 +64,8 @@ namespace AnalysystemTakeTwo
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -78,11 +80,11 @@ namespace AnalysystemTakeTwo
             this.nextButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(62)))), ((int)(((byte)(163)))), ((int)(((byte)(158)))));
             this.nextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.nextButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.nextButton.Location = new System.Drawing.Point(491, 329);
+            this.nextButton.Location = new System.Drawing.Point(492, 348);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(102, 40);
             this.nextButton.TabIndex = 30;
-            this.nextButton.Text = "Next";
+            this.nextButton.Text = "Save";
             this.nextButton.UseVisualStyleBackColor = false;
             this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
             // 
@@ -451,11 +453,33 @@ namespace AnalysystemTakeTwo
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(190)))), ((int)(((byte)(230)))));
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(561, 320);
+            this.panel1.Size = new System.Drawing.Size(561, 339);
             this.panel1.TabIndex = 39;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(12, 312);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(282, 20);
+            this.label2.TabIndex = 35;
+            this.label2.Text = "Otherwise a default profile will be used.";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(14, 292);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(544, 20);
+            this.label1.TabIndex = 34;
+            this.label1.Text = "If height and weight are entered and saved, they will be used for calculations";
             // 
             // saveFileDialog1
             // 
@@ -477,7 +501,7 @@ namespace AnalysystemTakeTwo
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.panel1);
             this.Name = "SubjectInformationScreen";
-            this.Size = new System.Drawing.Size(597, 372);
+            this.Size = new System.Drawing.Size(597, 391);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -533,5 +557,7 @@ namespace AnalysystemTakeTwo
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

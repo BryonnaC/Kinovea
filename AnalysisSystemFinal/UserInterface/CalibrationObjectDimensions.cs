@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AnalysisSystemFinal;
 
 namespace AnalysystemTakeTwo
 {
@@ -95,6 +96,9 @@ namespace AnalysystemTakeTwo
 
         private void saveInfoToFile()
         {
+            WuAlgorithm.cali_height = heightDim;
+            WuAlgorithm.cali_length = lengthDim;
+            WuAlgorithm.cali_width = widthDim;
             saveFileDialog1.ShowDialog();
             saveFileDialog1.Dispose();
         }

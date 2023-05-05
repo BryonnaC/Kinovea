@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AnalysisSystemFinal;
 
 namespace AnalysystemTakeTwo
 {
@@ -57,6 +58,8 @@ namespace AnalysystemTakeTwo
 
         private void saveInfoToFile()
         {
+            WuAlgorithm.subj_height = heightCm;
+            WuAlgorithm.subj_weight = weightKgs;
             saveFileDialog1.ShowDialog();
             saveFileDialog1.Dispose();
         }

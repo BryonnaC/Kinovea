@@ -19,7 +19,7 @@ namespace AnalysisSystemFinal
         double fy = 2060;
 
         //Have we calibrated?
-        private bool calibrationComplete = false;
+        public bool calibrationComplete = false;
 
         //placehold these here for now so I can graph
         double[] xtG = new double[240];
@@ -43,6 +43,14 @@ namespace AnalysisSystemFinal
         double[] mzGlobal = new double[234];
 
         double[][] matrixH = new double[3][];
+
+        //in case of unique values
+        public static double cali_length = 0;
+        public static double cali_width = 0;
+        public static double cali_height = 0;
+
+        public static double subj_weight = 0;
+        public static double subj_height = 0;
 
         public void TakeInPositionValues(List<string> horizVals, List<string> vertVals, string forcePath)
         {
@@ -171,10 +179,21 @@ namespace AnalysisSystemFinal
 
         private void HandleForceData(double[][] forceData, double[][] tibiaOmegas, double[][] femurOmegas)
         {
+            double weight;
+            double height;
+            if(subj_weight != 0 && subj_height != 0)
+            {
+                weight = subj_weight;
+                height = subj_height;
+            }
+            else
+            {
+                weight = 60; //kg - need to get this from somewhere
+                height = 1.6; //meters - need to get this from the form too
+            }
+
             int samplingForce = 500; //sample frequency of PASCO force plate
             int goproRate = 240;
-            double weight = 60; //kg - need to get this from somewhere
-            double height = 1.6; //meters - need to get this from the form too
 
             double g = 9.81; //gravity coeff
 
@@ -224,7 +243,7 @@ namespace AnalysisSystemFinal
                 My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][i] - (jz_t - jx_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
                 Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][i] - (jx_t - jy_t) * tibiaOmegas[1][i] * tibiaOmegas[2][i];
 
-/*                Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
+/*              Mx[i] = newSamples[i] * distance + jx_t * tibiaOmegas[0][0] - (jy_t - jz_t) * tibiaOmegas[1][1] * tibiaOmegas[2][0];
                 My[i] = newSamples[i] * distance + jy_t * tibiaOmegas[0][1] - (jz_t - jx_t) * tibiaOmegas[1][2] * tibiaOmegas[2][1];
                 Mz[i] = newSamples[i] * distance + jz_t * tibiaOmegas[0][2] - (jx_t - jy_t) * tibiaOmegas[1][3] * tibiaOmegas[2][2];*/
             }
@@ -282,13 +301,6 @@ namespace AnalysisSystemFinal
 
         }*/
 
-        public void GraphAdjusted()
-        {
-            OutputGraph og = new OutputGraph();
-            og.ShowDialog();
-            og.Dispose();
-        }
-
         public void GraphMoment(double[][] data)
         {
             OutputGraph og = new OutputGraph("frame", "moment", 240, mxGlobal, myGlobal, mzGlobal, data);
@@ -324,17 +336,42 @@ namespace AnalysisSystemFinal
 
             for (int i=0; i<frames; i++)
             {
-                double[][] legPixelPts = new double[horizPos.Length-1][];    // # rows should be 12'
-                double[][] correctedPixelPts = new double[legPixelPts.Length][];
+                double[][] legPixelPts;
+                double[][] correctedPixelPts;
 
-                for(int row=1; row<horizPos.Length; row++)
+                if (horizPos.Length == 12)
                 {
-                    legPixelPts[row-1] = new double[] { horizPos[row][i], vertPos[row][i]};
+                    legPixelPts = new double[horizPos.Length][];    // # rows should be 12
+                    correctedPixelPts = new double[legPixelPts.Length][];
+
+                    for(int row=0; row < legPixelPts.Length; row++)
+                    {
+                        legPixelPts[row] = new double[] { horizPos[row][i], vertPos[row][i]};
+                    }
+
+                    for (int j = 0; j < legPixelPts.Length; j++)
+                    {
+                        correctedPixelPts[j] = CorrectRadialDistortion(legPixelPts[j][0], legPixelPts[j][1]);
+                    }
                 }
-
-                for (int j = 0; j < legPixelPts.Length; j++)
+                else if(horizPos.Length == 13)
                 {
-                    correctedPixelPts[j] = CorrectRadialDistortion(legPixelPts[j][0], legPixelPts[j][1]);
+                    legPixelPts = new double[horizPos.Length-1][];    // # rows should be 12
+                    correctedPixelPts = new double[legPixelPts.Length][];
+
+                    for (int row = 1; row < horizPos.Length; row++)
+                    {
+                        legPixelPts[row-1] = new double[] { horizPos[row][i], vertPos[row][i] };
+                    }
+
+                    for (int j = 0; j < legPixelPts.Length; j++)
+                    {
+                        correctedPixelPts[j] = CorrectRadialDistortion(legPixelPts[j][0], legPixelPts[j][1]);
+                    }
+                }
+                else
+                {
+                    return null;
                 }
 
                 double[][][] separatedPixelPts = SeparateTibiaFemur(correctedPixelPts);
@@ -981,6 +1018,10 @@ namespace AnalysisSystemFinal
 
         public double[][] LoadPlaceholderCalibrationDimensions()
         {
+/*            if (cali_length != 0)
+            {
+
+            }*/
             //these are the measured dimensions of the calibration object
             //we should be able to set these from the GUI though 
             double BFx = -312;

@@ -45,7 +45,7 @@ namespace AnalysisSystemFinal
             csv_Horiz = e.csv_StringHoriz;
             csv_Vert = e.csv_StringVert;
 
-            if(csv_Horiz.Count > 9)
+            if (math.calibrationComplete)
             {
                 hasPositionData = true;
             }
