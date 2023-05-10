@@ -74,10 +74,10 @@ namespace Kinovea.Root
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            log.Debug("Showing SplashScreen.");
+/*            log.Debug("Showing SplashScreen.");
             FormSplashScreen splashForm = new FormSplashScreen();
             splashForm.Show();
-            splashForm.Update();
+            splashForm.Update();*/
 
             AnalysisMain am = new AnalysisMain();
 /*            //AnalysisMain am = new AnalysisMain();

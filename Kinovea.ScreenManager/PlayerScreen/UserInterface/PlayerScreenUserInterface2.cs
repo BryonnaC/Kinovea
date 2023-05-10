@@ -5056,7 +5056,7 @@ namespace Kinovea.ScreenManager
             }
         }
 
-        private void btnSaveAnnotations_Click(object sender, EventArgs e)
+        public void btnSaveAnnotations_Click(object sender, EventArgs e)
         {
             if (!m_FrameServer.Loaded)
                 return;
@@ -5069,6 +5069,11 @@ namespace Kinovea.ScreenManager
             m_iFramesToDecode = 1;
             ShowNextFrame(m_iSelStart, true);
             ActivateKeyframe(m_iCurrentPosition, true);
+        }
+
+        public void btnOpenAnnotations()
+        {
+            OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
         }
 
         private void btnSaveAnnotationsAs_Click(object sender, EventArgs e)

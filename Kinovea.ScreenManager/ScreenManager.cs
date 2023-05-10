@@ -742,7 +742,7 @@ namespace Kinovea.ScreenManager
             screenDescription.SpeedPercentage = PreferencesManager.PlayerPreferences.DefaultReplaySpeed;
             LoaderVideo.LoadVideoInScreen(this, path, index, screenDescription);
         }
-        private void Player_OpenAnnotationsAsked(object sender, EventArgs e)
+        protected void Player_OpenAnnotationsAsked(object sender, EventArgs e)
         {
             int index = sender == screenList[0] ? 0 : 1;
             LoadAnalysis(index);

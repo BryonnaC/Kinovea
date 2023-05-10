@@ -23,6 +23,8 @@ namespace AnalysisSystemFinal
 
         private ToolStripDropDownButton openVid = new ToolStripDropDownButton();
         private ToolStripDropDownButton openCam = new ToolStripDropDownButton();
+        private ToolStripDropDownButton openAnnotation = new ToolStripDropDownButton();
+        private ToolStripDropDownButton saveAnnotation = new ToolStripDropDownButton();
         private ToolStripDropDownButton subInf = new ToolStripDropDownButton();
         private ToolStripDropDownButton calibrationObj = new ToolStripDropDownButton();
         private ToolStripDropDownButton trackWindow = new ToolStripDropDownButton();
@@ -87,6 +89,11 @@ namespace AnalysisSystemFinal
             openVid.Click += DropDownVideo_Click;
             openCam.Text = "Open Camera...";
             openCam.Click += DropDownCam_Click;
+            openAnnotation.Text = "Open Annotation...";
+            openAnnotation.Click += DropDownOpenAnnotation_Click;
+            saveAnnotation.Text = "Save Annotation...";
+            saveAnnotation.Click += DropDownSaveAnnotation_Click;
+
             subInf.Text = "Subject Info";
             subInf.Click += DropDownSub_Click;
             calibrationObj.Text = "Calibration Obj";
@@ -99,7 +106,7 @@ namespace AnalysisSystemFinal
             importMarkerData.Click += DropDownImpMarkers_Click;
             
             importMarkerData.Width = 130;
-            openVid.Width = 80;
+            openVid.Width = 100;
             subInf.Width = 90;
 
             mnuProperties.Text = "Properties";
@@ -111,6 +118,8 @@ namespace AnalysisSystemFinal
             mnuVideo.Text = "Video";
             mnuVideo.DropDownItems.Add(openVid);
             mnuVideo.DropDownItems.Add(openCam);
+            mnuVideo.DropDownItems.Add(openAnnotation);
+            mnuVideo.DropDownItems.Add(saveAnnotation);
 
             mnuVideo.Click += mnuVideo_Click;
 
@@ -125,6 +134,19 @@ namespace AnalysisSystemFinal
 
             ToolStripManager.Merge(thisMenuStrip, toolStrip);
         }
+
+        private void DropDownSaveAnnotation_Click(object sender, EventArgs e)
+        {
+            number = 8;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+        }
+
+        private void DropDownOpenAnnotation_Click(object sender, EventArgs e)
+        {
+            number = 7;
+            ToolBarClick?.Invoke(this, new ButtonClickedEventArgs(number));
+        }
+
         private void mnuImportForce_Click(object sender, EventArgs e)
         {
             ImportForceClick?.Invoke();

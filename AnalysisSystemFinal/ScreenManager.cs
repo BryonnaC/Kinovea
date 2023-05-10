@@ -93,6 +93,7 @@ namespace AnalysisSystemFinal
             PlayerScreenUserInterface.MouseClicked += PlayerScreenUI_MouseClicked;
         }
 
+        #region Psuedo-template for leg or calibration tracking
         private void PlayerScreenUI_MouseClicked(object sender, MouseEventArgs e)
         {
             //Console.WriteLine(base.screenList[whichScreen].view.m_DescaledMouse);
@@ -194,6 +195,7 @@ namespace AnalysisSystemFinal
             PlayerScreenUserInterface.MouseClicked -= PlayerScreenUI_MouseClicked;
             whichTemplate = 0;
         }
+        #endregion
 
         private void ToolStrip_TrajectoryClick(object sender, EventArgs e)
         {
@@ -227,6 +229,17 @@ namespace AnalysisSystemFinal
                     return;
                 case 6:
                     ShowTrackWindowProperties();
+                    return;
+                case 7:
+                    PlayerScreen ps = base.activeScreen as PlayerScreen;
+                    if (ps == null) return;
+                    ps.view.btnOpenAnnotations();
+                    //ps.view.OpenAnnotationsAsked?.Invoke(this, EventArgs.Empty);
+                    return;
+                case 8:
+                    PlayerScreen ps2 = base.activeScreen as PlayerScreen;
+                    if (ps2 == null) return;
+                    ps2.view.btnSaveAnnotations_Click(sender, EventArgs.Empty);
                     return;
             }
         }
